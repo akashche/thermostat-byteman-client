@@ -9,7 +9,7 @@
         <artifactId>byteman-charts</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>charts-aggregate</artifactId>
+    <artifactId>builder-plain</artifactId>
 
-
+    
 </project>

@@ -33,8 +33,12 @@
     <modules>
         <module>data-iface</module>
         <module>data-helper</module>
-        <module>charts-plain</module>
-        <module>charts-aggregate</module>
+        <module>filter-iface</module>
+        <module>filter-fields</module>
+        <module>builder-iface</module>
+        <module>builder-plain</module>
+        <module>builder-aggregate</module>
+        <module>swing-iface</module>
         <module>swing-viewer</module>
         <module>swing-app</module>
         <module>transport-iface</module>
@@ -50,6 +54,8 @@
         <project.specification_vendor>Red Hat, Inc.</project.specification_vendor>
         <project.implementation_vendor>${project.specification_vendor}</project.implementation_vendor>
         <version.byteman>2.2.2</version.byteman>
+        <version.jfreechart>1.0.18</version.jfreechart>
+        <version.jfreechart_common>1.0.23</version.jfreechart_common>
     </properties>
 
     <scm>
