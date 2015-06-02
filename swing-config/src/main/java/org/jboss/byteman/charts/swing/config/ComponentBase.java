@@ -21,40 +21,30 @@
 */
 package org.jboss.byteman.charts.swing.config;
 
-import javax.swing.*;
-
-import java.awt.*;
-
 import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
 
 /**
  * User: alexkasko
  * Date: 6/2/15
  */
-public class DefaultLabelBuilder implements ChartConfigLabelBuilder {
+public abstract class ComponentBase<T> implements ChartConfigComponent<T> {
 
-    protected String testPrefix = "<html>";
-    protected String textPostfix = "</html>";
-    protected boolean bold = true;
-    protected String layoutOptions = "width ::120lp";
+    protected String name = "";
+    protected String label = "";
+    protected String layoutOptions = DEFAULT_CONTROL_LAYOUT_OPTIONS;
 
-    public DefaultLabelBuilder() {
+    @Override
+    public String getName() {
+        return defaultString(name);
     }
 
     @Override
-    public JLabel build(String text) {
-        JLabel jl = new JLabel(testPrefix + defaultString(text) + textPostfix);
-        if (bold) {
-            Font font = jl.getFont();
-            Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
-            jl.setFont(boldFont);
-        }
-        return jl;
+    public String getLabel() {
+        return defaultString(label);
     }
 
     @Override
-    public String layoutOptions() {
-        return layoutOptions;
+    public String getLayoutOptions() {
+        return defaultString(layoutOptions);
     }
-
 }

@@ -21,13 +21,34 @@
 */
 package org.jboss.byteman.charts.swing.config;
 
+import javax.swing.*;
+
 /**
  * User: alexkasko
  * Date: 6/2/15
  */
-public interface ChartConfigField {
+public interface ChartConfigComponent<T> {
 
-    ChartConfigLabelBuilder labelBuilder();
+    // todo: deacouple cleanly from swing
+    //    "text field"
+    //    "int field"
+    //    "float field"
+    //    "combo box"
+    //    "slider"
+    //    "date picker"
 
-    ChartConfigControlBuilder controlBuilder();
+
+    public static final String DEFAULT_CONTROL_LAYOUT_OPTIONS = "pushx, growx, width :200lp:, wrap";
+
+    JComponent createComponent();
+
+    String getName();
+
+    String getLabel();
+
+    String getLayoutOptions();
+
+    T getValue();
+
+    void setValue(T value);
 }

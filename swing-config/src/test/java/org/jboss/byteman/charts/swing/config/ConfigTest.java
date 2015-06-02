@@ -24,12 +24,10 @@ package org.jboss.byteman.charts.swing.config;
 import org.junit.Test;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
+import java.util.Arrays;
 
+import static org.jboss.byteman.charts.utils.SwingUtils.createCloseListener;
 import static org.jboss.byteman.charts.utils.SwingUtils.enableLafIfAvailable;
 
 /**
@@ -39,13 +37,21 @@ import static org.jboss.byteman.charts.utils.SwingUtils.enableLafIfAvailable;
 public class ConfigTest {
 
     @Test
+    public void dummy() {
+//        I am dummy
+    }
+
+//    @Test
     public void test() throws InvocationTargetException, InterruptedException, UnsupportedLookAndFeelException {
         enableLafIfAvailable("Nimbus");
         final Thread[] edtThreadHolder = new Thread[1];
         SwingUtilities.invokeAndWait(new Runnable() {
             @Override
             public void run() {
-                MainFrame mf = new MainFrame(new ChartConfigPanelBuilder().build(Collections.<ChartConfigField>emptyList()));
+                MainFrame mf = new MainFrame(ChartConfigPanel.builder().build(Arrays.asList(
+                        new TextComponent("foo", "bar"),
+                        new TextComponent("baz", "42")
+                )).getPanel());
                 mf.setVisible(true);
                 edtThreadHolder[0] = Thread.currentThread();
             }
@@ -56,21 +62,12 @@ public class ConfigTest {
 
     private static class MainFrame extends JFrame {
         MainFrame(JPanel panel) {
-            addWindowListener(new CloseListener());
+            addWindowListener(createCloseListener());
             setContentPane(panel);
             pack();
             setLocationRelativeTo(null);
         }
     }
 
-    private static class CloseListener extends WindowAdapter {
-
-        @Override
-        public void windowClosing(WindowEvent e) {
-            for (Frame fr : Frame.getFrames()) {
-                fr.dispose();
-            }
-        }
-    }
 
 }

@@ -22,6 +22,10 @@
 package org.jboss.byteman.charts.utils;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 /**
  * Contains swing-related utility methods
@@ -42,16 +46,29 @@ public class SwingUtils {
                 try {
                     UIManager.setLookAndFeel(info.getClassName());
                     break;
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (UnsupportedLookAndFeelException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (InstantiationException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (Exception e) {
+                    // ignore
                 }
             }
         }
     }
+
+    /**
+     * Creates a close listener that will dispose all create Frames
+     *
+     * @return close listener
+     */
+    public static WindowListener createCloseListener() {
+        return new CloseListener();
+    }
+
+    private static class CloseListener extends WindowAdapter {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            for (Frame fr : Frame.getFrames()) {
+                fr.dispose();
+            }
+        }
+    }
+
 }

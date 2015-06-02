@@ -31,7 +31,7 @@
     </parent>
     <artifactId>swing-config</artifactId>
     <packaging>jar</packaging>
-    <name>Byteman Charts Swing GUI Chart Configuration Library</name>
+    <name>Byteman Charts Swing GUI Chart Config Library</name>
 
     <dependencies>
         <!-- utils -->
