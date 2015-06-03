@@ -19,26 +19,30 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.utils;
+package org.jboss.byteman.charts.ui;
 
 /**
- * String utilities
- *
- * @author akashche
- * Date: 5/25/15
+ * User: alexkasko
+ * Date: 6/2/15
  */
-public class StringUtils {
+public interface ChartConfigEntry<T> {
 
-    public static final String EMPTY_STRING = "";
+    //    "combo box"
+    //    "slider"
+    //    "date picker"
 
-    /**
-     * <p>Returns either the passed in String, or if the String is
-     * <code>null</code>, the empty string
-     *
-     * @param str  the String to check, may be null
-     * @return the passed in String, or the empty string if it was <code>null</code>
-     */
-    public static String defaultString(String str) {
-        return str != null ? str : "";
-    }
+
+    public static final String DEFAULT_CONTROL_LAYOUT_OPTIONS = "pushx, growx, width :200lp:, wrap";
+
+    String getType();
+
+    String getName();
+
+    String getLabel();
+
+    String getLayoutOptions();
+
+    T getValue();
+
+    void setValue(T value);
 }

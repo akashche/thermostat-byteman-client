@@ -19,26 +19,26 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.utils;
+package org.jboss.byteman.charts.ui.swing;
+
+import org.jboss.byteman.charts.ui.DoubleSpinnerConfigEntry;
+import org.jboss.byteman.charts.ui.IntSpinnerConfigEntry;
+
+import javax.swing.*;
 
 /**
- * String utilities
- *
- * @author akashche
- * Date: 5/25/15
+ * User: alexkasko
+ * Date: 6/3/15
  */
-public class StringUtils {
+public class DoubleSpinnerControl extends ChartConfigSwingControl<DoubleSpinnerConfigEntry> {
 
-    public static final String EMPTY_STRING = "";
+    public DoubleSpinnerControl(DoubleSpinnerConfigEntry entry) {
+        super(entry);
+    }
 
-    /**
-     * <p>Returns either the passed in String, or if the String is
-     * <code>null</code>, the empty string
-     *
-     * @param str  the String to check, may be null
-     * @return the passed in String, or the empty string if it was <code>null</code>
-     */
-    public static String defaultString(String str) {
-        return str != null ? str : "";
+    @Override
+    public JComponent createComponent() {
+        return new JSpinner(new SpinnerNumberModel(entry.getDefaultValue(), entry.getMinValue(),
+                entry.getMaxValue(), entry.getStep()));
     }
 }

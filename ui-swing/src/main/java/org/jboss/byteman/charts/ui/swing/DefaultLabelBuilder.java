@@ -19,26 +19,42 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.utils;
+package org.jboss.byteman.charts.ui.swing;
+
+import javax.swing.*;
+
+import java.awt.*;
+
+import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
 
 /**
- * String utilities
- *
- * @author akashche
- * Date: 5/25/15
+ * User: alexkasko
+ * Date: 6/2/15
  */
-public class StringUtils {
+public class DefaultLabelBuilder implements ChartConfigLabelBuilder {
 
-    public static final String EMPTY_STRING = "";
+    protected String testPrefix = "<html>";
+    protected String textPostfix = ":</html>";
+    protected boolean bold = true;
+    protected String layoutOptions = "width ::120lp";
 
-    /**
-     * <p>Returns either the passed in String, or if the String is
-     * <code>null</code>, the empty string
-     *
-     * @param str  the String to check, may be null
-     * @return the passed in String, or the empty string if it was <code>null</code>
-     */
-    public static String defaultString(String str) {
-        return str != null ? str : "";
+    public DefaultLabelBuilder() {
     }
+
+    @Override
+    public JLabel build(String text) {
+        JLabel jl = new JLabel(testPrefix + defaultString(text) + textPostfix);
+        if (bold) {
+            Font font = jl.getFont();
+            Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+            jl.setFont(boldFont);
+        }
+        return jl;
+    }
+
+    @Override
+    public String layoutOptions() {
+        return layoutOptions;
+    }
+
 }

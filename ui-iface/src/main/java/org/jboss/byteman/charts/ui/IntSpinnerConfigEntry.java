@@ -19,26 +19,43 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.utils;
+package org.jboss.byteman.charts.ui;
 
 /**
- * String utilities
- *
- * @author akashche
- * Date: 5/25/15
+ * User: alexkasko
+ * Date: 6/3/15
  */
-public class StringUtils {
+public class IntSpinnerConfigEntry extends ConfigEntryBase<Integer> {
 
-    public static final String EMPTY_STRING = "";
+    protected int defaultValue;
+    protected int minValue;
+    protected int maxValue;
+    protected int step;
 
-    /**
-     * <p>Returns either the passed in String, or if the String is
-     * <code>null</code>, the empty string
-     *
-     * @param str  the String to check, may be null
-     * @return the passed in String, or the empty string if it was <code>null</code>
-     */
-    public static String defaultString(String str) {
-        return str != null ? str : "";
+    public IntSpinnerConfigEntry() {
+    }
+
+    public IntSpinnerConfigEntry(String label, int defaultValue, int minValue, int maxValue, int step) {
+        super("org.jboss.byteman.charts.ui.swing.IntSpinnerControl", label);
+        this.defaultValue = defaultValue;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.step = step;
+    }
+
+    public int getDefaultValue() {
+        return defaultValue;
+    }
+
+    public int getMinValue() {
+        return minValue;
+    }
+
+    public int getMaxValue() {
+        return maxValue;
+    }
+
+    public int getStep() {
+        return step;
     }
 }

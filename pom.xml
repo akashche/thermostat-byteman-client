@@ -38,10 +38,8 @@
         <module>builder-iface</module>
         <module>builder-plain</module>
         <module>builder-aggregate</module>
-        <module>swing-iface</module>
-        <module>swing-app</module>
-        <module>swing-viewer</module>
-        <module>swing-config</module>
+        <module>ui-iface</module>
+        <module>ui-swing</module>
         <module>transport-iface</module>
         <module>transport-json</module>
         <module>transport-thermostat</module>

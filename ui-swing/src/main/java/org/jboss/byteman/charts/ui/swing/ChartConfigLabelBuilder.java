@@ -19,26 +19,17 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.utils;
+package org.jboss.byteman.charts.ui.swing;
+
+import javax.swing.*;
 
 /**
- * String utilities
- *
- * @author akashche
- * Date: 5/25/15
+ * User: alexkasko
+ * Date: 6/2/15
  */
-public class StringUtils {
+public interface ChartConfigLabelBuilder {
 
-    public static final String EMPTY_STRING = "";
+    JLabel build(String text);
 
-    /**
-     * <p>Returns either the passed in String, or if the String is
-     * <code>null</code>, the empty string
-     *
-     * @param str  the String to check, may be null
-     * @return the passed in String, or the empty string if it was <code>null</code>
-     */
-    public static String defaultString(String str) {
-        return str != null ? str : "";
-    }
+    String layoutOptions();
 }
