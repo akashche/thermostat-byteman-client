@@ -33,17 +33,19 @@ import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
  */
 public class DefaultLabelBuilder implements ChartConfigLabelBuilder {
 
-    protected String testPrefix = "<html>";
-    protected String textPostfix = ":</html>";
+//    this allows auto text wrapping but brings unneeded vertical gaps, css doesn't help
+//    protected String textPrefix = "<html>";
+    protected String textPrefix = "";
+    protected String textPostfix = ":";
     protected boolean bold = true;
-    protected String layoutOptions = "width ::120lp";
+    protected String layoutOptions = "width ::160lp";
 
     public DefaultLabelBuilder() {
     }
 
     @Override
     public JLabel build(String text) {
-        JLabel jl = new JLabel(testPrefix + defaultString(text) + textPostfix);
+        JLabel jl = new JLabel(textPrefix + defaultString(text) + textPostfix);
         if (bold) {
             Font font = jl.getFont();
             Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
@@ -53,7 +55,7 @@ public class DefaultLabelBuilder implements ChartConfigLabelBuilder {
     }
 
     @Override
-    public String layoutOptions() {
+    public String getLayoutOptions() {
         return layoutOptions;
     }
 

@@ -19,25 +19,28 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui;
+package org.jboss.byteman.charts.ui.swing;
+
+import org.jboss.byteman.charts.ui.ComboBoxConfigEntry;
+
+import javax.swing.*;
 
 /**
  * User: alexkasko
- * Date: 6/2/15
+ * Date: 6/3/15
  */
-public interface ChartConfigEntry<T> {
+public class ComboBoxControl extends ChartConfigSwingControl<ComboBoxConfigEntry> {
 
-    public static final String DEFAULT_CONTROL_LAYOUT_OPTIONS = "pushx, growx, width 180lp:180lp:, wrap";
+    public ComboBoxControl(ComboBoxConfigEntry entry) {
+        super(entry);
+    }
 
-    String getType();
-
-    String getName();
-
-    String getLabel();
-
-    String getLayoutOptions();
-
-    T getValue();
-
-    void setValue(T value);
+    @Override
+    public JComponent createComponent() {
+        JComboBox jcb = new JComboBox();
+        for (String val : entry.getValuesList()) {
+            jcb.addItem(val);
+        }
+        return jcb;
+    }
 }

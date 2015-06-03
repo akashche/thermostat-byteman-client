@@ -21,8 +21,7 @@
 */
 package org.jboss.byteman.charts.ui.swing;
 
-import org.jboss.byteman.charts.ui.DoubleSpinnerConfigEntry;
-import org.jboss.byteman.charts.ui.IntSpinnerConfigEntry;
+import org.jboss.byteman.charts.ui.DoubleConfigEntry;
 
 import javax.swing.*;
 
@@ -30,9 +29,9 @@ import javax.swing.*;
  * User: alexkasko
  * Date: 6/3/15
  */
-public class DoubleSpinnerControl extends ChartConfigSwingControl<DoubleSpinnerConfigEntry> {
+public class DoubleSpinnerControl extends ChartConfigSwingControl<DoubleConfigEntry> {
 
-    public DoubleSpinnerControl(DoubleSpinnerConfigEntry entry) {
+    public DoubleSpinnerControl(DoubleConfigEntry entry) {
         super(entry);
     }
 

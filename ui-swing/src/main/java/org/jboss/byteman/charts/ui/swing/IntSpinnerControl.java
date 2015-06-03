@@ -21,7 +21,7 @@
 */
 package org.jboss.byteman.charts.ui.swing;
 
-import org.jboss.byteman.charts.ui.IntSpinnerConfigEntry;
+import org.jboss.byteman.charts.ui.IntConfigEntry;
 
 import javax.swing.*;
 
@@ -29,9 +29,9 @@ import javax.swing.*;
  * User: alexkasko
  * Date: 6/3/15
  */
-public class IntSpinnerControl extends ChartConfigSwingControl<IntSpinnerConfigEntry> {
+public class IntSpinnerControl extends ChartConfigSwingControl<IntConfigEntry> {
 
-    public IntSpinnerControl(IntSpinnerConfigEntry entry) {
+    public IntSpinnerControl(IntConfigEntry entry) {
         super(entry);
     }
 

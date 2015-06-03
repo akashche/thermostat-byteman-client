@@ -31,5 +31,5 @@ public interface ChartConfigLabelBuilder {
 
     JLabel build(String text);
 
-    String layoutOptions();
+    String getLayoutOptions();
 }

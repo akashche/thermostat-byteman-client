@@ -21,57 +21,42 @@
 */
 package org.jboss.byteman.charts.ui;
 
-import static org.jboss.byteman.charts.utils.StringUtils.EMPTY_STRING;
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
-
 /**
  * User: alexkasko
- * Date: 6/2/15
+ * Date: 6/3/15
  */
-public abstract class ConfigEntryBase<T> implements ChartConfigEntry<T> {
+public class DoubleConfigEntry extends ConfigEntryBase<Double> {
 
-    protected T value;
-    protected String type = EMPTY_STRING;
-    protected String name = EMPTY_STRING;
-    protected String label = EMPTY_STRING;
-    protected String layoutOptions = DEFAULT_CONTROL_LAYOUT_OPTIONS;
+    protected double defaultValue;
+    protected double minValue;
+    protected double maxValue;
+    protected double step;
 
-    protected ConfigEntryBase() {
+    public DoubleConfigEntry() {
     }
 
-    protected ConfigEntryBase(String type, String label) {
-        this.type = type;
-        this.label = label;
+    public DoubleConfigEntry(String label, double defaultValue, double minValue, double maxValue, double step) {
+        super("org.jboss.byteman.charts.ui.swing.DoubleSpinnerControl", label);
+        this.defaultValue = defaultValue;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.step = step;
     }
 
-    @Override
-    public String getType() {
-        return type;
+    public double getDefaultValue() {
+        return defaultValue;
     }
 
-    @Override
-    public String getName() {
-        return defaultString(name);
+    public double getMinValue() {
+        return minValue;
     }
 
-    @Override
-    public String getLabel() {
-        return defaultString(label);
+    public double getMaxValue() {
+        return maxValue;
     }
 
-    @Override
-    public String getLayoutOptions() {
-        return defaultString(layoutOptions);
-    }
-
-    @Override
-    public T getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(T value) {
-        this.value = value;
+    public double getStep() {
+        return step;
     }
 
     @Override
@@ -79,9 +64,16 @@ public abstract class ConfigEntryBase<T> implements ChartConfigEntry<T> {
         final StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append("{name='").append(name).append('\'');
+        sb.append(", value='").append(value).append('\'');
         sb.append(", label='").append(label).append('\'');
         sb.append(", layoutOptions='").append(layoutOptions).append('\'');
+        sb.append(", type='").append(type).append('\'');
+        sb.append(", defaultValue='").append(defaultValue).append('\'');
+        sb.append(", minValue='").append(minValue).append('\'');
+        sb.append(", maxValue='").append(maxValue).append('\'');
+        sb.append(", step='").append(step).append('\'');
         sb.append('}');
         return sb.toString();
     }
+
 }

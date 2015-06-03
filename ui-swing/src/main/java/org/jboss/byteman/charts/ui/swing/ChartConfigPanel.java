@@ -58,16 +58,16 @@ public class ChartConfigPanel {
 
     public static class Builder {
 
-        protected String layoutGeneralOptions = "fillx, debug";
+        protected String layoutGeneralOptions = "fillx";
         protected String layoutColumnsOptions = "[right][left]";
-        protected String layoutRowsOptions = "";
+        protected String layoutRowsOptions = "[]";
         protected ChartConfigLabelBuilder labelBuilder = new DefaultLabelBuilder();
 
         public ChartConfigPanel build(Collection<? extends ChartConfigEntry<?>> entries) {
             JPanel jp = new JPanel(new MigLayout(layoutGeneralOptions, layoutColumnsOptions, layoutRowsOptions));
             Map<String, ChartConfigEntry<?>> components = new LinkedHashMap<String, ChartConfigEntry<?>>();
             for(ChartConfigEntry en : entries) {
-                jp.add(labelBuilder.build(en.getLabel()), labelBuilder.layoutOptions());
+                jp.add(labelBuilder.build(en.getLabel()), labelBuilder.getLayoutOptions());
                 jp.add(createComponent(en), en.getLayoutOptions());
                 components.put(en.getName(), en);
             }

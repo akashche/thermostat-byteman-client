@@ -21,57 +21,27 @@
 */
 package org.jboss.byteman.charts.ui;
 
-import static org.jboss.byteman.charts.utils.StringUtils.EMPTY_STRING;
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: alexkasko
- * Date: 6/2/15
+ * Date: 6/3/15
  */
-public abstract class ConfigEntryBase<T> implements ChartConfigEntry<T> {
+public class ComboBoxConfigEntry extends ConfigEntryBase<String> {
 
-    protected T value;
-    protected String type = EMPTY_STRING;
-    protected String name = EMPTY_STRING;
-    protected String label = EMPTY_STRING;
-    protected String layoutOptions = DEFAULT_CONTROL_LAYOUT_OPTIONS;
+    protected List<String> valuesList = new ArrayList<String>();
 
-    protected ConfigEntryBase() {
+    public ComboBoxConfigEntry() {
     }
 
-    protected ConfigEntryBase(String type, String label) {
-        this.type = type;
-        this.label = label;
+    public ComboBoxConfigEntry(String label, List<String> valuesList) {
+        super("org.jboss.byteman.charts.ui.swing.ComboBoxControl", label);
+        this.valuesList = valuesList;
     }
 
-    @Override
-    public String getType() {
-        return type;
-    }
-
-    @Override
-    public String getName() {
-        return defaultString(name);
-    }
-
-    @Override
-    public String getLabel() {
-        return defaultString(label);
-    }
-
-    @Override
-    public String getLayoutOptions() {
-        return defaultString(layoutOptions);
-    }
-
-    @Override
-    public T getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(T value) {
-        this.value = value;
+    public List<String> getValuesList() {
+        return null != valuesList ? valuesList : new ArrayList<String>();
     }
 
     @Override
@@ -79,9 +49,14 @@ public abstract class ConfigEntryBase<T> implements ChartConfigEntry<T> {
         final StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append("{name='").append(name).append('\'');
+        sb.append(", value='").append(value).append('\'');
         sb.append(", label='").append(label).append('\'');
         sb.append(", layoutOptions='").append(layoutOptions).append('\'');
+        sb.append(", type='").append(type).append('\'');
+        sb.append(", valuesList='").append(valuesList).append('\'');
         sb.append('}');
         return sb.toString();
     }
+
+
 }

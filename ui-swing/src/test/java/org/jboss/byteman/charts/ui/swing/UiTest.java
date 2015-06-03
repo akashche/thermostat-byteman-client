@@ -21,14 +21,14 @@
 */
 package org.jboss.byteman.charts.ui.swing;
 
-import org.jboss.byteman.charts.ui.DoubleSpinnerConfigEntry;
-import org.jboss.byteman.charts.ui.IntSpinnerConfigEntry;
-import org.jboss.byteman.charts.ui.TextConfigEntry;
+import org.jboss.byteman.charts.ui.*;
 import org.junit.Test;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.jboss.byteman.charts.utils.SwingUtils.createCloseListener;
 import static org.jboss.byteman.charts.utils.SwingUtils.enableLafIfAvailable;
@@ -54,8 +54,10 @@ public class UiTest {
                 MainFrame mf = new MainFrame(ChartConfigPanel.builder().build(Arrays.asList(
                         new TextConfigEntry("foo", "bar"),
                         new TextConfigEntry("baz", "42"),
-                        new IntSpinnerConfigEntry("some field with long label", 42, 41, 43, 1),
-                        new DoubleSpinnerConfigEntry("double field", 42.0, 41.0, 43.0, 0.1),
+                        new IntConfigEntry("some field with very long label", 42, 41, 43, 1),
+                        new DoubleConfigEntry("double field", 42.1, 41.0, 43.0, 0.1),
+                        new ComboBoxConfigEntry("list field", Arrays.asList("foo", "bar", "baz", "42")),
+                        new DateTimeConfigEntry("date field", new Date(), new Date(0), new Date()),
                         new TextConfigEntry("baz", "42")
                 )).getPanel());
                 mf.setVisible(true);

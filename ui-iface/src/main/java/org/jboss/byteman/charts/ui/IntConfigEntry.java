@@ -25,17 +25,17 @@ package org.jboss.byteman.charts.ui;
  * User: alexkasko
  * Date: 6/3/15
  */
-public class IntSpinnerConfigEntry extends ConfigEntryBase<Integer> {
+public class IntConfigEntry extends ConfigEntryBase<Integer> {
 
     protected int defaultValue;
     protected int minValue;
     protected int maxValue;
     protected int step;
 
-    public IntSpinnerConfigEntry() {
+    public IntConfigEntry() {
     }
 
-    public IntSpinnerConfigEntry(String label, int defaultValue, int minValue, int maxValue, int step) {
+    public IntConfigEntry(String label, int defaultValue, int minValue, int maxValue, int step) {
         super("org.jboss.byteman.charts.ui.swing.IntSpinnerControl", label);
         this.defaultValue = defaultValue;
         this.minValue = minValue;
@@ -57,5 +57,22 @@ public class IntSpinnerConfigEntry extends ConfigEntryBase<Integer> {
 
     public int getStep() {
         return step;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append("{name='").append(name).append('\'');
+        sb.append(", value='").append(value).append('\'');
+        sb.append(", label='").append(label).append('\'');
+        sb.append(", layoutOptions='").append(layoutOptions).append('\'');
+        sb.append(", type='").append(type).append('\'');
+        sb.append(", defaultValue='").append(defaultValue).append('\'');
+        sb.append(", minValue='").append(minValue).append('\'');
+        sb.append(", maxValue='").append(maxValue).append('\'');
+        sb.append(", step='").append(step).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

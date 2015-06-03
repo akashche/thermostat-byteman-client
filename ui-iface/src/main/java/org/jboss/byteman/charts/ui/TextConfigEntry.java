@@ -45,13 +45,13 @@ public class TextConfigEntry extends ConfigEntryBase<String> {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("TextEntry");
+        sb.append(getClass().getSimpleName());
         sb.append("{name='").append(name).append('\'');
+        sb.append(", value='").append(value).append('\'');
         sb.append(", label='").append(label).append('\'');
         sb.append(", layoutOptions='").append(layoutOptions).append('\'');
         sb.append(", type='").append(type).append('\'');
         sb.append(", defaultValue='").append(defaultValue).append('\'');
-        sb.append(", value='").append(value).append('\'');
         sb.append('}');
         return sb.toString();
     }
