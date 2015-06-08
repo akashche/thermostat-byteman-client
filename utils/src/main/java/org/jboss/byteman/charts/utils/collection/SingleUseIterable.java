@@ -19,23 +19,31 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.filter;
+package org.jboss.byteman.charts.utils.collection;
 
-import org.jboss.byteman.charts.data.ChartRecord;
+import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Interface for filtering predicate for ChartRecords
- *
- * @author akashche
- * Date: 5/25/15
+ * User: alexkasko
+ * Date: 7/24/14
  */
-public interface ChartFilter {
+public class SingleUseIterable<T> implements Iterable<T> {
+    private final Iterator<T> delegate;
+    private AtomicBoolean used = new AtomicBoolean(false);
 
-    /**
-     * Checks whether specified record passes the filter
-     *
-     * @param record input record
-     * @return true if filter passed, false otherwise
-     */
-    boolean apply(ChartRecord record);
+    public SingleUseIterable(Iterator<T> delegate) {
+        if(null == delegate) throw new IllegalArgumentException("delegate");
+        this.delegate = delegate;
+    }
+
+    public static <T> SingleUseIterable<T> singleUseIterable(Iterator<T> iter) {
+        return new SingleUseIterable<T>(iter);
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        if(used.getAndSet(true)) throw new IllegalStateException("Iterable already used");
+        return delegate;
+    }
 }

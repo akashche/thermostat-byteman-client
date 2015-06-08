@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2010 Red Hat and individual contributors
+* Copyright 2015 Red Hat and individual contributors
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -27,7 +27,6 @@ import org.junit.Test;
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 
 import static org.jboss.byteman.charts.utils.SwingUtils.createCloseListener;
@@ -52,13 +51,15 @@ public class UiTest {
             @Override
             public void run() {
                 MainFrame mf = new MainFrame(ChartConfigPanel.builder().build(Arrays.asList(
-                        new TextConfigEntry("foo", "bar"),
-                        new TextConfigEntry("baz", "42"),
+                        new StringConfigEntry("foo", "bar"),
+                        new StringConfigEntry("baz", "42"),
                         new IntConfigEntry("some field with very long label", 42, 41, 43, 1),
                         new DoubleConfigEntry("double field", 42.1, 41.0, 43.0, 0.1),
                         new ComboBoxConfigEntry("list field", Arrays.asList("foo", "bar", "baz", "42")),
                         new DateTimeConfigEntry("date field", new Date(), new Date(0), new Date()),
-                        new TextConfigEntry("baz", "42")
+                        new BoolConfigEntry("bool field", true),
+                        new BoolConfigEntry("bool field 2", false),
+                        new StringConfigEntry("baz", "42")
                 )).getPanel());
                 mf.setVisible(true);
                 edtThreadHolder[0] = Thread.currentThread();

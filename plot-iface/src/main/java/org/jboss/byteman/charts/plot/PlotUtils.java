@@ -19,23 +19,32 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.filter;
+package org.jboss.byteman.charts.plot;
 
-import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.utils.UtilsException;
+
+import java.awt.*;
 
 /**
- * Interface for filtering predicate for ChartRecords
- *
- * @author akashche
- * Date: 5/25/15
+ * User: alexkasko
+ * Date: 6/8/15
  */
-public interface ChartFilter {
+public class PlotUtils {
 
     /**
-     * Checks whether specified record passes the filter
+     * Converts specified "#AARRGGBB" string into java.awt.Color instance
      *
-     * @param record input record
-     * @return true if filter passed, false otherwise
+     * @param rgba string in "#AARRGGBB" format
+     * @return color instance
      */
-    boolean apply(ChartRecord record);
+    public static Color toColor(String rgba) {
+        String unprefixed = rgba.startsWith("#") ? rgba.substring(1) : rgba;
+        if (!(6 == unprefixed.length() || 8 == unprefixed.length())) throw new UtilsException("Invalid color: [" + rgba + "]");
+        int hex = (int) Long.parseLong(unprefixed, 16);
+        if (6 == unprefixed.length()) {
+            return new Color(hex);
+        }
+        return new Color(hex, true);
+    }
+
 }

@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2010 Red Hat and individual contributors
+* Copyright 2015 Red Hat and individual contributors
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -25,14 +25,14 @@ package org.jboss.byteman.charts.ui;
  * User: alexkasko
  * Date: 6/2/15
  */
-public class TextConfigEntry extends ConfigEntryBase<String> {
+public class StringConfigEntry extends ConfigEntryBase<String> {
 
     protected String defaultValue = "";
 
-    public TextConfigEntry() {
+    public StringConfigEntry() {
     }
 
-    public TextConfigEntry(String label, String defaultValue) {
+    public StringConfigEntry(String label, String defaultValue) {
         super("org.jboss.byteman.charts.ui.swing.TextFieldControl", label);
         this.defaultValue = defaultValue;
     }

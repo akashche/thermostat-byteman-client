@@ -40,6 +40,12 @@
             <artifactId>data-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- utils -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     
 </project>

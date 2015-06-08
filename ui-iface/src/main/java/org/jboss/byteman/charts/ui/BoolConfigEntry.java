@@ -19,26 +19,39 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui.swing;
-
-import org.jboss.byteman.charts.ui.StringConfigEntry;
-
-import javax.swing.*;
-
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
+package org.jboss.byteman.charts.ui;
 
 /**
  * User: alexkasko
- * Date: 6/3/15
+ * Date: 6/8/15
  */
-public class TextFieldControl extends ChartConfigSwingControl<StringConfigEntry> {
+public class BoolConfigEntry extends ConfigEntryBase<Boolean> {
 
-    public TextFieldControl(StringConfigEntry entry) {
-        super(entry);
+    protected boolean defaultValue;
+
+    public BoolConfigEntry() {
+    }
+
+    public BoolConfigEntry(String label, boolean defaultValue) {
+        super("org.jboss.byteman.charts.ui.swing.BoolCheckboxControl", label);
+        this.defaultValue = defaultValue;
+    }
+
+    public boolean isDefaultValue() {
+        return defaultValue;
     }
 
     @Override
-    public JComponent createComponent() {
-        return new JTextField(defaultString(entry.getDefaultValue()));
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append("{name='").append(name).append('\'');
+        sb.append(", value='").append(value).append('\'');
+        sb.append(", label='").append(label).append('\'');
+        sb.append(", layoutOptions='").append(layoutOptions).append('\'');
+        sb.append(", type='").append(type).append('\'');
+        sb.append(", defaultValue='").append(defaultValue).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

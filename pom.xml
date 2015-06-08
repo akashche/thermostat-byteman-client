@@ -35,9 +35,9 @@
         <module>data-helper</module>
         <module>filter-iface</module>
         <module>filter-fields</module>
-        <module>builder-iface</module>
-        <module>builder-plain</module>
-        <module>builder-aggregate</module>
+        <module>plot-iface</module>
+        <module>plot-plain</module>
+        <module>plot-aggregate</module>
         <module>ui-iface</module>
         <module>ui-swing</module>
         <module>transport-iface</module>
@@ -57,6 +57,7 @@
         <version.jfreechart_common>1.0.23</version.jfreechart_common>
         <version.junit>4.10</version.junit>
         <version.miglayout>5.0</version.miglayout>
+        <version.gson>2.3.1</version.gson>
     </properties>
 
     <scm>

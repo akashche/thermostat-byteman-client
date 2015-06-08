@@ -19,23 +19,11 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.filter;
-
-import org.jboss.byteman.charts.data.ChartRecord;
+package org.jboss.byteman.charts.plot.aggregate;
 
 /**
- * Interface for filtering predicate for ChartRecords
- *
- * @author akashche
- * Date: 5/25/15
+ * User: alexkasko
+ * Date: 6/8/15
  */
-public interface ChartFilter {
-
-    /**
-     * Checks whether specified record passes the filter
-     *
-     * @param record input record
-     * @return true if filter passed, false otherwise
-     */
-    boolean apply(ChartRecord record);
+public class BucketedSideBySideCountPlotter {
 }

@@ -1,6 +1,6 @@
 /*
 * JBoss, Home of Professional Open Source
-* Copyright 2010 Red Hat and individual contributors
+* Copyright 2015 Red Hat and individual contributors
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -103,10 +103,12 @@ public class ChartRecord {
      */
     @Override
     public String toString() {
-        return "ChartRecord{" +
-                "ts=" + ts +
-                ", marker='" + marker + '\'' +
-                ", data=" + data +
-                '}';
+        final StringBuilder sb = new StringBuilder();
+        sb.append("ChartRecord");
+        sb.append("{ts=").append(ts);
+        sb.append(", marker='").append(marker).append('\'');
+        sb.append(", data=").append(data);
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -19,26 +19,38 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui.swing;
+package org.jboss.byteman.charts.utils.collection;
 
-import org.jboss.byteman.charts.ui.StringConfigEntry;
+import org.jboss.byteman.charts.utils.UtilsException;
 
-import javax.swing.*;
-
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * User: alexkasko
- * Date: 6/3/15
+ * @author alexkasko
+ *         Date: 7/7/14
  */
-public class TextFieldControl extends ChartConfigSwingControl<StringConfigEntry> {
+public class CollectionUtils {
 
-    public TextFieldControl(StringConfigEntry entry) {
-        super(entry);
+    public static void consumeQuietly(Iterator<?> iter) {
+        if (null == iter) return;
+        try {
+            while (iter.hasNext()) iter.next();
+        } catch (Exception e) {
+            // be quiet
+        }
     }
 
-    @Override
-    public JComponent createComponent() {
-        return new JTextField(defaultString(entry.getDefaultValue()));
+    public static Map<String, Object> toMap(Object[] arr){
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        if (0 != arr.length % 2) throw new UtilsException("Invalid odd parameters count");
+        for (int i = 0; i < arr.length; i += 2) {
+            Object objKey = arr[i];
+            if (!(objKey instanceof String)) throw new UtilsException("Invalid key: [" + objKey + "]");
+            map.put((String) objKey, arr[i+1]);
+        }
+        return map;
     }
 }

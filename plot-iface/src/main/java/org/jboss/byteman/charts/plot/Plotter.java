@@ -19,23 +19,20 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.filter;
+package org.jboss.byteman.charts.plot;
 
 import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.filter.ChartFilter;
+import org.jfree.chart.JFreeChart;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * Interface for filtering predicate for ChartRecords
- *
- * @author akashche
- * Date: 5/25/15
+ * User: alexkasko
+ * Date: 6/8/15
  */
-public interface ChartFilter {
+public interface Plotter {
 
-    /**
-     * Checks whether specified record passes the filter
-     *
-     * @param record input record
-     * @return true if filter passed, false otherwise
-     */
-    boolean apply(ChartRecord record);
+    JFreeChart build(Iterator<ChartRecord> data, List<ChartFilter> filters);
 }
