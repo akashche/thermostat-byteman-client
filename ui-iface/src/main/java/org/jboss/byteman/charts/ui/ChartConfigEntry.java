@@ -37,6 +37,8 @@ public interface ChartConfigEntry<T> {
 
     String getLayoutOptions();
 
+    T getDefaultValue();
+
     T getValue();
 
     void setValue(T value);

@@ -28,15 +28,15 @@ import java.util.List;
  * User: alexkasko
  * Date: 6/3/15
  */
-public class ComboBoxConfigEntry extends ConfigEntryBase<String> {
+public class ListConfigEntry extends ConfigEntryBase<String> {
 
     protected List<String> valuesList = new ArrayList<String>();
 
-    public ComboBoxConfigEntry() {
+    public ListConfigEntry() {
     }
 
-    public ComboBoxConfigEntry(String label, List<String> valuesList) {
-        super("org.jboss.byteman.charts.ui.swing.ComboBoxControl", label);
+    public ListConfigEntry(String label, List<String> valuesList) {
+        super("org.jboss.byteman.charts.ui.swing.ComboBoxControl", label, valuesList.get(0));
         this.valuesList = valuesList;
     }
 

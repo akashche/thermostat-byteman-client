@@ -25,6 +25,7 @@ import org.jboss.byteman.charts.data.ChartRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jfree.chart.JFreeChart;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,5 +35,5 @@ import java.util.List;
  */
 public interface Plotter {
 
-    JFreeChart build(Iterator<ChartRecord> data, List<ChartFilter> filters);
+    JFreeChart build(Iterator<ChartRecord> data, Collection<? extends ChartFilter> filters);
 }

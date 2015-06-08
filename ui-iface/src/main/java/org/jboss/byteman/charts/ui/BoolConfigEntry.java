@@ -27,18 +27,11 @@ package org.jboss.byteman.charts.ui;
  */
 public class BoolConfigEntry extends ConfigEntryBase<Boolean> {
 
-    protected boolean defaultValue;
-
     public BoolConfigEntry() {
     }
 
     public BoolConfigEntry(String label, boolean defaultValue) {
-        super("org.jboss.byteman.charts.ui.swing.BoolCheckboxControl", label);
-        this.defaultValue = defaultValue;
-    }
-
-    public boolean isDefaultValue() {
-        return defaultValue;
+        super("org.jboss.byteman.charts.ui.swing.BoolCheckboxControl", label, defaultValue);
     }
 
     @Override

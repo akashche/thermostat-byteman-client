@@ -21,7 +21,7 @@
 */
 package org.jboss.byteman.charts.ui.swing;
 
-import org.jboss.byteman.charts.ui.ComboBoxConfigEntry;
+import org.jboss.byteman.charts.ui.ListConfigEntry;
 
 import javax.swing.*;
 
@@ -29,9 +29,9 @@ import javax.swing.*;
  * User: alexkasko
  * Date: 6/3/15
  */
-public class ComboBoxControl extends ChartConfigSwingControl<ComboBoxConfigEntry> {
+public class ComboBoxControl extends ChartConfigSwingControl<ListConfigEntry> {
 
-    public ComboBoxControl(ComboBoxConfigEntry entry) {
+    public ComboBoxControl(ListConfigEntry entry) {
         super(entry);
     }
 

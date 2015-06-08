@@ -27,7 +27,6 @@ package org.jboss.byteman.charts.ui;
  */
 public class IntConfigEntry extends ConfigEntryBase<Integer> {
 
-    protected int defaultValue;
     protected int minValue;
     protected int maxValue;
     protected int step;
@@ -36,15 +35,10 @@ public class IntConfigEntry extends ConfigEntryBase<Integer> {
     }
 
     public IntConfigEntry(String label, int defaultValue, int minValue, int maxValue, int step) {
-        super("org.jboss.byteman.charts.ui.swing.IntSpinnerControl", label);
-        this.defaultValue = defaultValue;
+        super("org.jboss.byteman.charts.ui.swing.IntSpinnerControl", label, defaultValue);
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.step = step;
-    }
-
-    public int getDefaultValue() {
-        return defaultValue;
     }
 
     public int getMinValue() {

@@ -55,7 +55,7 @@ public class UiTest {
                         new StringConfigEntry("baz", "42"),
                         new IntConfigEntry("some field with very long label", 42, 41, 43, 1),
                         new DoubleConfigEntry("double field", 42.1, 41.0, 43.0, 0.1),
-                        new ComboBoxConfigEntry("list field", Arrays.asList("foo", "bar", "baz", "42")),
+                        new ListConfigEntry("list field", Arrays.asList("foo", "bar", "baz", "42")),
                         new DateTimeConfigEntry("date field", new Date(), new Date(0), new Date()),
                         new BoolConfigEntry("bool field", true),
                         new BoolConfigEntry("bool field 2", false),

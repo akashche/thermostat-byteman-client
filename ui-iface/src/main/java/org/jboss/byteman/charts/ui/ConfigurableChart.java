@@ -32,5 +32,5 @@ public interface ConfigurableChart {
 
     Collection<? extends ChartConfigEntry<?>> availableConfig();
 
-    void applyConfig(Map<String, ChartConfigEntry<?>> entries);
+    ConfigurableChart applyConfig(Map<String, ChartConfigEntry<?>> entries);
 }

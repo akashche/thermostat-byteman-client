@@ -19,7 +19,6 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-
 package org.jboss.byteman.charts.data;
 
 import java.util.LinkedHashMap;
@@ -35,6 +34,8 @@ import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
  */
 public class ChartRecord {
     private long ts;
+    private String vmId;
+    private String agentId;
     private String marker;
     private LinkedHashMap<String, Object> data;
 
@@ -51,8 +52,10 @@ public class ChartRecord {
      * @param marker marker string
      * @param data data related to this record
      */
-    public ChartRecord(long ts, String marker, LinkedHashMap<String, Object> data) {
+    public ChartRecord(long ts, String vmId, String agentId, String marker, LinkedHashMap<String, Object> data) {
         this.ts = ts;
+        this.vmId = defaultString(vmId);
+        this.agentId = defaultString(agentId);
         this.marker = defaultString(marker);
         this.data = data;
     }
@@ -65,8 +68,10 @@ public class ChartRecord {
      * @param dataFields data related to this record in the form of
      *                   "key", "value", "key", "value" syntax
      */
-    public ChartRecord(long ts, String marker, Object... dataFields) {
+    public ChartRecord(long ts, String vmId, String agentId, String marker, Object... dataFields) {
         this.ts = ts;
+        this.vmId = defaultString(vmId);
+        this.agentId = defaultString(agentId);
         this.marker = defaultString(marker);
         this.data = arrayToMap(dataFields);
     }
@@ -78,6 +83,24 @@ public class ChartRecord {
      */
     public long getTs() {
         return ts;
+    }
+
+    /**
+     * VM ID accessor
+     *
+     * @return VM ID
+     */
+    public String getVmId() {
+        return vmId;
+    }
+
+    /**
+     * Agent ID accessor
+     *
+     * @return Agent ID
+     */
+    public String getAgentId() {
+        return agentId;
     }
 
     /**
@@ -106,6 +129,8 @@ public class ChartRecord {
         final StringBuilder sb = new StringBuilder();
         sb.append("ChartRecord");
         sb.append("{ts=").append(ts);
+        sb.append(", vmId='").append(vmId).append('\'');
+        sb.append(", agentId='").append(agentId).append('\'');
         sb.append(", marker='").append(marker).append('\'');
         sb.append(", data=").append(data);
         sb.append('}');

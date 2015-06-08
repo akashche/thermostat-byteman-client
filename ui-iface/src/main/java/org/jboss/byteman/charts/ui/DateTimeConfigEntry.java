@@ -29,7 +29,6 @@ import java.util.Date;
  * Date: 6/3/15
  */
 public class DateTimeConfigEntry extends ConfigEntryBase<Date> {
-    protected Date defaultValue = new Date();
     protected Date minValue = new Date(0);
     protected Date maxValue = new Date();
 
@@ -37,14 +36,9 @@ public class DateTimeConfigEntry extends ConfigEntryBase<Date> {
     }
 
     public DateTimeConfigEntry(String label, Date defaultValue, Date minValue, Date maxValue) {
-        super("org.jboss.byteman.charts.ui.swing.DateTimeSpinnerControl", label);
-        this.defaultValue = defaultValue;
+        super("org.jboss.byteman.charts.ui.swing.DateTimeSpinnerControl", label, defaultValue);
         this.minValue = minValue;
         this.maxValue = maxValue;
-    }
-
-    public Date getDefaultValue() {
-        return null != defaultValue ? defaultValue : new Date();
     }
 
     public Date getMinValue() {

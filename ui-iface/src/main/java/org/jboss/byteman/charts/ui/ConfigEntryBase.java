@@ -31,6 +31,7 @@ import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
 public abstract class ConfigEntryBase<T> implements ChartConfigEntry<T> {
 
     protected T value;
+    protected T defaultValue;
     protected String type = EMPTY_STRING;
     protected String name = EMPTY_STRING;
     protected String label = EMPTY_STRING;
@@ -39,9 +40,14 @@ public abstract class ConfigEntryBase<T> implements ChartConfigEntry<T> {
     protected ConfigEntryBase() {
     }
 
-    protected ConfigEntryBase(String type, String label) {
+    protected ConfigEntryBase(String type, String label, T defaultValue) {
+        if (null == type) throw new ChartConfigException("specified type is null");
+        if (null == label) throw new ChartConfigException("specified label is null");
+        if (null == defaultValue) throw new ChartConfigException("specified defaultValue is null");
         this.type = type;
         this.label = label;
+        this.defaultValue = defaultValue;
+        this.value = defaultValue;
     }
 
     @Override
@@ -62,6 +68,11 @@ public abstract class ConfigEntryBase<T> implements ChartConfigEntry<T> {
     @Override
     public String getLayoutOptions() {
         return defaultString(layoutOptions);
+    }
+
+    @Override
+    public T getDefaultValue() {
+        return defaultValue;
     }
 
     @Override

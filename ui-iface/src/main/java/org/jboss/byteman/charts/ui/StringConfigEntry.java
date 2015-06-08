@@ -27,19 +27,11 @@ package org.jboss.byteman.charts.ui;
  */
 public class StringConfigEntry extends ConfigEntryBase<String> {
 
-    protected String defaultValue = "";
-
     public StringConfigEntry() {
     }
 
     public StringConfigEntry(String label, String defaultValue) {
-        super("org.jboss.byteman.charts.ui.swing.TextFieldControl", label);
-        this.defaultValue = defaultValue;
-    }
-
-
-    public String getDefaultValue() {
-        return defaultValue;
+        super("org.jboss.byteman.charts.ui.swing.TextFieldControl", label, defaultValue);
     }
 
     @Override

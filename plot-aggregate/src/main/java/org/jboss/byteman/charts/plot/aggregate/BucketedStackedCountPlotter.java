@@ -24,6 +24,7 @@ package org.jboss.byteman.charts.plot.aggregate;
 import com.google.gson.Gson;
 import org.jboss.byteman.charts.data.ChartRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
+import org.jboss.byteman.charts.filter.ChartFilteredIterator;
 import org.jboss.byteman.charts.plot.BoundedCategoryDataset;
 import org.jboss.byteman.charts.plot.Plotter;
 import org.jboss.byteman.charts.ui.*;
@@ -43,6 +44,8 @@ import java.util.*;
 
 import static org.jboss.byteman.charts.plot.PlotUtils.toColor;
 import static org.jboss.byteman.charts.utils.StringUtils.EMPTY_STRING;
+import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
+import static org.jboss.byteman.charts.utils.collection.SingleUseIterable.singleUseIterable;
 
 /**
  * User: alexkasko
@@ -50,12 +53,12 @@ import static org.jboss.byteman.charts.utils.StringUtils.EMPTY_STRING;
  */
 public class BucketedStackedCountPlotter implements Plotter, ConfigurableChart {
 
-    private static final Gson GSON = new Gson();
+    public static final Gson GSON = new Gson();
 
     private Config cf;
 
     @Override
-    public JFreeChart build(Iterator<ChartRecord> data, List<ChartFilter> filters) {
+    public JFreeChart build(Iterator<ChartRecord> data, Collection<? extends ChartFilter> filters) {
         BoundedCategoryDataset ds = createDataset(data, filters);
         JFreeChart chart = ChartFactory.createStackedBarChart(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, ds.getDataset(), PlotOrientation.VERTICAL, false, true, false);
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
@@ -73,6 +76,7 @@ public class BucketedStackedCountPlotter implements Plotter, ConfigurableChart {
         plot.getDomainAxis().setUpperMargin(cf.domainAxisUpperMargin);
         plot.getDomainAxis().setLabel(cf.domainAxisLabel);
         BarRenderer3D barrenderer = new StackedBarRenderer3D(cf.rendered3dXOffset, cf.rendered3dYOffset);
+        // todo: list
         barrenderer.setSeriesPaint(0, toColor(cf.seriesPaint0));
         barrenderer.setSeriesPaint(1, toColor(cf.seriesPaint1));
         barrenderer.setWallPaint(toColor(cf.wallPaint));
@@ -84,55 +88,38 @@ public class BucketedStackedCountPlotter implements Plotter, ConfigurableChart {
         return chart;
     }
 
-    private BoundedCategoryDataset createDataset(Iterator<ChartRecord> data, List<ChartFilter> filters) {
-        ArrayList<ChartRecord> renderTimes1 = new ArrayList<ChartRecord>();
-        ArrayList<ChartRecord> renderTimes2 = new ArrayList<ChartRecord>();
-        long longest1 = 0;
-        long longest2 = 0;
-        for (ChartRecord cr : DATA) {
-            if ("reportRenderTime".equals(cr.getMarker())) {
-                Number valNum = (Number) cr.getData().get("value");
-                long val = valNum.longValue();
-                if (552275 == ((Number) cr.getData().get("reportId")).intValue()) {
-                    renderTimes1.add(cr);
-                    if (val > longest1) longest1 = val;
-                } else {
-                    renderTimes2.add(cr);
-                    if (val > longest2) longest2 = val;
-                }
-            }
-        }
-        int len = (int) (Math.max(longest1, longest2) / 1000) + 1;
-        long[] counted1 = new long[len];
-        for (ChartRecord cr : renderTimes1) {
-            Number valNum = (Number) cr.getData().get("value");
-            long val = valNum.longValue();
-            int idx = (int) (val/1000);
-            counted1[idx] += 1;
-        }
-        long[] counted2 = new long[len];
-        for (ChartRecord cr : renderTimes2) {
-            Number valNum = (Number) cr.getData().get("value");
-            long val = valNum.longValue();
-            int idx = (int) (val/1000);
-            counted2[idx] += 1;
+    private BoundedCategoryDataset createDataset(Iterator<ChartRecord> data, Collection<? extends ChartFilter> filters) {
+        Iterator<ChartRecord> filtered = new ChartFilteredIterator(data, filters);
+        Map<String, Map<Long, Bucket>> catmap = new LinkedHashMap<String, Map<Long, Bucket>>();
+        Map<Long, Counter> comap = new LinkedHashMap<Long, Counter>();
+        long minkey = Long.MAX_VALUE, maxkey = Long.MIN_VALUE;
+        for (ChartRecord cr : singleUseIterable(filtered)) {
+            Long val = ((Number) cr.getData().get(cf.valueAttributeName)).longValue();
+            if (null == val) continue;
+            long bucketkey = val - (val % cf.step);
+            if (bucketkey < minkey) minkey = bucketkey;
+            if (bucketkey > maxkey) maxkey = bucketkey;
+            Counter co = getCounterDefault(comap, bucketkey);
+            co.increment();
+            String cat = "" + cr.getData().get(cf.categoryAttributeName);
+            Map<Long, Bucket> bucketmap = getCatDefault(catmap, cat);
+            Bucket bu = getBucketDefault(bucketmap, bucketkey);
+            bu.increment();
         }
         DefaultCategoryDataset ds = new DefaultCategoryDataset();
-        long max1 = 1; int i1 = 0;
-        for (long val : counted1) {
-            if (val > max1) max1 = val;
-            ds.addValue(val, "1", Long.toString(i1) + "-" + Long.toString(i1 + 1));
-            i1 = i1 + 1;
+        for (Map.Entry<String, Map<Long, Bucket>> encat : catmap.entrySet()) {
+            String cat = encat.getKey();
+            Map<Long, Bucket> bucketmap = encat.getValue();
+            for (long i = minkey; i <= maxkey; i += cf.step) {
+                Bucket bu = getBucketDefault(bucketmap, i);
+                ds.addValue(bu.count, cat, bu.name());
+            }
         }
-        long max2 = 1; int i2 = 0;
-        for (long val : counted2) {
-            if (val > max2) max2 = val;
-            ds.addValue(val, "2", Long.toString(i2) + "-" + Long.toString(i2 + 1));
-            i2 = i2 + 1;
+        int max = Integer.MIN_VALUE;
+        for (Counter co : comap.values()) {
+            if (co.count > max) max = co.count;
         }
-        long min = 0; long max = max1 + max2;
-
-        return new BoundedCategoryDataset(ds, min, max);
+        return new BoundedCategoryDataset(ds, 0, max);
     }
 
     private void colorAxis(Axis ax) {
@@ -147,7 +134,7 @@ public class BucketedStackedCountPlotter implements Plotter, ConfigurableChart {
     }
 
     @Override
-    public void applyConfig(Map<String, ChartConfigEntry<?>> entries) {
+    public BucketedStackedCountPlotter applyConfig(Map<String, ChartConfigEntry<?>> entries) {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         for(Map.Entry<String, ChartConfigEntry<?>> en : entries.entrySet()) {
             map.put(en.getKey(), en.getValue().getValue());
@@ -155,6 +142,31 @@ public class BucketedStackedCountPlotter implements Plotter, ConfigurableChart {
         // todo: fixme with proper reflection
         String json = GSON.toJson(map);
         this.cf = GSON.fromJson(json, Config.class);
+        return this;
+    }
+
+    private Map<Long, Bucket> getCatDefault(Map<String, Map<Long, Bucket>> catmap, String key) {
+        Map<Long, Bucket> nullable = catmap.get(key);
+        if (null != nullable) return nullable;
+        Map<Long, Bucket> en = new LinkedHashMap<Long, Bucket>();
+        catmap.put(key, en);
+        return en;
+    }
+
+    private Bucket getBucketDefault(Map<Long, Bucket> bucketmap, long key) {
+        Bucket nullable = bucketmap.get(key);
+        if (null != nullable) return nullable;
+        Bucket bu = new Bucket(key, key + cf.step);
+        bucketmap.put(key, bu);
+        return bu;
+    }
+
+    private Counter getCounterDefault(Map<Long, Counter> comap, long key) {
+        Counter nullable = comap.get(key);
+        if (null != nullable) return nullable;
+        Counter co = new Counter();
+        comap.put(key, co);
+        return co;
     }
 
     private static class Config {
@@ -183,12 +195,15 @@ public class BucketedStackedCountPlotter implements Plotter, ConfigurableChart {
 
         String valueAttributeName = "value";
         String categoryAttributeName = "category";
+        int step = 1000;
 
         Collection<? extends ChartConfigEntry<?>> toEntries() {
             return Arrays.asList(
                     // todo: name vs label
                     new StringConfigEntry("valueAttributeName", valueAttributeName),
                     new StringConfigEntry("categoryAttributeName", categoryAttributeName),
+                    new IntConfigEntry("step", step, 10, Integer.MAX_VALUE, 1),
+
                     new StringConfigEntry("rangeAxisLabel", rangeAxisLabel),
                     new StringConfigEntry("domainAxisLabel", domainAxisLabel),
                     new BoolConfigEntry("domainGridlinesVisible", domainGridlinesVisible),
@@ -211,6 +226,34 @@ public class BucketedStackedCountPlotter implements Plotter, ConfigurableChart {
                     new StringConfigEntry("tickMarkPaint", tickMarkPaint),
                     new StringConfigEntry("tickLabelPaint", tickLabelPaint)
             );
+        }
+    }
+
+    private static class Bucket {
+        final long from;
+        final long to;
+        int count = 0;
+
+        Bucket(long from, long to) {
+            this.from = from;
+            this.to = to;
+        }
+
+        void increment() {
+            count += 1;
+        }
+
+        String name() {
+            // todo: make tunable
+            return from + "-" + to;
+        }
+    }
+
+    private static class Counter {
+        int count = 0;
+
+        void increment() {
+            count += 1;
         }
     }
 }

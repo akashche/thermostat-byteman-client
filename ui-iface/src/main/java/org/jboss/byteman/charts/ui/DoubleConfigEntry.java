@@ -27,7 +27,6 @@ package org.jboss.byteman.charts.ui;
  */
 public class DoubleConfigEntry extends ConfigEntryBase<Double> {
 
-    protected double defaultValue;
     protected double minValue;
     protected double maxValue;
     protected double step;
@@ -36,15 +35,10 @@ public class DoubleConfigEntry extends ConfigEntryBase<Double> {
     }
 
     public DoubleConfigEntry(String label, double defaultValue, double minValue, double maxValue, double step) {
-        super("org.jboss.byteman.charts.ui.swing.DoubleSpinnerControl", label);
-        this.defaultValue = defaultValue;
+        super("org.jboss.byteman.charts.ui.swing.DoubleSpinnerControl", label, defaultValue);
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.step = step;
-    }
-
-    public double getDefaultValue() {
-        return defaultValue;
     }
 
     public double getMinValue() {

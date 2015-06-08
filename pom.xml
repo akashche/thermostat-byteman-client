@@ -58,6 +58,7 @@
         <version.junit>4.10</version.junit>
         <version.miglayout>5.0</version.miglayout>
         <version.gson>2.3.1</version.gson>
+        <version.batik>1.7</version.batik>
     </properties>
 
     <scm>
@@ -73,6 +74,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

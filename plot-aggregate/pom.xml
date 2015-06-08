@@ -54,6 +54,19 @@
             <artifactId>gson</artifactId>
             <version>${version.gson}</version>
         </dependency>
+
+        <!-- test -->
+        <!-- svg generation -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-svggen</artifactId>
+            <version>${version.batik}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-dom</artifactId>
+            <version>${version.batik}</version>
+        </dependency>
     </dependencies>
     
 </project>

@@ -37,7 +37,7 @@ public class DoubleSpinnerControl extends ChartConfigSwingControl<DoubleConfigEn
 
     @Override
     public JComponent createComponent() {
-        return new JSpinner(new SpinnerNumberModel(entry.getDefaultValue(), entry.getMinValue(),
+        return new JSpinner(new SpinnerNumberModel((double) entry.getDefaultValue(), entry.getMinValue(),
                 entry.getMaxValue(), entry.getStep()));
     }
 }

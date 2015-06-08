@@ -34,9 +34,9 @@ import java.util.Iterator;
 public class ChartFilteredIterator extends SingleMethodIterator<ChartRecord> {
 
     private final Iterator<ChartRecord> source;
-    private final Collection<ChartFilter> filters;
+    private final Collection<? extends ChartFilter> filters;
 
-    public ChartFilteredIterator(Iterator<ChartRecord> source, Collection<ChartFilter> filters) {
+    public ChartFilteredIterator(Iterator<ChartRecord> source, Collection<? extends ChartFilter> filters) {
         this.source = source;
         this.filters = filters;
     }

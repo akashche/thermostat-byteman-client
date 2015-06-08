@@ -22,6 +22,8 @@
 package org.jboss.byteman.charts.utils;
 
 
+import java.nio.charset.Charset;
+
 /**
  * String utilities
  *
@@ -31,6 +33,7 @@ package org.jboss.byteman.charts.utils;
 public class StringUtils {
 
     public static final String EMPTY_STRING = "";
+    public static final Charset UTF_8 = Charset.forName("UTF-8");
 
     /**
      * <p>Returns either the passed in String, or if the String is
