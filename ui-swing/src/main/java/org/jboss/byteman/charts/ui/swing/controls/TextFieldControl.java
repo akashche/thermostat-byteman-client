@@ -19,17 +19,26 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui.swing;
+package org.jboss.byteman.charts.ui.swing.controls;
+
+import org.jboss.byteman.charts.ui.StringConfigEntry;
 
 import javax.swing.*;
 
+import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
+
 /**
  * User: alexkasko
- * Date: 6/2/15
+ * Date: 6/3/15
  */
-public interface ChartConfigLabelBuilder {
+public class TextFieldControl extends ChartConfigSwingControl<StringConfigEntry> {
 
-    JLabel build(String text);
+    public TextFieldControl(StringConfigEntry entry) {
+        super(entry);
+    }
 
-    String getLayoutOptions();
+    @Override
+    public JComponent createComponent() {
+        return new JTextField(defaultString(entry.getDefaultValue()));
+    }
 }

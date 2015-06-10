@@ -19,28 +19,17 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui.swing;
-
-import org.jboss.byteman.charts.ui.ChartConfigEntry;
+package org.jboss.byteman.charts.ui.swing.config;
 
 import javax.swing.*;
 
 /**
  * User: alexkasko
- * Date: 6/3/15
+ * Date: 6/2/15
  */
-public abstract class ChartConfigSwingControl<T extends ChartConfigEntry<?>> {
+public interface ChartConfigLabelBuilder {
 
-    protected T entry;
+    JLabel build(String text);
 
-    protected ChartConfigSwingControl(T entry) {
-        if (null == entry) throw new UiSwingException("null config entry specified");
-        this.entry = entry;
-    }
-
-    public abstract JComponent createComponent();
-
-    public T getEntry() {
-        return entry;
-    }
+    String getLayoutOptions();
 }

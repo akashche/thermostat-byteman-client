@@ -19,19 +19,25 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui.swing;
+package org.jboss.byteman.charts.ui.swing.controls;
+
+import org.jboss.byteman.charts.ui.DoubleConfigEntry;
+
+import javax.swing.*;
 
 /**
  * User: alexkasko
  * Date: 6/3/15
  */
-public class UiSwingException extends RuntimeException {
+public class DoubleSpinnerControl extends ChartConfigSwingControl<DoubleConfigEntry> {
 
-    public UiSwingException(String message) {
-        super(message);
+    public DoubleSpinnerControl(DoubleConfigEntry entry) {
+        super(entry);
     }
 
-    public UiSwingException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    public JComponent createComponent() {
+        return new JSpinner(new SpinnerNumberModel((double) entry.getDefaultValue(), entry.getMinValue(),
+                entry.getMaxValue(), entry.getStep()));
     }
 }

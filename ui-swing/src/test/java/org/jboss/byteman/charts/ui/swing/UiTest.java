@@ -22,6 +22,7 @@
 package org.jboss.byteman.charts.ui.swing;
 
 import org.jboss.byteman.charts.ui.*;
+import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
 import org.junit.Test;
 
 import javax.swing.*;

@@ -19,10 +19,12 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui.swing;
+package org.jboss.byteman.charts.ui.swing.config;
 
 import net.miginfocom.swing.MigLayout;
 import org.jboss.byteman.charts.ui.ChartConfigEntry;
+import org.jboss.byteman.charts.ui.UiSwingException;
+import org.jboss.byteman.charts.ui.swing.controls.ChartConfigSwingControl;
 
 import javax.swing.*;
 import java.lang.reflect.Constructor;

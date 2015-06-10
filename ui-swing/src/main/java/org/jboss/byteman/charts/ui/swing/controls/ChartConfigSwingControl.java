@@ -19,26 +19,29 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui.swing;
+package org.jboss.byteman.charts.ui.swing.controls;
 
-import org.jboss.byteman.charts.ui.StringConfigEntry;
+import org.jboss.byteman.charts.ui.ChartConfigEntry;
+import org.jboss.byteman.charts.ui.UiSwingException;
 
 import javax.swing.*;
-
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
 
 /**
  * User: alexkasko
  * Date: 6/3/15
  */
-public class TextFieldControl extends ChartConfigSwingControl<StringConfigEntry> {
+public abstract class ChartConfigSwingControl<T extends ChartConfigEntry<?>> {
 
-    public TextFieldControl(StringConfigEntry entry) {
-        super(entry);
+    protected T entry;
+
+    protected ChartConfigSwingControl(T entry) {
+        if (null == entry) throw new UiSwingException("null config entry specified");
+        this.entry = entry;
     }
 
-    @Override
-    public JComponent createComponent() {
-        return new JTextField(defaultString(entry.getDefaultValue()));
+    public abstract JComponent createComponent();
+
+    public T getEntry() {
+        return entry;
     }
 }

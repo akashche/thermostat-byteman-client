@@ -1,4 +1,4 @@
-package org.jboss.byteman.charts.ui.swing;
+package org.jboss.byteman.charts.ui.swing.controls;
 
 import org.jboss.byteman.charts.ui.BoolConfigEntry;
 

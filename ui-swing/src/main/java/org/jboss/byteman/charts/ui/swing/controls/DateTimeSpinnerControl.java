@@ -19,9 +19,9 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui.swing;
+package org.jboss.byteman.charts.ui.swing.controls;
 
-import org.jboss.byteman.charts.ui.IntConfigEntry;
+import org.jboss.byteman.charts.ui.DateTimeConfigEntry;
 
 import javax.swing.*;
 
@@ -29,15 +29,19 @@ import javax.swing.*;
  * User: alexkasko
  * Date: 6/3/15
  */
-public class IntSpinnerControl extends ChartConfigSwingControl<IntConfigEntry> {
+public class DateTimeSpinnerControl extends ChartConfigSwingControl<DateTimeConfigEntry> {
 
-    public IntSpinnerControl(IntConfigEntry entry) {
+    public DateTimeSpinnerControl(DateTimeConfigEntry entry) {
         super(entry);
     }
 
     @Override
     public JComponent createComponent() {
-        return new JSpinner(new SpinnerNumberModel((int) entry.getDefaultValue(), entry.getMinValue(),
-                entry.getMaxValue(), entry.getStep()));
+        SpinnerDateModel model = new SpinnerDateModel(entry.getDefaultValue(), entry.getMinValue(),
+                entry.getMaxValue(), 0);
+        JSpinner sp = new JSpinner();
+        sp.setModel(model);
+        sp.setEditor(new JSpinner.DateEditor(sp, "yyyy-MM-dd HH:mm:ss"));
+        return sp;
     }
 }

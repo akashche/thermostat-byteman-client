@@ -19,44 +19,25 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui.swing;
+package org.jboss.byteman.charts.ui.swing.controls;
+
+import org.jboss.byteman.charts.ui.IntConfigEntry;
 
 import javax.swing.*;
 
-import java.awt.*;
-
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
-
 /**
  * User: alexkasko
- * Date: 6/2/15
+ * Date: 6/3/15
  */
-public class DefaultLabelBuilder implements ChartConfigLabelBuilder {
+public class IntSpinnerControl extends ChartConfigSwingControl<IntConfigEntry> {
 
-//    this allows auto text wrapping but brings unneeded vertical gaps, css doesn't help
-//    protected String textPrefix = "<html>";
-    protected String textPrefix = "";
-    protected String textPostfix = ":";
-    protected boolean bold = true;
-    protected String layoutOptions = "width ::160lp";
-
-    public DefaultLabelBuilder() {
+    public IntSpinnerControl(IntConfigEntry entry) {
+        super(entry);
     }
 
     @Override
-    public JLabel build(String text) {
-        JLabel jl = new JLabel(textPrefix + defaultString(text) + textPostfix);
-        if (bold) {
-            Font font = jl.getFont();
-            Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
-            jl.setFont(boldFont);
-        }
-        return jl;
+    public JComponent createComponent() {
+        return new JSpinner(new SpinnerNumberModel((int) entry.getDefaultValue(), entry.getMinValue(),
+                entry.getMaxValue(), entry.getStep()));
     }
-
-    @Override
-    public String getLayoutOptions() {
-        return layoutOptions;
-    }
-
 }
