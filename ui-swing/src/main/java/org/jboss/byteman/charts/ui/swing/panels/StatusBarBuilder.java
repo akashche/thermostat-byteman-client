@@ -10,7 +10,7 @@ import static javax.swing.BorderFactory.createMatteBorder;
  * User: alexkasko
  * Date: 6/10/15
  */
-public class StatusBarBuilder {
+class StatusBarBuilder {
 
     public JPanel build() {
         JPanel jp = new JPanel();

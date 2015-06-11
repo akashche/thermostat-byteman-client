@@ -36,7 +36,7 @@ public class ListConfigEntry extends ConfigEntryBase<String> {
     }
 
     public ListConfigEntry(String label, List<String> valuesList) {
-        super("org.jboss.byteman.charts.ui.swing.ComboBoxControl", label, valuesList.get(0));
+        super("org.jboss.byteman.charts.ui.swing.controls.ComboBoxControl", label, valuesList.get(0));
         this.valuesList = valuesList;
     }
 

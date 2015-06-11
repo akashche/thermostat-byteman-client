@@ -19,24 +19,44 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui.swing.pages;
+package org.jboss.byteman.charts.ui.swing;
 
 import javax.swing.*;
+
 import java.awt.*;
+
+import static org.jboss.byteman.charts.utils.SwingUtils.createCloseListener;
 
 /**
  * User: alexkasko
- * Date: 6/10/15
+ * Date: 6/11/15
  */
-class RootPage implements ContentPage {
+public class TestSwingUtils {
 
-    @Override
-    public ContentPageNode createNode() {
-        return new ContentPageNode("root", "Byteman Charts", "byteman_16.png");
+    public static void showAndWait(final Container panel) {
+        try {
+            final Thread[] edtThreadHolder = new Thread[1];
+            SwingUtilities.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    MainFrame mf = new MainFrame(panel);
+                    mf.setVisible(true);
+                    edtThreadHolder[0] = Thread.currentThread();
+                }
+            });
+            // join on EDT thread here for test-only purposes
+            edtThreadHolder[0].join();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Override
-    public Component createPane() {
-        return new JLabel("root");
+    private static class MainFrame extends JFrame {
+        MainFrame(Container panel) {
+            addWindowListener(createCloseListener());
+            setContentPane(panel);
+            pack();
+            setLocationRelativeTo(null);
+        }
     }
 }

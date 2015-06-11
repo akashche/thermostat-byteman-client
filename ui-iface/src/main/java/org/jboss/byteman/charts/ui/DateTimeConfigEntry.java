@@ -36,7 +36,7 @@ public class DateTimeConfigEntry extends ConfigEntryBase<Date> {
     }
 
     public DateTimeConfigEntry(String label, Date defaultValue, Date minValue, Date maxValue) {
-        super("org.jboss.byteman.charts.ui.swing.DateTimeSpinnerControl", label, defaultValue);
+        super("org.jboss.byteman.charts.ui.swing.controls.DateTimeSpinnerControl", label, defaultValue);
         this.minValue = minValue;
         this.maxValue = maxValue;
     }

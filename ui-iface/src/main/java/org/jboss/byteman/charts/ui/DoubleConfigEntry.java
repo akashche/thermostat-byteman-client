@@ -35,7 +35,7 @@ public class DoubleConfigEntry extends ConfigEntryBase<Double> {
     }
 
     public DoubleConfigEntry(String label, double defaultValue, double minValue, double maxValue, double step) {
-        super("org.jboss.byteman.charts.ui.swing.DoubleSpinnerControl", label, defaultValue);
+        super("org.jboss.byteman.charts.ui.swing.controls.DoubleSpinnerControl", label, defaultValue);
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.step = step;

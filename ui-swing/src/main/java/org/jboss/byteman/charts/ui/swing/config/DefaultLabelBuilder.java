@@ -31,7 +31,7 @@ import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
  * User: alexkasko
  * Date: 6/2/15
  */
-public class DefaultLabelBuilder implements ChartConfigLabelBuilder {
+class DefaultLabelBuilder implements ChartConfigLabelBuilder {
 
 //    this allows auto text wrapping but brings unneeded vertical gaps, css doesn't help
 //    protected String textPrefix = "<html>";

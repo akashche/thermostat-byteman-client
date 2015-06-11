@@ -19,32 +19,18 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.ui;
+package org.jboss.byteman.charts.ui.swing.pages;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: alexkasko
- * Date: 6/8/15
+ * Date: 6/11/15
  */
-public class BoolConfigEntry extends ConfigEntryBase<Boolean> {
+public class ContentPagesRegister {
 
-    public BoolConfigEntry() {
-    }
-
-    public BoolConfigEntry(String label, boolean defaultValue) {
-        super("org.jboss.byteman.charts.ui.swing.controls.BoolCheckboxControl", label, defaultValue);
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append("{name='").append(name).append('\'');
-        sb.append(", value='").append(value).append('\'');
-        sb.append(", label='").append(label).append('\'');
-        sb.append(", layoutOptions='").append(layoutOptions).append('\'');
-        sb.append(", type='").append(type).append('\'');
-        sb.append(", defaultValue='").append(defaultValue).append('\'');
-        sb.append('}');
-        return sb.toString();
-    }
+    public static final List<ContentPage> PAGES = Arrays.asList(
+            new RootPage(),
+            new DatasetRootPage());
 }

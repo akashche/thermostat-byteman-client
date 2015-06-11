@@ -35,7 +35,7 @@ public class IntConfigEntry extends ConfigEntryBase<Integer> {
     }
 
     public IntConfigEntry(String label, int defaultValue, int minValue, int maxValue, int step) {
-        super("org.jboss.byteman.charts.ui.swing.IntSpinnerControl", label, defaultValue);
+        super("org.jboss.byteman.charts.ui.swing.controls.IntSpinnerControl", label, defaultValue);
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.step = step;

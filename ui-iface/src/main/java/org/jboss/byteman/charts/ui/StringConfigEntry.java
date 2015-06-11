@@ -31,7 +31,7 @@ public class StringConfigEntry extends ConfigEntryBase<String> {
     }
 
     public StringConfigEntry(String label, String defaultValue) {
-        super("org.jboss.byteman.charts.ui.swing.TextFieldControl", label, defaultValue);
+        super("org.jboss.byteman.charts.ui.swing.controls.TextFieldControl", label, defaultValue);
     }
 
     @Override
