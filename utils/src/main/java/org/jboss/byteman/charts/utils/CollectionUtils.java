@@ -34,6 +34,16 @@ public class CollectionUtils {
     /**
      * Created an instance of strin->object map from "key", "value", "key", "value" array
      *
+     * @param elems keys and values varargs
+     * @return map instance
+     */
+    public static LinkedHashMap<String, Object> toMap(Object... elems) {
+        return arrayToMap(elems);
+    }
+
+    /**
+     * Created an instance of strin->object map from "key", "value", "key", "value" array
+     *
      * @param dataArray keys and values array
      * @return map instance
      */

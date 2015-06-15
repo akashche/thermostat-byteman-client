@@ -21,11 +21,14 @@
 */
 package org.jboss.byteman.charts.ui.swing.config;
 
+import org.jboss.byteman.charts.utils.SwingUtils;
+
 import javax.swing.*;
 
 import java.awt.*;
 
 import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
+import static org.jboss.byteman.charts.utils.SwingUtils.boldify;
 
 /**
  * User: alexkasko
@@ -47,9 +50,7 @@ class DefaultLabelBuilder implements ChartConfigLabelBuilder {
     public JLabel build(String text) {
         JLabel jl = new JLabel(textPrefix + defaultString(text) + textPostfix);
         if (bold) {
-            Font font = jl.getFont();
-            Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
-            jl.setFont(boldFont);
+            boldify(jl);
         }
         return jl;
     }

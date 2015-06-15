@@ -13,10 +13,9 @@ import static javax.swing.BorderFactory.createMatteBorder;
 class StatusBarBuilder {
 
     public JPanel build() {
-        JPanel jp = new JPanel();
-        jp.setLayout(new MigLayout("fill"));
+        JPanel jp = new JPanel(new MigLayout("fill"));
         jp.setBorder(createMatteBorder(1, 0, 0, 0, jp.getBackground().darker()));
-        JLabel label = new JLabel("status wll be here");
+        JLabel label = new JLabel("status will be here");
         jp.add(label, "west, gapbottom 2, gapleft 5");
         return jp;
     }

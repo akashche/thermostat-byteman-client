@@ -21,8 +21,8 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * User: alexkasko
@@ -30,8 +30,17 @@ import java.util.List;
  */
 public class ContentPagesRegister {
 
+    // todo: properties load, thermostat api point
+    private static final Map<String, String> PROPS = new ConcurrentHashMap<String, String>();
+
+    static {
+        PROPS.put("byteman_charts.last_chosen_data_file", "/home/alex/projects/redhat/byteman-charts/plot-aggregate/src/test/resources/org/jboss/byteman/charts/plot/aggregate/");
+        PROPS.put("byteman_charts.dataset_name_format", "${filename}_${date}");
+        PROPS.put("byteman_charts.dataset_name_date_format", "yyyy-MM-dd_HH:mm:ss");
+    }
+
     public static final List<ContentPage> PAGES = Arrays.asList(
-            new DataRootPage(),
+            new DataRootPage(PROPS),
             new ChartTypesPage(),
                 new PlainChartsPage(),
                 new AggregateChartsPage(),

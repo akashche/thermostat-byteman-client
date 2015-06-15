@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 /**
  * User: alexkasko
@@ -57,6 +58,8 @@ class PlainChartsPage implements ContentPage {
 
     @Override
     public Component createPane() {
-        return new JLabel("TODO: plain_charts");
+        JPanel jp = new JPanel();
+        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "[TODO] List of plain chart types"));
+        return jp;
     }
 }

@@ -26,6 +26,7 @@ import java.awt.*;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 /**
  * User: alexkasko
@@ -55,6 +56,8 @@ class ChartTypesPage implements ContentPage {
 
     @Override
     public Component createPane() {
-        return new JLabel("TODO: chart_types");
+        JPanel jp = new JPanel();
+        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "[TODO] List of the supported charts"));
+        return jp;
     }
 }

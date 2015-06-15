@@ -21,11 +21,15 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
+import net.miginfocom.swing.MigLayout;
+import org.jboss.byteman.charts.utils.SwingUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 /**
  * User: alexkasko
@@ -55,6 +59,8 @@ class AboutPage implements ContentPage {
 
     @Override
     public Component createPane() {
-        return new JLabel("TODO: about");
+        JPanel jp = new JPanel();
+        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "[TODO] General information text and links"));
+        return jp;
     }
 }

@@ -23,6 +23,8 @@ package org.jboss.byteman.charts.utils;
 
 
 import java.nio.charset.Charset;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * String utilities
@@ -34,6 +36,7 @@ public class StringUtils {
 
     public static final String EMPTY_STRING = "";
     public static final Charset UTF_8 = Charset.forName("UTF-8");
+    private static final Pattern FILE_EXTENSION_STRIP_PATTERN = Pattern.compile("\\.[^.]+$");
 
     /**
      * <p>Returns either the passed in String, or if the String is
@@ -45,4 +48,31 @@ public class StringUtils {
     public static String defaultString(String str) {
         return str != null ? str : "";
     }
+
+    /**
+     * Returns whether specified string is null or empty
+     *
+     * @param str string to check
+     * @return whether specified string is null or empty
+     */
+    public static boolean isEmpty(String str) {
+        return null == str || 0 == str.length();
+    }
+
+    /**
+     * Strips filename extension from specified file name
+     *
+     * @param filename filename
+     * @return filename without extension
+     */
+    public static String stripFilenameExtension(String filename) {
+        if (null == filename) return filename;
+        Matcher ma = FILE_EXTENSION_STRIP_PATTERN.matcher(filename);
+        if (ma.find()) {
+            return ma.replaceFirst("");
+        } else {
+            return filename;
+        }
+    }
+
 }

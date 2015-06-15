@@ -22,10 +22,13 @@
 package org.jboss.byteman.charts.utils;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+
+import static javax.swing.BorderFactory.*;
 
 /**
  * Contains swing-related utility methods
@@ -60,6 +63,33 @@ public class SwingUtils {
      */
     public static WindowListener createCloseListener() {
         return new CloseListener();
+    }
+
+    /**
+     * Made font bold for the specified component
+     *
+     * @param comp swing component
+     */
+    public static void boldify(JComponent comp) {
+        Font font = comp.getFont();
+        Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+        comp.setFont(boldFont);
+    }
+
+    /**
+     * Creates border to separate form sections
+     *
+     * @param color border color
+     * @param title section title
+     * @return border instance
+     */
+    public static Border createFormSectionBorder(Color color, String title) {
+        return createCompoundBorder(
+                createEmptyBorder(5, 0, 0, 0),
+                createTitledBorder(
+                        createMatteBorder(1, 0, 0, 0, color)
+                        , title)
+        );
     }
 
     private static class CloseListener extends WindowAdapter {
