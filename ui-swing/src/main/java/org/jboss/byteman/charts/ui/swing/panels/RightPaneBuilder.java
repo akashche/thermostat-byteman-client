@@ -19,7 +19,7 @@ class RightPaneBuilder {
         JPanel jp = new JPanel(deck);
         jp.setBorder(createMatteBorder(0, 1, 0, 0, jp.getBackground().darker()));
         for (ContentPage pa : pages) {
-            jp.add(pa.createPane(), pa.createNode().getName());
+            jp.add(pa.createPane(), pa.getName());
         }
         return new Result(jp, new PageSwitcher(jp, deck));
     }

@@ -23,6 +23,8 @@ package org.jboss.byteman.charts.ui.swing.pages;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * User: alexkasko
@@ -30,7 +32,13 @@ import java.awt.*;
  */
 public interface ContentPage {
 
-    ContentPageNode createNode();
+    String getName();
+
+    String getLabel();
+
+    String getIcon();
+
+    List<String> getChildren();
 
     Component createPane();
 }

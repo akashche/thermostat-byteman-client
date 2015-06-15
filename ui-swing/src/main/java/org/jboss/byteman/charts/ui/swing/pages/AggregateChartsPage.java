@@ -23,20 +23,39 @@ package org.jboss.byteman.charts.ui.swing.pages;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 /**
  * User: alexkasko
- * Date: 6/10/15
+ * Date: 6/15/15
  */
-class RootPage implements ContentPage {
+class AggregateChartsPage implements ContentPage {
+    static final String NAME = "aggregate_charts";
 
     @Override
-    public ContentPageNode createNode() {
-        return new ContentPageNode("root", "Byteman Charts", "byteman_16.png");
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public String getLabel() {
+        return "Aggregate Charts";
+    }
+
+    @Override
+    public String getIcon() {
+        return "mimetype_colorscm_16.png";
+    }
+
+    @Override
+    public List<String> getChildren() {
+        return emptyList();
     }
 
     @Override
     public Component createPane() {
-        return new JLabel("root");
+        return new JLabel("TODO: aggregate_charts");
     }
 }

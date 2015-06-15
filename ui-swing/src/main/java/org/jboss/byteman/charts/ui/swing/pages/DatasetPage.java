@@ -23,12 +23,15 @@ package org.jboss.byteman.charts.ui.swing.pages;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * User: alexkasko
  * Date: 6/10/15
  */
 
+// TODO
 // node for each loaded dataset
 // subnodes for each applied filter set
 // more top-level nodes
@@ -40,8 +43,23 @@ class DatasetPage implements ContentPage {
     }
 
     @Override
-    public ContentPageNode createNode() {
-        return new ContentPageNode(name, name, "todo");
+    public String getName() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getLabel() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getIcon() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List<String> getChildren() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

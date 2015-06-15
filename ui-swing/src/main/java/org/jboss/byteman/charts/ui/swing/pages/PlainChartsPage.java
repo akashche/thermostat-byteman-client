@@ -23,20 +23,40 @@ package org.jboss.byteman.charts.ui.swing.pages;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 /**
  * User: alexkasko
- * Date: 6/10/15
+ * Date: 6/15/15
  */
-class DatasetRootPage implements ContentPage {
+class PlainChartsPage implements ContentPage {
+    static final String NAME = "plain_charts";
 
     @Override
-    public ContentPageNode createNode() {
-        return new ContentPageNode("datasets", "Data Sets", "app_database_16.png");
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public String getLabel() {
+        return "Plain Charts";
+    }
+
+    @Override
+    public String getIcon() {
+        return "mimetype_log_16.png";
+    }
+
+    @Override
+    public List<String> getChildren() {
+        return emptyList();
     }
 
     @Override
     public Component createPane() {
-        return new JLabel("datasets");
+        return new JLabel("TODO: plain_charts");
     }
 }

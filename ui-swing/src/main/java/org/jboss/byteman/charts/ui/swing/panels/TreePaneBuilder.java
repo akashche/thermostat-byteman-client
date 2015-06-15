@@ -1,7 +1,6 @@
 package org.jboss.byteman.charts.ui.swing.panels;
 
 import org.jboss.byteman.charts.ui.swing.pages.ContentPage;
-import org.jboss.byteman.charts.ui.swing.pages.ContentPageNode;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -10,6 +9,7 @@ import javax.swing.tree.*;
 
 import java.awt.*;
 import java.net.URL;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,22 +28,58 @@ class TreePaneBuilder {
         tree.addTreeSelectionListener(new PageListener(switcher));
         tree.getSelectionModel().setSelectionMode(SINGLE_TREE_SELECTION);
         tree.setCellRenderer(new PageCellRenderer());
+        tree.setRootVisible(false);
+        for (int i = 0; i < tree.getRowCount(); i++) {
+            tree.expandRow(i);
+        }
         JScrollPane jp = new JScrollPane();
         jp.setViewportView(tree);
         jp.setBorder(createMatteBorder(0, 0, 0, 1, jp.getBackground().darker()));
         return jp;
     }
 
-    // note: currently root is at 0 index and all other nodes are its children
-    // linear search doesn't matter here
     private DefaultMutableTreeNode createNodes(List<ContentPage> pages) {
         if (null == pages || 0 == pages.size()) throw new IllegalArgumentException("Invalid empty pages list");
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(pages.get(0).createNode(), true);
-        for (int i = 1; i < pages.size(); i++) {
-            ContentPageNode pn = pages.get(i).createNode();
-            root.add(new DefaultMutableTreeNode(pn, true));
+        List<ContentPage> pool = new LinkedList<ContentPage>(pages);
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("", true);
+        Set<String> poppedChildren = new HashSet<String>();
+        for (ContentPage cp : pages) {
+            if(poppedChildren.contains(cp.getName())) continue;
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(new PageNodeObject(cp), true);
+            for (String ch : cp.getChildren()) {
+                ContentPage child = popAddChild(node, pool, ch);
+                poppedChildren.add(child.getName());
+            }
+            root.add(node);
         }
         return root;
+    }
+
+    // note: linear search won't harm here
+    private ContentPage popAddChild(DefaultMutableTreeNode parent, List<ContentPage> pages, String name) {
+        for(ContentPage cp : pages) {
+            if (name.equals(cp.getName())) {
+                parent.add(new DefaultMutableTreeNode(new PageNodeObject(cp), true));
+                return cp;
+            }
+        }
+        return null;
+    }
+
+    private static class PageNodeObject {
+        final String name;
+        final String label;
+        final String icon;
+
+        PageNodeObject(ContentPage pa) {
+            this(pa.getName(), pa.getLabel(), pa.getIcon());
+        }
+
+        PageNodeObject(String name, String label, String icon) {
+            this.name = name;
+            this.label = label;
+            this.icon = icon;
+        }
     }
 
     private static class PageListener implements TreeSelectionListener {
@@ -56,9 +92,9 @@ class TreePaneBuilder {
         @Override
         public void valueChanged(TreeSelectionEvent e) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
-            if (node.getUserObject() instanceof ContentPageNode) {
-                ContentPageNode pn = (ContentPageNode) node.getUserObject();
-                switcher.showCard(pn.getName());
+            if (node.getUserObject() instanceof PageNodeObject) {
+                PageNodeObject pn = (PageNodeObject) node.getUserObject();
+                switcher.showCard(pn.name);
             }
         }
     }
@@ -72,10 +108,10 @@ class TreePaneBuilder {
                 boolean leaf, int row, boolean hasFocus) {
             super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
             DefaultMutableTreeNode nd = (DefaultMutableTreeNode) value;
-            if (nd.getUserObject() instanceof ContentPageNode) {
-                ContentPageNode pn = (ContentPageNode) nd.getUserObject();
-                setText(pn.getLabel());
-                ImageIcon icon = loadIcon(pn.getIcon());
+            if (nd.getUserObject() instanceof PageNodeObject) {
+                PageNodeObject pn = (PageNodeObject) nd.getUserObject();
+                setText(pn.label);
+                ImageIcon icon = loadIcon(pn.icon);
                 setIcon(icon);
             }
             return this;
@@ -86,7 +122,7 @@ class TreePaneBuilder {
             if (null != cached) {
                 return cached;
             } else {
-                URL url = ContentPageNode.class.getResource("icons/" + path);
+                URL url = ContentPage.class.getResource("icons/" + path);
                 ImageIcon icon = new ImageIcon(url);
                 iconsCache.put(path, icon);
                 return icon;

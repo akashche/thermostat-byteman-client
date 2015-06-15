@@ -21,9 +21,12 @@
 */
 package org.jboss.byteman.charts.ui.swing;
 
+import org.jboss.byteman.charts.ui.swing.pages.ContentPage;
+
 import javax.swing.*;
 
 import java.awt.*;
+import java.net.URL;
 
 import static org.jboss.byteman.charts.utils.SwingUtils.createCloseListener;
 
@@ -39,7 +42,7 @@ public class TestSwingUtils {
             SwingUtilities.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
-                    MainFrame mf = new MainFrame(panel);
+                    JFrame mf = createMainFrame(panel);
                     mf.setVisible(true);
                     edtThreadHolder[0] = Thread.currentThread();
                 }
@@ -51,12 +54,14 @@ public class TestSwingUtils {
         }
     }
 
-    private static class MainFrame extends JFrame {
-        MainFrame(Container panel) {
-            addWindowListener(createCloseListener());
-            setContentPane(panel);
-            pack();
-            setLocationRelativeTo(null);
-        }
+    private static JFrame createMainFrame(Container content) {
+        JFrame jf = new JFrame();
+        URL url = ContentPage.class.getResource("icons/byteman_48.png");
+        jf.setIconImage(new ImageIcon(url).getImage());
+        jf.addWindowListener(createCloseListener());
+        jf.setContentPane(content);
+        jf.pack();
+        jf.setLocationRelativeTo(null);
+        return jf;
     }
 }

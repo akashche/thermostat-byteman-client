@@ -21,21 +21,40 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
-import java.util.Arrays;
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 /**
  * User: alexkasko
- * Date: 6/11/15
+ * Date: 6/15/15
  */
-public class ContentPagesRegister {
+class AboutPage implements ContentPage {
 
-    public static final List<ContentPage> PAGES = Arrays.asList(
-            new DataRootPage(),
-            new ChartTypesPage(),
-                new PlainChartsPage(),
-                new AggregateChartsPage(),
-            new SettingsPage(),
-            new AboutPage()
-    );
+    @Override
+    public String getName() {
+        return "about";
+    }
+
+    @Override
+    public String getLabel() {
+        return "About";
+    }
+
+    @Override
+    public String getIcon() {
+        return "action_db_status_16.png";
+    }
+
+    @Override
+    public List<String> getChildren() {
+        return emptyList();
+    }
+
+    @Override
+    public Component createPane() {
+        return new JLabel("TODO: about");
+    }
 }
