@@ -27,8 +27,8 @@ class SplitPaneBuilder {
         jp.setDividerSize(5);
 
         RightPaneBuilder.Result res = new RightPaneBuilder().build(pages);
-        jp.setRightComponent(res.getPane());
-        jp.setLeftComponent(new TreePaneBuilder().build(pages, res.getSwitcher()));
+        jp.setRightComponent(res.getCardbox());
+        jp.setLeftComponent(new TreePaneBuilder().build(pages, res.getCardbox(), res.getDeck()));
 
         return jp;
     }

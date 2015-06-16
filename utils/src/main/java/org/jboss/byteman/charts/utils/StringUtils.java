@@ -46,7 +46,19 @@ public class StringUtils {
      * @return the passed in String, or the empty string if it was <code>null</code>
      */
     public static String defaultString(String str) {
-        return str != null ? str : "";
+        return defaultString(str, EMPTY_STRING);
+    }
+
+    /**
+     * <p>Returns either the passed in String, or if the String is
+     * <code>null</code>, the default string
+     *
+     * @param str  the String to check, may be null
+     * @param defstr  default string
+     * @return the passed in String, or the empty string if it was <code>null</code>
+     */
+    public static String defaultString(String str, String defstr) {
+        return str != null ? str : defstr;
     }
 
     /**

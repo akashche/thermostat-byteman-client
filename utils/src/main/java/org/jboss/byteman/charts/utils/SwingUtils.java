@@ -23,10 +23,12 @@ package org.jboss.byteman.charts.utils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Enumeration;
 
 import static javax.swing.BorderFactory.*;
 

@@ -12,6 +12,12 @@
     <artifactId>ui-swing</artifactId>
 
     <dependencies>
+        <!-- data iface -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>data-iface</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- ui iface -->
         <dependency>
             <groupId>${project.groupId}</groupId>

@@ -1,6 +1,7 @@
 package org.jboss.byteman.charts.ui.swing.panels;
 
 import org.jboss.byteman.charts.ui.swing.pages.ContentPage;
+import org.jboss.byteman.charts.ui.swing.pages.PageManager;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -22,10 +23,13 @@ import static javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION;
  */
 class TreePaneBuilder {
 
-    public JScrollPane build(List<ContentPage> pages, PageSwitcher switcher) {
+    public JScrollPane build(List<ContentPage> pages, Container cardbox, CardLayout deck) {
         JTree tree = new JTree();
+        PageManager pm = new TreePageManager(tree, deck, cardbox);
+        // ctx init shortcut, it smells here
+        if (pages.size() > 0) pages.get(0).getAppContext().init(pm);
         tree.setModel(new DefaultTreeModel(createNodes(pages), false));
-        tree.addTreeSelectionListener(new PageListener(switcher));
+        tree.addTreeSelectionListener(new PageListener(pm));
         tree.getSelectionModel().setSelectionMode(SINGLE_TREE_SELECTION);
         tree.setCellRenderer(new PageCellRenderer());
         tree.setRootVisible(false);
@@ -66,27 +70,11 @@ class TreePaneBuilder {
         return null;
     }
 
-    private static class PageNodeObject {
-        final String name;
-        final String label;
-        final String icon;
-
-        PageNodeObject(ContentPage pa) {
-            this(pa.getName(), pa.getLabel(), pa.getIcon());
-        }
-
-        PageNodeObject(String name, String label, String icon) {
-            this.name = name;
-            this.label = label;
-            this.icon = icon;
-        }
-    }
-
     private static class PageListener implements TreeSelectionListener {
-        private final PageSwitcher switcher;
+        private final PageManager pm;
 
-        private PageListener(PageSwitcher switcher) {
-            this.switcher = switcher;
+        private PageListener(PageManager pm) {
+            this.pm = pm;
         }
 
         @Override
@@ -94,7 +82,7 @@ class TreePaneBuilder {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
             if (node.getUserObject() instanceof PageNodeObject) {
                 PageNodeObject pn = (PageNodeObject) node.getUserObject();
-                switcher.showCard(pn.name);
+                pm.switchPage(pn.getName());
             }
         }
     }
@@ -110,8 +98,8 @@ class TreePaneBuilder {
             DefaultMutableTreeNode nd = (DefaultMutableTreeNode) value;
             if (nd.getUserObject() instanceof PageNodeObject) {
                 PageNodeObject pn = (PageNodeObject) nd.getUserObject();
-                setText(pn.label);
-                ImageIcon icon = loadIcon(pn.icon);
+                setText(pn.getLabel());
+                ImageIcon icon = loadIcon(pn.getIcon());
                 setIcon(icon);
             }
             return this;

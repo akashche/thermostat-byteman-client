@@ -21,38 +21,59 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
-import org.jboss.byteman.charts.data.ChartRecord;
-
-import javax.swing.*;
-import java.awt.*;
-
-import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * User: alexkasko
- * Date: 6/10/15
+ * Date: 6/16/15
  */
+abstract class BasePage implements ContentPage {
 
-// subnodes for each applied filter set
-class DatasetPage extends BasePage {
-    private final String name;
-    private final Iterable<ChartRecord> records;
+    protected final ChartsAppContext ctx;
+    protected final String name;
+    protected final String label;
+    protected final String icon;
+    protected final List<String> children;
 
-    public DatasetPage(ChartsAppContext ctx, String name, Iterable<ChartRecord> records) {
-        super(ctx, name, name, "filesystem_folder_blue_16.png");
+    protected BasePage(ChartsAppContext ctx, String name, String label, String icon, String... children) {
+        this.ctx = ctx;
         this.name = name;
-        this.records = records;
+        this.label = label;
+        this.icon = icon;
+        List<String> chList = new ArrayList<String>();
+        Collections.addAll(chList, children);
+        this.children = chList;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public String getIcon() {
+        return icon;
+    }
+
+    @Override
+    public List<String> getChildren() {
+        return children;
     }
 
     @Override
     public boolean isUserPage() {
-        return true;
+        return false;
     }
 
     @Override
-    public Component createPane() {
-        JPanel jp = new JPanel();
-        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), name));
-        return jp;
+    public ChartsAppContext getAppContext() {
+        return ctx;
     }
 }

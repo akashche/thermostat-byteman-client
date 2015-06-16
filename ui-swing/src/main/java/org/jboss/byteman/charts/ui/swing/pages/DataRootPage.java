@@ -22,6 +22,7 @@
 package org.jboss.byteman.charts.ui.swing.pages;
 
 import net.miginfocom.swing.MigLayout;
+import org.jboss.byteman.charts.data.ChartRecord;
 import org.jboss.byteman.charts.utils.string.StrSubstitutor;
 
 import javax.swing.*;
@@ -32,11 +33,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
-import static java.util.Collections.emptyList;
 import static org.jboss.byteman.charts.utils.CollectionUtils.toMap;
 import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
 import static org.jboss.byteman.charts.utils.StringUtils.isEmpty;
@@ -48,32 +47,15 @@ import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
  * User: alexkasko
  * Date: 6/10/15
  */
-class DataRootPage implements ContentPage {
+class DataRootPage extends BasePage {
 
-    private final Map<String, String> props;
+    public static final String NAME = "data";
 
-    DataRootPage(Map<String, String> props) {
-        this.props = props;
-    }
+    private JTextField nameField = new JTextField();
+    private JTextField pathField = new JTextField();
 
-    @Override
-    public String getName() {
-        return "data";
-    }
-
-    @Override
-    public String getLabel() {
-        return "Data Sets";
-    }
-
-    @Override
-    public String getIcon() {
-        return "app_database_16.png";
-    }
-
-    @Override
-    public List<String> getChildren() {
-        return emptyList();
+    DataRootPage(ChartsAppContext ctx) {
+        super(ctx, NAME, "Data Sets", "app_database_16.png");
     }
 
     @Override
@@ -100,78 +82,121 @@ class DataRootPage implements ContentPage {
         JLabel nameLabel = new JLabel("Dataset name:");
         boldify(nameLabel);
         jp.add(nameLabel, "width ::160lp");
-        JTextField nameField = new JTextField();
         jp.add(nameField, "width 160lp::, span 2, wrap");
         // second row
         JLabel chooserLabel = new JLabel("Data file:");
         boldify(chooserLabel);
         jp.add(chooserLabel, "width ::160lp");
-        JTextField pathField = new JTextField();
         pathField.setEditable(false);
         jp.add(pathField, "width 160lp::");
         JButton chooseButton = new JButton("...");
-        chooseButton.addActionListener(new ChooseFileListener(nameField, pathField));
+        chooseButton.addActionListener(new ChooseFileListener());
         jp.add(chooseButton, "width pref!, wrap");
-        return jp;
-    }
-
-    private JPanel createLoadStoragePanel() {
-        JPanel jp = new JPanel(new MigLayout(
-                "",
-                "[]",
-                "[]"
-        ));
-        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "[TODO] Data from Thermostat storage"));
         return jp;
     }
 
     private JPanel createButtonsPanel() {
         JPanel jp = new JPanel(new MigLayout(
                 "fillx, insets n 0 0 0",
-                "[right]",
+                "push[right][right]",
                 "[]"
         ));
         JButton loadButton = new JButton("Load data");
+        loadButton.addActionListener(new LoadFileListener());
         jp.add(loadButton);
+        JButton clearButton = new JButton("Clear");
+        clearButton.addActionListener(new ClearFormListener());
+        jp.add(clearButton);
         jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), ""));
         return jp;
     }
 
+    private JFileChooser createFileChooser() {
+        JFileChooser fc = new JFileChooser();
+        fc.setCurrentDirectory(new File(ctx.getProp("byteman_charts.last_chosen_data_file")));
+        fc.setMultiSelectionEnabled(false);
+        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fc.setDialogTitle("Choose chart data file");
+        FileFilter all = fc.getAcceptAllFileFilter();
+        fc.removeChoosableFileFilter(all);
+        fc.addChoosableFileFilter(new FileNameExtensionFilter("JSON chart data files", "json"));
+        fc.addChoosableFileFilter(all);
+        return fc;
+    }
+
+    private String formatDatasetName(File fi) {
+        SimpleDateFormat sdf = new SimpleDateFormat(ctx.getProp("byteman_charts.dataset_name_date_format"));
+        String date = sdf.format(new Date(fi.lastModified()));
+        String filename = stripFilenameExtension(fi.getName());
+        String template = ctx.getProp("byteman_charts.dataset_name_format");
+        return StrSubstitutor.replace(template, toMap("filename", filename, "date", date));
+    }
+
+    private void fileLoaded(List<ChartRecord> records, String dsname) {
+        ContentPage page = new DatasetPage(ctx, dsname, records);
+        ctx.getPageManager().addPage(page, NAME);
+        clearForm();
+    }
+
+    private void clearForm() {
+        nameField.setText("");
+        pathField.setText("");
+    }
+
     private class ChooseFileListener implements ActionListener {
-
-        private final JTextField nameField;
-        private final JTextField pathField;
-
-        private ChooseFileListener(JTextField nameField, JTextField pathField) {
-            this.nameField = nameField;
-            this.pathField = pathField;
-        }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            JFileChooser fc = new JFileChooser();
-            fc.setCurrentDirectory(new File(defaultString(props.get("byteman_charts.last_chosen_data_file"))));
-            fc.setMultiSelectionEnabled(false);
-            fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fc.setDialogTitle("Choose chart data file");
-            FileFilter all = fc.getAcceptAllFileFilter();
-            fc.removeChoosableFileFilter(all);
-            fc.addChoosableFileFilter(new FileNameExtensionFilter("JSON chart data files", "json"));
-            fc.addChoosableFileFilter(all);
+            JFileChooser fc = createFileChooser();
             int ret = fc.showOpenDialog(pathField);
             if (JFileChooser.APPROVE_OPTION == ret) {
-                props.put("byteman_charts.last_chosen_data_file", fc.getSelectedFile().getParentFile().getAbsolutePath());
+                ctx.setProp("byteman_charts.last_chosen_data_file", fc.getSelectedFile().getParentFile().getAbsolutePath());
                 pathField.setText(fc.getSelectedFile().getAbsolutePath());
                 if (isEmpty(nameField.getText())) {
                     File fi = fc.getSelectedFile();
-                    SimpleDateFormat sdf = new SimpleDateFormat(props.get("byteman_charts.dataset_name_date_format"));
-                    String date = sdf.format(new Date(fi.lastModified()));
-                    String filename = stripFilenameExtension(fi.getName());
-                    String template = props.get("byteman_charts.dataset_name_format");
-                    String name = StrSubstitutor.replace(template, toMap("filename", filename, "date", date));
+                    String name = formatDatasetName(fi);
                     nameField.setText(name);
                 }
             }
+        }
+    }
+
+    private class LoadFileListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            new LoadFileWorker(new File(pathField.getText()), nameField.getText()).execute();
+        }
+    }
+
+    private class ClearFormListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            clearForm();
+        }
+    }
+
+    private class LoadFileWorker extends SwingWorker<Void, List<ChartRecord>> {
+
+        private final File file;
+        private final String dsname;
+
+        private LoadFileWorker(File file, String dsname) {
+            this.file = file;
+            this.dsname = dsname;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            publish(Collections.<ChartRecord>emptyList());
+            return null;
+        }
+
+        @Override
+        protected void process(List<List<ChartRecord>> chunks) {
+            if (1 == chunks.size()) {
+                fileLoaded(chunks.get(0), dsname);
+            }
+
         }
     }
 }

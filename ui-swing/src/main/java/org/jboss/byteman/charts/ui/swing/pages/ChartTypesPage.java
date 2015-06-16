@@ -23,35 +23,18 @@ package org.jboss.byteman.charts.ui.swing.pages;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 /**
  * User: alexkasko
  * Date: 6/15/15
  */
-class ChartTypesPage implements ContentPage {
+class ChartTypesPage extends BasePage {
 
-    @Override
-    public String getName() {
-        return "chart_types";
-    }
-
-    @Override
-    public String getLabel() {
-        return "Chart Types";
-    }
-
-    @Override
-    public String getIcon() {
-        return "app_Volume_Manager_16.png";
-    }
-
-    @Override
-    public List<String> getChildren() {
-        return asList(PlainChartsPage.NAME, AggregateChartsPage.NAME);
+    ChartTypesPage(ChartsAppContext ctx) {
+        super(ctx, "chart_types", "Chart Types", "app_Volume_Manager_16.png",
+                PlainChartsPage.NAME, AggregateChartsPage.NAME);
     }
 
     @Override

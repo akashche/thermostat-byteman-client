@@ -21,25 +21,24 @@ class RightPaneBuilder {
         for (ContentPage pa : pages) {
             jp.add(pa.createPane(), pa.getName());
         }
-        return new Result(jp, new PageSwitcher(jp, deck));
+        return new Result(jp, deck);
     }
 
-
     static class Result {
-        private final JPanel pane;
-        private final PageSwitcher switcher;
+        private final JPanel cardbox;
+        private final CardLayout deck;
 
-        Result(JPanel pane, PageSwitcher switcher) {
-            this.pane = pane;
-            this.switcher = switcher;
+        Result(JPanel cardbox, CardLayout deck) {
+            this.cardbox = cardbox;
+            this.deck = deck;
         }
 
-        public JPanel getPane() {
-            return pane;
+        public JPanel getCardbox() {
+            return cardbox;
         }
 
-        public PageSwitcher getSwitcher() {
-            return switcher;
+        public CardLayout getDeck() {
+            return deck;
         }
     }
 }

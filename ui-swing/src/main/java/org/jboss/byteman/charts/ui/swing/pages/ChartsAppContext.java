@@ -24,23 +24,17 @@ package org.jboss.byteman.charts.ui.swing.pages;
 import javax.swing.*;
 import java.awt.*;
 
-import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
-
 /**
  * User: alexkasko
- * Date: 6/15/15
+ * Date: 6/16/15
  */
-class PlainChartsPage extends BasePage {
-    static final String NAME = "plain_charts";
+public interface ChartsAppContext {
 
-    PlainChartsPage(ChartsAppContext ctx) {
-        super(ctx, NAME, "Plain Charts", "mimetype_log_16.png");
-    }
+    String getProp(String propName);
 
-    @Override
-    public Component createPane() {
-        JPanel jp = new JPanel();
-        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "[TODO] List of plain chart types"));
-        return jp;
-    }
+    void setProp(String propName, String propValue);
+
+    void init(PageManager pm);
+
+    PageManager getPageManager();
 }

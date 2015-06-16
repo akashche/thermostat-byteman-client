@@ -22,7 +22,10 @@
 package org.jboss.byteman.charts.ui.swing.pages;
 
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
 
 /**
  * User: alexkasko
@@ -30,21 +33,49 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ContentPagesRegister {
 
-    // todo: properties load, thermostat api point
-    private static final Map<String, String> PROPS = new ConcurrentHashMap<String, String>();
+    private static final ChartsAppContext APP_CONTEXT = new ChartsAppContextImpl();
 
-    static {
-        PROPS.put("byteman_charts.last_chosen_data_file", "/home/alex/projects/redhat/byteman-charts/plot-aggregate/src/test/resources/org/jboss/byteman/charts/plot/aggregate/");
-        PROPS.put("byteman_charts.dataset_name_format", "${filename}_${date}");
-        PROPS.put("byteman_charts.dataset_name_date_format", "yyyy-MM-dd_HH:mm:ss");
-    }
-
-    public static final List<ContentPage> PAGES = Arrays.asList(
-            new DataRootPage(PROPS),
-            new ChartTypesPage(),
-                new PlainChartsPage(),
-                new AggregateChartsPage(),
-            new SettingsPage(),
-            new AboutPage()
+    public static final List<ContentPage> PAGES = Arrays.<ContentPage>asList(
+            new DataRootPage(APP_CONTEXT),
+            new ChartTypesPage(APP_CONTEXT),
+                new PlainChartsPage(APP_CONTEXT),
+                new AggregateChartsPage(APP_CONTEXT),
+            new SettingsPage(APP_CONTEXT),
+            new AboutPage(APP_CONTEXT)
     );
+
+    private static class ChartsAppContextImpl implements ChartsAppContext {
+
+        // todo: properties load, thermostat api access
+        private final Map<String, String> props = new ConcurrentHashMap<String, String>();
+
+        private PageManager pm;
+
+        private ChartsAppContextImpl() {
+            props.put("byteman_charts.last_chosen_data_file", "/home/alex/projects/redhat/byteman-charts/plot-aggregate/src/test/resources/org/jboss/byteman/charts/plot/aggregate/");
+            props.put("byteman_charts.dataset_name_format", "${filename}_${date}");
+            props.put("byteman_charts.dataset_name_date_format", "yyyy-MM-dd_HH:mm:ss");
+        }
+
+        @Override
+        public String getProp(String propName) {
+            return defaultString(props.get(propName));
+        }
+
+        @Override
+        public void setProp(String propName, String propValue) {
+            props.put(propName, propValue);
+        }
+
+        @Override
+        public void init(PageManager pm) {
+            this.pm = pm;
+        }
+
+        @Override
+        public PageManager getPageManager() {
+            return pm;
+        }
+
+    }
 }

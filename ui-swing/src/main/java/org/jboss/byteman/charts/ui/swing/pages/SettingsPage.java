@@ -23,35 +23,17 @@ package org.jboss.byteman.charts.ui.swing.pages;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 /**
  * User: alexkasko
  * Date: 6/15/15
  */
-class SettingsPage implements ContentPage {
+class SettingsPage extends BasePage {
 
-    @Override
-    public String getName() {
-        return "settings";
-    }
-
-    @Override
-    public String getLabel() {
-        return "Settings";
-    }
-
-    @Override
-    public String getIcon() {
-        return "app_package_settings_16.png";
-    }
-
-    @Override
-    public List<String> getChildren() {
-        return emptyList();
+    SettingsPage(ChartsAppContext ctx) {
+        super(ctx, "settings", "Settings", "app_package_settings_16.png");
     }
 
     @Override

@@ -21,9 +21,7 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
-import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
 
 /**
@@ -40,5 +38,9 @@ public interface ContentPage {
 
     List<String> getChildren();
 
+    boolean isUserPage();
+
     Component createPane();
+
+    ChartsAppContext getAppContext();
 }
