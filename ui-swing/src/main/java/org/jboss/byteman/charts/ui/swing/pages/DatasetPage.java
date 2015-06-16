@@ -22,10 +22,19 @@
 package org.jboss.byteman.charts.ui.swing.pages;
 
 import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.filter.ChartFilter;
+import org.jboss.byteman.charts.plot.aggregate.BucketedStackedCountPlotter;
+import org.jboss.byteman.charts.ui.ChartConfigEntry;
+import org.jboss.byteman.charts.ui.StringConfigEntry;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 /**
@@ -35,12 +44,10 @@ import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 // subnodes for each applied filter set
 class DatasetPage extends BasePage {
-    private final String name;
     private final Iterable<ChartRecord> records;
 
     public DatasetPage(ChartsAppContext ctx, String name, Iterable<ChartRecord> records) {
         super(ctx, name, name, "filesystem_folder_blue_16.png");
-        this.name = name;
         this.records = records;
     }
 
@@ -51,8 +58,22 @@ class DatasetPage extends BasePage {
 
     @Override
     public Component createPane() {
-        JPanel jp = new JPanel();
-        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), name));
-        return jp;
+        // todo: temporary harcoded
+        Map<String, ChartConfigEntry<?>> conf = new HashMap<String, ChartConfigEntry<?>>();
+        conf.put("categoryAttributeName", new StringConfigEntry("categoryAttributeName", "reportId"));
+        conf.put("domainAxisLabel", new StringConfigEntry("domainAxisLabel", "[TODO] incomplete charts panel, should support filters"));
+        JFreeChart chart = new BucketedStackedCountPlotter()
+                .applyConfig(conf)
+                .build(records.iterator(), asList(RenderTimeFilter.INSTANCE));
+        return new ChartPanel(chart);
+    }
+
+    private enum RenderTimeFilter implements ChartFilter {
+        INSTANCE;
+
+        @Override
+        public boolean apply(ChartRecord record) {
+            return "reportRenderTime".equals(record.getMarker());
+        }
     }
 }

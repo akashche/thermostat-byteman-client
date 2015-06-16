@@ -21,8 +21,11 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import net.miginfocom.swing.MigLayout;
 import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.ui.UiSwingException;
 import org.jboss.byteman.charts.utils.string.StrSubstitutor;
 
 import javax.swing.*;
@@ -31,15 +34,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.io.*;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
+import static org.jboss.byteman.charts.plot.aggregate.BucketedStackedCountPlotter.GSON;
 import static org.jboss.byteman.charts.utils.CollectionUtils.toMap;
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
-import static org.jboss.byteman.charts.utils.StringUtils.isEmpty;
-import static org.jboss.byteman.charts.utils.StringUtils.stripFilenameExtension;
+import static org.jboss.byteman.charts.utils.IOUtils.closeQuietly;
+import static org.jboss.byteman.charts.utils.StringUtils.*;
 import static org.jboss.byteman.charts.utils.SwingUtils.boldify;
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
@@ -48,6 +52,9 @@ import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
  * Date: 6/10/15
  */
 class DataRootPage extends BasePage {
+
+    public static final Gson GSON = new Gson();
+    private static final Type CHART_RECORD_LIST_TYPE = new TypeToken<ArrayList<ChartRecord>>(){}.getType();
 
     public static final String NAME = "data";
 
@@ -143,6 +150,19 @@ class DataRootPage extends BasePage {
         pathField.setText("");
     }
 
+    private ArrayList<ChartRecord> readData(File file) {
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            Reader reader = new InputStreamReader(is, UTF_8);
+            return GSON.fromJson(reader, CHART_RECORD_LIST_TYPE);
+        } catch (FileNotFoundException e) {
+            throw new UiSwingException("Data load error for file: [" + file.getAbsolutePath() + "]", e);
+        } finally {
+            closeQuietly(is);
+        }
+    }
+
     private class ChooseFileListener implements ActionListener {
 
         @Override
@@ -186,8 +206,10 @@ class DataRootPage extends BasePage {
         }
 
         @Override
+        @SuppressWarnings("unchecked") // publish call
         protected Void doInBackground() throws Exception {
-            publish(Collections.<ChartRecord>emptyList());
+            List<ChartRecord> recs = readData(file);
+            publish(recs);
             return null;
         }
 
