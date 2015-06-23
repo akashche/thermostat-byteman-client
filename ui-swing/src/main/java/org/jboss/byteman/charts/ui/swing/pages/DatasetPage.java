@@ -21,20 +21,12 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
-import org.jboss.byteman.charts.data.ChartRecord;
-import org.jboss.byteman.charts.filter.ChartFilter;
-import org.jboss.byteman.charts.plot.aggregate.BucketedStackedCountPlotter;
-import org.jboss.byteman.charts.ui.ChartConfigEntry;
-import org.jboss.byteman.charts.ui.StringConfigEntry;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
-import static java.util.Arrays.asList;
+import static org.jboss.byteman.charts.utils.SwingUtils.boldify;
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 /**
@@ -44,11 +36,18 @@ import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 // subnodes for each applied filter set
 class DatasetPage extends BasePage {
-    private final Iterable<ChartRecord> records;
 
-    public DatasetPage(ChartsAppContext ctx, String name, Iterable<ChartRecord> records) {
+    private final String datasetName;
+    private final String filename;
+    private final long filesize;
+    private final int recordsCount;
+
+    public DatasetPage(ChartsAppContext ctx, String name, String filename, long filesize, int recordsCount) {
         super(ctx, name, name, "filesystem_folder_blue_16.png");
-        this.records = records;
+        this.datasetName = name;
+        this.filename = filename;
+        this.filesize = filesize;
+        this.recordsCount = recordsCount;
     }
 
     @Override
@@ -58,22 +57,38 @@ class DatasetPage extends BasePage {
 
     @Override
     public Component createPane() {
-        // todo: temporary harcoded
-        Map<String, ChartConfigEntry<?>> conf = new HashMap<String, ChartConfigEntry<?>>();
-        conf.put("categoryAttributeName", new StringConfigEntry("categoryAttributeName", "reportId"));
-        conf.put("domainAxisLabel", new StringConfigEntry("domainAxisLabel", "[TODO] incomplete charts panel, should support filters"));
-        JFreeChart chart = new BucketedStackedCountPlotter()
-                .applyConfig(conf)
-                .build(records.iterator(), asList(RenderTimeFilter.INSTANCE));
-        return new ChartPanel(chart);
+        JPanel parent = new JPanel(new MigLayout(
+                "fill",
+                "[]",
+                "[top]"
+        ));
+        parent.add(createDetailsPanel(), "growx");
+        return parent;
+
     }
 
-    private enum RenderTimeFilter implements ChartFilter {
-        INSTANCE;
+    private JPanel createDetailsPanel() {
+        JPanel jp = new JPanel(new MigLayout(
+                "",
+                "[right][grow, fill]",
+                "[]"
+        ));
+        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "Dataset details"));
+        // datasetName
+        jp.add(boldify(new JLabel("Dataset Name:")), "width ::160lp");
+        jp.add(new JLabel(datasetName), "width 160lp::, span 2, wrap");
+        // filename
+        jp.add(boldify(new JLabel("File Name:")), "width ::160lp");
+        jp.add(new JLabel(filename), "width 160lp::, span 2, wrap");
+        // filesize
+        jp.add(boldify(new JLabel("File Size (bytes):")), "width ::160lp");
+        jp.add(new JLabel(Long.toString(filesize)), "width 160lp::, span 2, wrap");
+        // recordsCount
+        jp.add(boldify(new JLabel("Records Count:")), "width ::160lp");
+        jp.add(new JLabel(Long.toString(recordsCount)), "width 160lp::, span 2, wrap");
 
-        @Override
-        public boolean apply(ChartRecord record) {
-            return "reportRenderTime".equals(record.getMarker());
-        }
+        return jp;
     }
+
+
 }

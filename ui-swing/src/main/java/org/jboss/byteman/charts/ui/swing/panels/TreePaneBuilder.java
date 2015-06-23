@@ -25,7 +25,7 @@ class TreePaneBuilder {
 
     public JScrollPane build(List<ContentPage> pages, Container cardbox, CardLayout deck) {
         JTree tree = new JTree();
-        PageManager pm = new TreePageManager(tree, deck, cardbox);
+        PageManager pm = new TreePageManager(pages, tree, deck, cardbox);
         // ctx init shortcut, it smells here
         if (pages.size() > 0) pages.get(0).getAppContext().init(pm);
         tree.setModel(new DefaultTreeModel(createNodes(pages), false));

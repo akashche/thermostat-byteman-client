@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.miginfocom.swing.MigLayout;
 import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.ui.UiSwingException;
 import org.jboss.byteman.charts.utils.string.StrSubstitutor;
 
@@ -39,6 +40,7 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.jboss.byteman.charts.plot.aggregate.BucketedStackedCountPlotter.GSON;
 import static org.jboss.byteman.charts.utils.CollectionUtils.toMap;
@@ -51,17 +53,19 @@ import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
  * User: alexkasko
  * Date: 6/10/15
  */
-class DataRootPage extends BasePage {
+class DatasetLoadPage extends BasePage {
 
     public static final Gson GSON = new Gson();
     private static final Type CHART_RECORD_LIST_TYPE = new TypeToken<ArrayList<ChartRecord>>(){}.getType();
 
     public static final String NAME = "data";
 
+    private final AtomicInteger datasetNumber = new AtomicInteger(0);
+
     private JTextField nameField = new JTextField();
     private JTextField pathField = new JTextField();
 
-    DataRootPage(ChartsAppContext ctx) {
+    DatasetLoadPage(ChartsAppContext ctx) {
         super(ctx, NAME, "Data Sets", "app_database_16.png");
     }
 
@@ -86,7 +90,7 @@ class DataRootPage extends BasePage {
         ));
         jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "Load chart data"));
         // first row
-        JLabel nameLabel = new JLabel("Dataset name:");
+        JLabel nameLabel = new JLabel("Dataset Name:");
         boldify(nameLabel);
         jp.add(nameLabel, "width ::160lp");
         jp.add(nameField, "width 160lp::, span 2, wrap");
@@ -108,7 +112,7 @@ class DataRootPage extends BasePage {
                 "push[right][right]",
                 "[]"
         ));
-        JButton loadButton = new JButton("Load data");
+        JButton loadButton = new JButton("Load Data");
         loadButton.addActionListener(new LoadFileListener());
         jp.add(loadButton);
         JButton clearButton = new JButton("Clear");
@@ -136,12 +140,18 @@ class DataRootPage extends BasePage {
         String date = sdf.format(new Date(fi.lastModified()));
         String filename = stripFilenameExtension(fi.getName());
         String template = ctx.getProp("byteman_charts.dataset_name_format");
-        return StrSubstitutor.replace(template, toMap("filename", filename, "date", date));
+        String formatted = StrSubstitutor.replace(template, toMap("filename", filename, "date", date));
+        return formatted + "_" + datasetNumber.incrementAndGet();
     }
 
-    private void fileLoaded(List<ChartRecord> records, String dsname) {
-        ContentPage page = new DatasetPage(ctx, dsname, records);
-        ctx.getPageManager().addPage(page, NAME);
+    private void fileLoaded(File file, List<ChartRecord> records, String dsname) {
+        PageManager pm = ctx.getPageManager();
+        ContentPage page = new DatasetPage(ctx, dsname, file.getName(), file.length(), records.size());
+        pm.addPage(page, NAME);
+        String label = "All Records";
+        ContentPage filterpage = new FiltersetPage(ctx, dsname + label, label, records, Collections.<ChartFilter>emptyList());
+        pm.addPage(filterpage, dsname);
+        pm.switchPage(dsname);
         clearForm();
     }
 
@@ -216,7 +226,7 @@ class DataRootPage extends BasePage {
         @Override
         protected void process(List<List<ChartRecord>> chunks) {
             if (1 == chunks.size()) {
-                fileLoaded(chunks.get(0), dsname);
+                fileLoaded(file, chunks.get(0), dsname);
             }
 
         }

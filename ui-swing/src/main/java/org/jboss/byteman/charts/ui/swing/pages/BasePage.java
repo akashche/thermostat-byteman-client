@@ -76,4 +76,9 @@ abstract class BasePage implements ContentPage {
     public ChartsAppContext getAppContext() {
         return ctx;
     }
+
+    @Override
+    public void onShow() {
+        // do nothing
+    }
 }

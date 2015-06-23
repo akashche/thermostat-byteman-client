@@ -36,7 +36,7 @@ public class ContentPagesRegister {
     private static final ChartsAppContext APP_CONTEXT = new ChartsAppContextImpl();
 
     public static final List<ContentPage> PAGES = Arrays.<ContentPage>asList(
-            new DataRootPage(APP_CONTEXT),
+            new DatasetLoadPage(APP_CONTEXT),
             new ChartTypesPage(APP_CONTEXT),
                 new PlainChartsPage(APP_CONTEXT),
                 new AggregateChartsPage(APP_CONTEXT),
@@ -54,7 +54,7 @@ public class ContentPagesRegister {
         private ChartsAppContextImpl() {
             props.put("byteman_charts.last_chosen_data_file", "/home/alex/projects/redhat/byteman-charts/plot-aggregate/src/test/resources/org/jboss/byteman/charts/plot/aggregate/");
             props.put("byteman_charts.dataset_name_format", "${filename}_${date}");
-            props.put("byteman_charts.dataset_name_date_format", "yyyy-MM-dd_HH:mm:ss");
+            props.put("byteman_charts.dataset_name_date_format", "yyyyMMdd_HHmmss");
         }
 
         @Override

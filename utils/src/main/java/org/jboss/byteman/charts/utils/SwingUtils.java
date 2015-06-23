@@ -71,11 +71,13 @@ public class SwingUtils {
      * Made font bold for the specified component
      *
      * @param comp swing component
+     * @return component itself
      */
-    public static void boldify(JComponent comp) {
+    public static <T extends JComponent> T boldify(T comp) {
         Font font = comp.getFont();
         Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
         comp.setFont(boldFont);
+        return comp;
     }
 
     /**

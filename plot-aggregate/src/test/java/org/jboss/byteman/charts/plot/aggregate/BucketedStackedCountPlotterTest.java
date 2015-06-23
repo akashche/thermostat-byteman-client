@@ -56,6 +56,14 @@ public class BucketedStackedCountPlotterTest {
     @Test
     public void dummy() {
 //        I am dummy
+//        List<ChartRecord> recs = readData();
+//        List<ChartRecord> filtered = new ArrayList<ChartRecord>();
+//        for (ChartRecord cr : recs) {
+//            if ("reportRenderTime".equals(cr.getMarker())) {
+//                filtered.add(cr);
+//            }
+//        }
+//        writeData(filtered);
     }
 
 //    @Test
@@ -93,6 +101,17 @@ public class BucketedStackedCountPlotterTest {
             return GSON.fromJson(reader, CHART_RECORD_LIST_TYPE);
         } finally {
             closeQuietly(is);
+        }
+    }
+
+    private static void writeData(List<ChartRecord> records) {
+        Writer writer = null;
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream("data.json"), UTF_8);
+            GSON.toJson(records, writer);
+            writer.close();
+        } catch (Exception e) {
+            closeQuietly(writer);
         }
     }
 

@@ -21,6 +21,8 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
+import net.miginfocom.swing.MigLayout;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -38,8 +40,18 @@ class SettingsPage extends BasePage {
 
     @Override
     public Component createPane() {
-        JPanel jp = new JPanel();
-        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "[TODO] System settings form"));
-        return jp;
+        JPanel parent = new JPanel(new MigLayout(
+                "fill",
+                "[]",
+                "[top]"
+        ));
+        JPanel top = new JPanel(new MigLayout(
+                "",
+                "",
+                ""
+        ));
+        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "[TODO] System settings form"));
+        parent.add(top, "growx");
+        return parent;
     }
 }

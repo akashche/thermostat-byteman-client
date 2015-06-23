@@ -43,4 +43,6 @@ public interface ContentPage {
     Component createPane();
 
     ChartsAppContext getAppContext();
+
+    void onShow();
 }

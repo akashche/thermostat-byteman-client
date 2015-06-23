@@ -9,6 +9,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.util.Enumeration;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * User: alexkasko
@@ -16,11 +18,15 @@ import java.util.Enumeration;
  */
 class TreePageManager implements PageManager {
 
+    private final Map<String, ContentPage> pageMap = new ConcurrentHashMap<String, ContentPage>();
     private final JTree tree;
     private final CardLayout deck;
     private final Container cardbox;
 
-    TreePageManager(JTree tree, CardLayout deck, Container cardbox) {
+    TreePageManager(java.util.List<ContentPage> pages, JTree tree, CardLayout deck, Container cardbox) {
+        for (ContentPage cp : pages) {
+            pageMap.put(cp.getName(), cp);
+        }
         this.tree = tree;
         this.deck = deck;
         this.cardbox = cardbox;
@@ -28,6 +34,14 @@ class TreePageManager implements PageManager {
 
     @Override
     public void switchPage(String pageName) {
+        ContentPage cp = pageMap.get(pageName);
+        if (null == cp) return;
+        DefaultMutableTreeNode node = findNode(pageName);
+        if (null == node) return;
+        TreePath path = new TreePath(node.getPath());
+        tree.expandPath(path);
+        tree.setSelectionPath(path);
+        cp.onShow();
         deck.show(cardbox, pageName);
     }
 
@@ -43,13 +57,14 @@ class TreePageManager implements PageManager {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(new PageNodeObject(page));
         DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
         model.insertNodeInto(node, parent, parent.getChildCount());
-        TreePath path = new TreePath(node.getPath());
-        tree.expandPath(path);
-        tree.setSelectionPath(path);
+        // add cached
+        pageMap.put(page.getName(), page);
     }
 
     @Override
     public void removePage(String pageName) {
+        // remove cached
+        pageMap.remove(pageName);
         // remove node
         removeNode(pageName);
         // remove card
