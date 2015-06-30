@@ -42,7 +42,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.jboss.byteman.charts.plot.aggregate.BucketedStackedCountPlotter.GSON;
+import static org.jboss.byteman.charts.ui.swing.pages.FiltersetPage.ALL_RECORDS_LABEL;
 import static org.jboss.byteman.charts.utils.CollectionUtils.toMap;
 import static org.jboss.byteman.charts.utils.IOUtils.closeQuietly;
 import static org.jboss.byteman.charts.utils.StringUtils.*;
@@ -79,6 +79,12 @@ class DatasetLoadPage extends BasePage {
         jp.add(createLoadFilePanel(), "growx, wrap");
 //        jp.add(createLoadStoragePanel(), "growx, wrap");
         jp.add(createButtonsPanel(), "growx");
+
+        // todo: removeme
+        String testpath = "/home/alex/projects/redhat/byteman-charts/plot-aggregate/src/test/resources/org/jboss/byteman/charts/plot/aggregate/reports_data.json";
+        new LoadFileWorker(new File(testpath), "test").execute();
+        // end: removeme
+
         return jp;
     }
 
@@ -148,10 +154,11 @@ class DatasetLoadPage extends BasePage {
         PageManager pm = ctx.getPageManager();
         ContentPage page = new DatasetPage(ctx, dsname, file.getName(), file.length(), records.size());
         pm.addPage(page, NAME);
-        String label = "All Records";
-        ContentPage filterpage = new FiltersetPage(ctx, dsname + label, label, records, Collections.<ChartFilter>emptyList());
+        String filtername = dsname + "_" + ALL_RECORDS_LABEL;
+        ContentPage filterpage = new FiltersetPage(ctx, filtername, ALL_RECORDS_LABEL, dsname, records, Collections.<ChartFilter>emptyList());
         pm.addPage(filterpage, dsname);
-        pm.switchPage(dsname);
+//        pm.switchPage(dsname);
+        pm.switchPage(filtername);
         clearForm();
     }
 

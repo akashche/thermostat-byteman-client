@@ -33,8 +33,9 @@ import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
  */
 public class ContentPagesRegister {
 
-    private static final ChartsAppContext APP_CONTEXT = new ChartsAppContextImpl();
+    public static final ChartsAppContext APP_CONTEXT = new ChartsAppContextImpl();
 
+    // todo: make me private
     public static final List<ContentPage> PAGES = Arrays.<ContentPage>asList(
             new DatasetLoadPage(APP_CONTEXT),
             new ChartTypesPage(APP_CONTEXT),

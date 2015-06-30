@@ -1,5 +1,6 @@
 package org.jboss.byteman.charts.ui.swing.panels;
 
+import org.jboss.byteman.charts.ui.UiSwingException;
 import org.jboss.byteman.charts.ui.swing.pages.ContentPage;
 import org.jboss.byteman.charts.ui.swing.pages.PageManager;
 
@@ -37,6 +38,7 @@ class TreePaneBuilder {
             tree.expandRow(i);
         }
         JScrollPane jp = new JScrollPane();
+        jp.setMinimumSize(new Dimension(200, 0));
         jp.setViewportView(tree);
         jp.setBorder(createMatteBorder(0, 0, 0, 1, jp.getBackground().darker()));
         return jp;
@@ -111,6 +113,7 @@ class TreePaneBuilder {
                 return cached;
             } else {
                 URL url = ContentPage.class.getResource("icons/" + path);
+                if (null == url) throw new UiSwingException("Icon not found: [" + path + "]");
                 ImageIcon icon = new ImageIcon(url);
                 iconsCache.put(path, icon);
                 return icon;

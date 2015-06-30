@@ -1,5 +1,6 @@
 package org.jboss.byteman.charts.ui.swing.panels;
 
+import org.jboss.byteman.charts.ui.UiSwingException;
 import org.jboss.byteman.charts.ui.swing.pages.ContentPage;
 import org.jboss.byteman.charts.ui.swing.pages.PageManager;
 
@@ -47,6 +48,8 @@ class TreePageManager implements PageManager {
 
     @Override
     public void addPage(ContentPage page, String parentName) {
+        if (null == page) throw new UiSwingException("Specified page is null");
+        if (null == parentName) throw new UiSwingException("Specified parentName is null");
         // add card
         cardbox.add(page.getName(), page.createPane());
         // add node
@@ -63,6 +66,7 @@ class TreePageManager implements PageManager {
 
     @Override
     public void removePage(String pageName) {
+        if (null == pageName) throw new UiSwingException("Specified pageName is null");
         // remove cached
         pageMap.remove(pageName);
         // remove node
@@ -70,7 +74,7 @@ class TreePageManager implements PageManager {
         // remove card
         Component[] components = cardbox.getComponents();
         for (Component co : components) {
-            if (co.getName().equals(pageName)) {
+            if (pageName.equals(co.getName())) {
                 deck.removeLayoutComponent(co);
                 break;
             }

@@ -35,7 +35,7 @@ import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 class SettingsPage extends BasePage {
 
     SettingsPage(ChartsAppContext ctx) {
-        super(ctx, "settings", "Settings", "app_package_settings_16.png");
+        super(ctx, "settings", "Settings", "action_configure_16.png");
     }
 
     @Override
