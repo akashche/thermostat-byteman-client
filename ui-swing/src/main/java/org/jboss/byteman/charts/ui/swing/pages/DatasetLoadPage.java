@@ -26,7 +26,7 @@ import com.google.gson.reflect.TypeToken;
 import net.miginfocom.swing.MigLayout;
 import org.jboss.byteman.charts.data.ChartRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
-import org.jboss.byteman.charts.ui.UiSwingException;
+import org.jboss.byteman.charts.ui.*;
 import org.jboss.byteman.charts.utils.string.StrSubstitutor;
 
 import javax.swing.*;
@@ -155,7 +155,11 @@ class DatasetLoadPage extends BasePage {
         ContentPage page = new DatasetPage(ctx, dsname, file.getName(), file.length(), records.size());
         pm.addPage(page, NAME);
         String filtername = dsname + "_" + ALL_RECORDS_LABEL;
-        ContentPage filterpage = new FiltersetPage(ctx, filtername, ALL_RECORDS_LABEL, dsname, records, Collections.<ChartFilter>emptyList());
+        // todo: where to define filters?
+        ContentPage filterpage = new FiltersetPage(ctx, filtername, ALL_RECORDS_LABEL, dsname, records, Arrays.asList(
+                new StringTestFilter(),
+                new ListTestFilter(),
+                new DatetimeTestFilter()));
         pm.addPage(filterpage, dsname);
 //        pm.switchPage(dsname);
         pm.switchPage(filtername);
@@ -236,6 +240,43 @@ class DatasetLoadPage extends BasePage {
                 fileLoaded(file, chunks.get(0), dsname);
             }
 
+        }
+    }
+
+    private static class StringTestFilter implements ChartFilter {
+        @Override
+        public boolean apply(ChartRecord record) {
+            return true;
+        }
+
+        @Override
+        public ChartConfigEntry<?> configEntry() {
+            return new StringConfigEntry("Test string", "some default");
+        }
+    }
+
+    private static class ListTestFilter implements ChartFilter {
+
+        @Override
+        public boolean apply(ChartRecord record) {
+            return true;
+        }
+
+        @Override
+        public ChartConfigEntry<?> configEntry() {
+            return new ListConfigEntry("Test combobox", Arrays.asList("foo", "bar", "baz"));
+        }
+    }
+
+    private static class DatetimeTestFilter implements ChartFilter {
+        @Override
+        public boolean apply(ChartRecord record) {
+            return true;
+        }
+
+        @Override
+        public ChartConfigEntry<?> configEntry() {
+            return new DateTimeConfigEntry("Test date", new Date(), new Date(0), new Date());
         }
     }
 }

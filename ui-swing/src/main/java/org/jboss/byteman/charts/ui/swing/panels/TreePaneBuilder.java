@@ -38,7 +38,6 @@ class TreePaneBuilder {
             tree.expandRow(i);
         }
         JScrollPane jp = new JScrollPane();
-        jp.setMinimumSize(new Dimension(200, 0));
         jp.setViewportView(tree);
         jp.setBorder(createMatteBorder(0, 0, 0, 1, jp.getBackground().darker()));
         return jp;

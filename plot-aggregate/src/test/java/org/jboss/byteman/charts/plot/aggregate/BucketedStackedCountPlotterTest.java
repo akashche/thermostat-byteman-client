@@ -27,6 +27,7 @@ import org.apache.batik.svggen.SVGGraphics2D;
 import org.jboss.byteman.charts.data.ChartRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.ui.ChartConfigEntry;
+import org.jboss.byteman.charts.ui.DateTimeConfigEntry;
 import org.jboss.byteman.charts.ui.StringConfigEntry;
 import org.jfree.chart.JFreeChart;
 import org.junit.Test;
@@ -121,6 +122,11 @@ public class BucketedStackedCountPlotterTest {
         @Override
         public boolean apply(ChartRecord record) {
             return "reportRenderTime".equals(record.getMarker());
+        }
+
+        @Override
+        public ChartConfigEntry configEntry() {
+            return new DateTimeConfigEntry();
         }
     }
 

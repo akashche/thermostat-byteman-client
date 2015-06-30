@@ -24,13 +24,18 @@ package org.jboss.byteman.charts.ui.swing.pages;
 import net.miginfocom.swing.MigLayout;
 import org.jboss.byteman.charts.data.ChartRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
+import org.jboss.byteman.charts.filter.ChartFilterUtils;
 import org.jboss.byteman.charts.plot.aggregate.BucketedStackedCountPlotter;
 import org.jboss.byteman.charts.ui.ChartConfigEntry;
+import org.jboss.byteman.charts.ui.DateTimeConfigEntry;
 import org.jboss.byteman.charts.ui.StringConfigEntry;
+import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,6 +68,7 @@ class FiltersetPage extends BasePage {
     private CardLayout deck;
     private JToggleButton gridButton;
     private JToggleButton chartButton;
+    private JToggleButton filtersButton;
 
     protected FiltersetPage(ChartsAppContext ctx, String name, String label, String parentName, Iterable<ChartRecord> records,
                             Collection<? extends ChartFilter> filters) {
@@ -108,9 +114,9 @@ class FiltersetPage extends BasePage {
         chartButton.addActionListener(new ToggleListener());
         jp.add(chartButton);
 
-        JButton filters = createButton("app_kappfinder_32.png");
-        filters.setEnabled(false);
-        jp.add(filters, "gap 20lp");
+        filtersButton = createToggleButton("app_kappfinder_32.png");
+        filtersButton.addActionListener(new ShowFiltersListener());
+        jp.add(filtersButton, "gap 20lp");
         JButton config = createButton("app_utilities_32.png");
         config.setEnabled(false);
         jp.add(config);
@@ -203,6 +209,47 @@ class FiltersetPage extends BasePage {
                 gridButton.setSelected(true);
                 deck.show(cardbox, GRID_VIEW_NAME);
             }
+        }
+    }
+
+    private class ShowFiltersListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JPanel panel = ChartConfigPanel.builder().build(ChartFilterUtils.toEntries(filters)).getPanel();
+
+//            menu won't work with comboboxes http://stackoverflow.com/a/11246209/314015
+//            todo: try with JLayer instead
+            JPopupMenu menu = new JPopupMenu();
+
+            // copy elements to workaroung menu background issue
+            MigLayout layout = (MigLayout) panel.getLayout();
+            menu.setLayout(layout);
+            for (Component co : panel.getComponents()) {
+                menu.add(co, layout.getComponentConstraints(co));
+            }
+            // todo: add Apply and Cancel buttons
+
+            menu.addPopupMenuListener(new CloseFiltersListener());
+            menu.show(filtersButton, 0, filtersButton.getHeight() - 5);
+
+        }
+    }
+
+    private class CloseFiltersListener implements PopupMenuListener {
+
+        @Override
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+        }
+
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+
+        }
+
+        @Override
+        public void popupMenuCanceled(PopupMenuEvent e) {
+            filtersButton.setSelected(false);
         }
     }
 }

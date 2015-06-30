@@ -22,6 +22,7 @@
 package org.jboss.byteman.charts.filter;
 
 import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.ui.ChartConfigEntry;
 
 /**
  * Interface for filtering predicate for ChartRecords
@@ -38,4 +39,11 @@ public interface ChartFilter {
      * @return true if filter passed, false otherwise
      */
     boolean apply(ChartRecord record);
+
+    /**
+     * Returns config entry object used by UI to display this filter
+     *
+     * @return config entry object
+     */
+    ChartConfigEntry<?> configEntry();
 }
