@@ -60,8 +60,8 @@ public class TestSwingUtils {
         jf.setIconImage(new ImageIcon(url).getImage());
         jf.addWindowListener(createCloseListener());
         jf.setContentPane(content);
-        jf.setSize(1024, 600);
         jf.pack();
+        jf.setSize(1024, 600);
         jf.setLocationRelativeTo(null);
         return jf;
     }

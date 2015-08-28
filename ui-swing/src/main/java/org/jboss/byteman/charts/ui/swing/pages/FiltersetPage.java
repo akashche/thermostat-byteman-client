@@ -27,9 +27,10 @@ import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.filter.ChartFilterUtils;
 import org.jboss.byteman.charts.plot.aggregate.BucketedStackedCountPlotter;
 import org.jboss.byteman.charts.ui.ChartConfigEntry;
-import org.jboss.byteman.charts.ui.DateTimeConfigEntry;
 import org.jboss.byteman.charts.ui.StringConfigEntry;
 import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
+import org.jboss.byteman.charts.ui.swing.util.ChartRecordTableModel;
+import org.jboss.byteman.charts.ui.swing.util.ColumnFitTable;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
@@ -45,8 +46,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createMatteBorder;
-import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
 /**
  * User: alexkasko
@@ -153,24 +156,28 @@ class FiltersetPage extends BasePage {
     private JPanel createContent() {
         deck = new CardLayout();
         cardbox = new JPanel(deck);
-        cardbox.add(createChart(), CHART_VIEW_NAME);
         cardbox.add(createGrid(), GRID_VIEW_NAME);
+        cardbox.add(createChart(), CHART_VIEW_NAME);
+
         return cardbox;
     }
 
     private JPanel createGrid() {
         JPanel parent = new JPanel(new MigLayout(
-                "fill",
+                "fill, insets 0",
                 "[]",
                 "[top]"
         ));
-        JPanel top = new JPanel(new MigLayout(
-                "",
-                "",
-                ""
-        ));
-        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "[TODO] Grid view"));
-        parent.add(top, "growx");
+        ChartRecordTableModel tm = new ChartRecordTableModel(records.iterator(), filters, "yyyy-MM-dd HH:mm:ss.SSS");
+        JTable table = new ColumnFitTable(tm, 256);
+        table.setShowVerticalLines(true);
+        table.setGridColor(parent.getBackground().darker());
+        table.setFillsViewportHeight(true);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        table.setAutoCreateRowSorter(true);
+        JScrollPane sp = new JScrollPane(table, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.setBorder(createEmptyBorder());
+        parent.add(sp, "grow");
         return parent;
     }
 
@@ -199,14 +206,14 @@ class FiltersetPage extends BasePage {
             if (!(e.getSource() instanceof JToggleButton)) return;
             JToggleButton tb = (JToggleButton) e.getSource();
             if (CHART_VIEW_NAME.equals(tb.getName())) {
+                chartButton.setSelected(true);
                 if (!chartViewActive.compareAndSet(false, true)) return;
                 gridButton.setSelected(false);
-                chartButton.setSelected(true);
                 deck.show(cardbox, CHART_VIEW_NAME);
             } else {
+                gridButton.setSelected(true);
                 if (!chartViewActive.compareAndSet(true, false)) return;
                 chartButton.setSelected(false);
-                gridButton.setSelected(true);
                 deck.show(cardbox, GRID_VIEW_NAME);
             }
         }

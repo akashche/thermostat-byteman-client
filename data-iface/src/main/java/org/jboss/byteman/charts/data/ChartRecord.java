@@ -21,9 +21,15 @@
 */
 package org.jboss.byteman.charts.data;
 
+import org.jboss.byteman.charts.utils.date.FastDateFormat;
+
+import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.jboss.byteman.charts.utils.CollectionUtils.arrayToMap;
+import static org.jboss.byteman.charts.utils.StringUtils.EMPTY_STRING;
 import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
 
 /**
@@ -33,6 +39,8 @@ import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
  * Date: 5/25/15
  */
 public class ChartRecord {
+    public static final int STATIC_FIELDS_COUNT = 4;
+
     private long ts;
     private String vmId;
     private String agentId;
@@ -119,6 +127,30 @@ public class ChartRecord {
      */
     public LinkedHashMap<String, Object> getData() {
         return data;
+    }
+
+    /**
+     * Indexed accessor for record fields
+     *
+     * @param columnIndex column index
+     * @return value at specified index or empty string for no value at that index
+     */
+    public Object getValueAt(int columnIndex) {
+        if (columnIndex < 0) throw new IllegalArgumentException("Invalid columnIndex: [" + columnIndex + "]");
+        switch (columnIndex) {
+            case 0: return ts;
+            case 1: return vmId;
+            case 2: return agentId;
+            case 3: return marker;
+            default:
+                Iterator<Map.Entry<String, Object>> it = data.entrySet().iterator();
+                for (int i = 4; i < columnIndex; i++) {
+                    if(it.hasNext()) {
+                        it.next();
+                    } else return EMPTY_STRING;
+                }
+                return it.hasNext() ?  it.next() : EMPTY_STRING;
+        }
     }
 
     /**
