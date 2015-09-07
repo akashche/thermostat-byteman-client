@@ -11,4 +11,8 @@ public interface PageManager {
     void addPage(ContentPage page, String parentName);
 
     void removePage(String pageName);
+
+    void showNodeLoading(String pageName);
+
+    void hideNodeLoading(String pageName);
 }

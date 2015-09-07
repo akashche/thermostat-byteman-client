@@ -6,6 +6,7 @@ import org.jboss.byteman.charts.ui.swing.pages.PageManager;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
@@ -79,6 +80,33 @@ class TreePageManager implements PageManager {
                 break;
             }
         }
+    }
+
+    @Override
+    public void showNodeLoading(String pageName) {
+        if (null == pageName) throw new UiSwingException("Specified pageName is null");
+        DefaultMutableTreeNode node = findNode(pageName);
+        if (null == node) return;
+        TreePaneBuilder.PageCellRenderer ren = (TreePaneBuilder.PageCellRenderer) tree.getCellRenderer();
+        ren.addLoadingPage(pageName);
+        repaintNode(node);
+    }
+
+    @Override
+    public void hideNodeLoading(String pageName) {
+        if (null == pageName) throw new UiSwingException("Specified pageName is null");
+        DefaultMutableTreeNode node = findNode(pageName);
+        if (null == node) return;
+        TreePaneBuilder.PageCellRenderer ren = (TreePaneBuilder.PageCellRenderer) tree.getCellRenderer();
+        ren.removeLoadingPage(pageName);
+        repaintNode(node);
+    }
+
+    private void repaintNode(DefaultMutableTreeNode node) {
+        DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+        TreePath path = new TreePath(model.getPathToRoot(node));
+        Rectangle rect = tree.getPathBounds(path);
+        tree.repaint(rect);
     }
 
     private void removeNode(String name) {

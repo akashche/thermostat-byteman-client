@@ -156,8 +156,8 @@ class FiltersetPage extends BasePage {
     private JPanel createContent() {
         deck = new CardLayout();
         cardbox = new JPanel(deck);
-        cardbox.add(createGrid(), GRID_VIEW_NAME);
         cardbox.add(createChart(), CHART_VIEW_NAME);
+        cardbox.add(createGrid(), GRID_VIEW_NAME);
 
         return cardbox;
     }
@@ -205,6 +205,28 @@ class FiltersetPage extends BasePage {
         public void actionPerformed(ActionEvent e) {
             if (!(e.getSource() instanceof JToggleButton)) return;
             JToggleButton tb = (JToggleButton) e.getSource();
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(tb);
+//            frame.getGlassPane().setBackground(new Color(192, 192, 192, 142));
+//            frame.getGlassPane().setVisible(true);
+//            filtersButton.setBackground(Color.RED);
+            ctx.getPageManager().showNodeLoading(FiltersetPage.this.name);
+            Timer tm = new Timer(1000, new ToggleTimerListener(frame, tb));
+            tm.setRepeats(false);
+            tm.start();
+        }
+    }
+
+    private class ToggleTimerListener implements ActionListener {
+        private final JFrame frame;
+        private final JToggleButton tb;
+
+        private ToggleTimerListener(JFrame frame, JToggleButton tb) {
+            this.frame = frame;
+            this.tb = tb;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
             if (CHART_VIEW_NAME.equals(tb.getName())) {
                 chartButton.setSelected(true);
                 if (!chartViewActive.compareAndSet(false, true)) return;
@@ -216,6 +238,9 @@ class FiltersetPage extends BasePage {
                 chartButton.setSelected(false);
                 deck.show(cardbox, GRID_VIEW_NAME);
             }
+            ctx.getPageManager().hideNodeLoading(FiltersetPage.this.name);
+//            frame.getGlassPane().setVisible(false);
+//            filtersButton.setBackground(Color.WHITE);
         }
     }
 

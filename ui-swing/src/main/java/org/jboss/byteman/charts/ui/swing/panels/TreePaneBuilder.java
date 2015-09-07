@@ -10,11 +10,13 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
 
 import java.awt.*;
+import java.awt.image.ImageObserver;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.util.Collections.newSetFromMap;
 import static javax.swing.BorderFactory.createMatteBorder;
 import static javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION;
 
@@ -88,22 +90,39 @@ class TreePaneBuilder {
         }
     }
 
-    private static class PageCellRenderer extends DefaultTreeCellRenderer {
+    static class PageCellRenderer extends DefaultTreeCellRenderer {
         // most probably will be used only from EDT, so concurrent just in case
-        ConcurrentHashMap<String, ImageIcon> iconsCache = new ConcurrentHashMap<String, ImageIcon>();
+        private final ConcurrentHashMap<String, ImageIcon> iconsCache = new ConcurrentHashMap<String, ImageIcon>();
+        private final Set<String> loadingPages = newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+        private JTree tree = null;
 
         @Override
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded,
                 boolean leaf, int row, boolean hasFocus) {
             super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+            if (null == this.tree) this.tree = tree;
             DefaultMutableTreeNode nd = (DefaultMutableTreeNode) value;
             if (nd.getUserObject() instanceof PageNodeObject) {
                 PageNodeObject pn = (PageNodeObject) nd.getUserObject();
                 setText(pn.getLabel());
-                ImageIcon icon = loadIcon(pn.getIcon());
+                final ImageIcon icon;
+                if (!loadingPages.contains(pn.getName())) {
+                    icon = loadIcon(pn.getIcon());
+                } else {
+                    icon = loadIcon("loading_16.gif");
+                    icon.setImageObserver(new NodeImageObserver(tree, nd));
+                }
                 setIcon(icon);
             }
             return this;
+        }
+
+        void addLoadingPage(String pageName) {
+            loadingPages.add(pageName);
+        }
+
+        void removeLoadingPage(String pageName) {
+            loadingPages.remove(pageName);
         }
 
         private ImageIcon loadIcon(String path) {
@@ -117,6 +136,26 @@ class TreePaneBuilder {
                 iconsCache.put(path, icon);
                 return icon;
             }
+        }
+    }
+
+    static class NodeImageObserver implements ImageObserver {
+        private final JTree tree;
+        private TreePath path;
+
+        NodeImageObserver(JTree tree, TreeNode node) {
+            this.tree = tree;
+            DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+            this.path = new TreePath(model.getPathToRoot(node));
+        }
+
+        @Override
+        public boolean imageUpdate(Image img, int flags, int x, int y, int width, int height) {
+            if ((flags & (FRAMEBITS | ALLBITS)) != 0) {
+                Rectangle rect = tree.getPathBounds(path);
+                tree.repaint(rect);
+            }
+            return (flags & (ALLBITS | ABORT)) == 0;
         }
     }
 }
