@@ -31,6 +31,7 @@ import org.jboss.byteman.charts.ui.StringConfigEntry;
 import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
 import org.jboss.byteman.charts.ui.swing.util.ChartRecordTableModel;
 import org.jboss.byteman.charts.ui.swing.util.ColumnFitTable;
+import org.jboss.byteman.charts.ui.swing.util.SplashablePane;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
@@ -90,7 +91,7 @@ class FiltersetPage extends BasePage {
         ));
         jp.add(createToolbar(), "width 100%, height pref!, wrap");
         jp.add(createContent(), "pushy");
-        return jp;
+        return new SplashablePane(jp);
     }
 
     @Override
