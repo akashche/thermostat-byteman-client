@@ -243,7 +243,7 @@ class DatasetLoadPage extends BasePage {
         }
     }
 
-    private static class StringTestFilter implements ChartFilter {
+    static class StringTestFilter implements ChartFilter {
         @Override
         public boolean apply(ChartRecord record) {
             return true;
@@ -255,7 +255,7 @@ class DatasetLoadPage extends BasePage {
         }
     }
 
-    private static class ListTestFilter implements ChartFilter {
+    static class ListTestFilter implements ChartFilter {
 
         @Override
         public boolean apply(ChartRecord record) {
@@ -268,7 +268,7 @@ class DatasetLoadPage extends BasePage {
         }
     }
 
-    private static class DatetimeTestFilter implements ChartFilter {
+    static class DatetimeTestFilter implements ChartFilter {
         @Override
         public boolean apply(ChartRecord record) {
             return true;

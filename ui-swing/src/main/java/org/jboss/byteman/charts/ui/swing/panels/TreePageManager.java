@@ -7,7 +7,6 @@ import org.jboss.byteman.charts.ui.swing.util.SplashablePane;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
@@ -25,7 +24,7 @@ class TreePageManager implements PageManager {
     private final JTree tree;
     private final CardLayout deck;
     private final Container cardbox;
-    private final ConcurrentHashMap<String, Component> cards = new ConcurrentHashMap<String, Component>();
+    private final ConcurrentHashMap<String, SplashablePane> cards = new ConcurrentHashMap<String, SplashablePane>();
 
     TreePageManager(java.util.List<ContentPage> pages, JTree tree, CardLayout deck, Container cardbox) {
         for (ContentPage cp : pages) {
@@ -54,7 +53,7 @@ class TreePageManager implements PageManager {
         if (null == page) throw new UiSwingException("Specified page is null");
         if (null == parentName) throw new UiSwingException("Specified parentName is null");
         // add card
-        Component pane = page.createPane();
+        SplashablePane pane = new SplashablePane(page.createPane());
         cardbox.add(page.getName(), pane);
         cards.put(page.getName(), pane);
         // add node
@@ -67,6 +66,59 @@ class TreePageManager implements PageManager {
         model.insertNodeInto(node, parent, parent.getChildCount());
         // add cached
         pageMap.put(page.getName(), page);
+    }
+
+    @Override
+    public void addPageAsync(ContentPage page, String parentName) {
+        if (null == page) throw new UiSwingException("Specified page is null");
+        if (null == parentName) throw new UiSwingException("Specified parentName is null");
+        // add empty page
+        SplashablePane sp = new SplashablePane();
+        cardbox.add(page.getName(), sp);
+        cards.put(page.getName(), sp);
+        // add node
+        DefaultMutableTreeNode parent = findNode(parentName);
+        if (null == parent) return;
+        DefaultMutableTreeNode existed = findNode(page.getName());
+        if (null != existed) return;
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(new PageNodeObject(page));
+        DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+        model.insertNodeInto(node, parent, parent.getChildCount());
+        // add cached
+        pageMap.put(page.getName(), page);
+        // fire background page loading
+        showPageSplash(page.getName());
+        switchPage(page.getName());
+        new PageAddWorker(page, sp).execute();
+    }
+
+    private class PageAddWorker extends SwingWorker<Void, Void> {
+        final ContentPage page;
+        final SplashablePane sp;
+        Component comp;
+
+        private PageAddWorker(ContentPage page, SplashablePane sp) {
+            this.page = page;
+            this.sp = sp;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            long start = System.currentTimeMillis();
+            this.comp = page.createPane();
+            long end = System.currentTimeMillis();
+            long diff = end - start;
+            if (diff < 500) {
+                Thread.sleep(500 - diff);
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            sp.setContent(comp);
+            hidePageSplash(page.getName());
+        }
     }
 
     @Override
@@ -88,14 +140,10 @@ class TreePageManager implements PageManager {
     }
 
     @Override
-    public void showNodeLoading(String pageName) {
+    public void showPageSplash(String pageName) {
         if (null == pageName) throw new UiSwingException("Specified pageName is null");
         // page
-        Component comp = cards.get(pageName);
-        if (comp instanceof SplashablePane) {
-            SplashablePane sp = (SplashablePane) comp;
-            sp.showSplash();
-        }
+        cards.get(pageName).showSplash();
         // tree
         DefaultMutableTreeNode node = findNode(pageName);
         if (null == node) return;
@@ -105,14 +153,10 @@ class TreePageManager implements PageManager {
     }
 
     @Override
-    public void hideNodeLoading(String pageName) {
+    public void hidePageSplash(String pageName) {
         if (null == pageName) throw new UiSwingException("Specified pageName is null");
         // page
-        Component comp = cards.get(pageName);
-        if (comp instanceof SplashablePane) {
-            SplashablePane sp = (SplashablePane) comp;
-            sp.hideSplash();
-        }
+        cards.get(pageName).hideSplash();
         // tree
         DefaultMutableTreeNode node = findNode(pageName);
         if (null == node) return;

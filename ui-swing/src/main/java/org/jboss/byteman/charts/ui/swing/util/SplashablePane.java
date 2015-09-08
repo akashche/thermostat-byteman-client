@@ -18,8 +18,12 @@ import java.net.URL;
 // http://coderazzi.net/glassedpane/index.html
 public class SplashablePane extends JComponent {
 
-    private final Component content;
     private final Splash splash;
+    private Component content;
+
+    public SplashablePane() {
+        this(new JPanel());
+    }
 
     public SplashablePane(Component content) {
         this.content = content;
@@ -29,6 +33,13 @@ public class SplashablePane extends JComponent {
         add(splash, 0);
         propagateSize(splash, getWidth(), getHeight());
         splash.setVisible(false);
+    }
+
+    public void setContent(Component content) {
+        remove(this.content);
+        this.content = content;
+        add(content, -1);
+        propagateSize(content, getWidth(), getHeight());
     }
 
     public void showSplash() {

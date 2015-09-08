@@ -31,7 +31,6 @@ import org.jboss.byteman.charts.ui.StringConfigEntry;
 import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
 import org.jboss.byteman.charts.ui.swing.util.ChartRecordTableModel;
 import org.jboss.byteman.charts.ui.swing.util.ColumnFitTable;
-import org.jboss.byteman.charts.ui.swing.util.SplashablePane;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
@@ -42,12 +41,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static javax.swing.BorderFactory.createEmptyBorder;
+import static javax.swing.BorderFactory.*;
 import static javax.swing.BorderFactory.createMatteBorder;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
@@ -91,7 +91,7 @@ class FiltersetPage extends BasePage {
         ));
         jp.add(createToolbar(), "width 100%, height pref!, wrap");
         jp.add(createContent(), "pushy");
-        return new SplashablePane(jp);
+        return jp;
     }
 
     @Override
@@ -210,7 +210,7 @@ class FiltersetPage extends BasePage {
 //            frame.getGlassPane().setBackground(new Color(192, 192, 192, 142));
 //            frame.getGlassPane().setVisible(true);
 //            filtersButton.setBackground(Color.RED);
-            ctx.getPageManager().showNodeLoading(FiltersetPage.this.name);
+            ctx.getPageManager().showPageSplash(FiltersetPage.this.name);
             Timer tm = new Timer(1000, new ToggleTimerListener(frame, tb));
             tm.setRepeats(false);
             tm.start();
@@ -239,7 +239,7 @@ class FiltersetPage extends BasePage {
                 chartButton.setSelected(false);
                 deck.show(cardbox, GRID_VIEW_NAME);
             }
-            ctx.getPageManager().hideNodeLoading(FiltersetPage.this.name);
+            ctx.getPageManager().hidePageSplash(FiltersetPage.this.name);
 //            frame.getGlassPane().setVisible(false);
 //            filtersButton.setBackground(Color.WHITE);
         }
@@ -249,23 +249,49 @@ class FiltersetPage extends BasePage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            JToggleButton button = (JToggleButton) e.getSource();
             JPanel panel = ChartConfigPanel.builder().build(ChartFilterUtils.toEntries(filters)).getPanel();
-
-//            menu won't work with comboboxes http://stackoverflow.com/a/11246209/314015
-//            todo: try with JLayer instead
+            panel.setBackground(new Color(0, 0, 0, 0));
+            panel.setOpaque(false);
+            // menu won't work with comboboxes http://stackoverflow.com/a/11246209/314015
             JPopupMenu menu = new JPopupMenu();
-
-            // copy elements to workaroung menu background issue
-            MigLayout layout = (MigLayout) panel.getLayout();
-            menu.setLayout(layout);
-            for (Component co : panel.getComponents()) {
-                menu.add(co, layout.getComponentConstraints(co));
-            }
-            // todo: add Apply and Cancel buttons
-
+            menu.setLayout(new MigLayout("insets 0, gap 0"));
+            menu.add(panel, "wrap");
+            JPanel bp = new JPanel(new MigLayout("align right"));
+            bp.add(new JButton("Clear"));
+            bp.add(new JButton("Cancel"));
+            JButton apply = new JButton("Apply");
+            apply.addActionListener(new ApplyFiltersListener(menu, button));
+            bp.add(apply);
+//            bp.setBorder(createEmptyBorder(5, 0, 0, 0));
+            bp.setBackground(new Color(0, 0, 0, 0));
+            bp.setOpaque(false);
+            menu.add(bp, "grow x");
             menu.addPopupMenuListener(new CloseFiltersListener());
             menu.show(filtersButton, 0, filtersButton.getHeight() - 5);
+        }
+    }
 
+    private class ApplyFiltersListener implements ActionListener {
+        private final JPopupMenu menu;
+        private final JToggleButton button;
+
+        private ApplyFiltersListener(JPopupMenu menu, JToggleButton button) {
+            this.menu = menu;
+            this.button = button;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            PageManager pm = ctx.getPageManager();
+            String filtername = parentName + "_" + "tmp_filtered";
+            ContentPage filterpage = new FiltersetPage(ctx, filtername, "tmp_filtered", parentName, records, Arrays.asList(
+                    new DatasetLoadPage.StringTestFilter(),
+                    new DatasetLoadPage.ListTestFilter(),
+                    new DatasetLoadPage.DatetimeTestFilter()));
+            pm.addPageAsync(filterpage, parentName);
+            menu.setVisible(false);
+            button.setSelected(false);
         }
     }
 

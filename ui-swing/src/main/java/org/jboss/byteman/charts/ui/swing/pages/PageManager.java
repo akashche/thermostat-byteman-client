@@ -10,9 +10,11 @@ public interface PageManager {
 
     void addPage(ContentPage page, String parentName);
 
+    void addPageAsync(ContentPage page, String parentName);
+
     void removePage(String pageName);
 
-    void showNodeLoading(String pageName);
+    void showPageSplash(String pageName);
 
-    void hideNodeLoading(String pageName);
+    void hidePageSplash(String pageName);
 }
