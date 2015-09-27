@@ -8,20 +8,18 @@ import org.jboss.byteman.charts.plot.PlotConfig;
  */
 class TestPlotConfig implements PlotConfig {
     private final String valueAttributeName;
+    private final String categoryAttributeName;
     private final int maxRecords;
-    private final long minTimestamp;
-    private final long maxTimestamp;
-    private final boolean ignoreAbsentMarker;
+    private final boolean ignoreAbsentCategory;
     private final boolean ignoreAbsentValue;
     private final boolean ignoreInvalidValue;
 
-    TestPlotConfig(String valueAttributeName, int maxRecords, long minTimestamp, long maxTimestamp,
-                   boolean ignoreAbsentMarker, boolean ignoreAbsentValue, boolean ignoreInvalidValue) {
+    TestPlotConfig(String valueAttributeName, String categoryAttributeName, int maxRecords,
+                   boolean ignoreAbsentCategory, boolean ignoreAbsentValue, boolean ignoreInvalidValue) {
         this.valueAttributeName = valueAttributeName;
+        this.categoryAttributeName = categoryAttributeName;
         this.maxRecords = maxRecords;
-        this.minTimestamp = minTimestamp;
-        this.maxTimestamp = maxTimestamp;
-        this.ignoreAbsentMarker = ignoreAbsentMarker;
+        this.ignoreAbsentCategory = ignoreAbsentCategory;
         this.ignoreAbsentValue = ignoreAbsentValue;
         this.ignoreInvalidValue = ignoreInvalidValue;
     }
@@ -32,23 +30,18 @@ class TestPlotConfig implements PlotConfig {
     }
 
     @Override
+    public String getCategoryAttributeName() {
+        return categoryAttributeName;
+    }
+
+    @Override
     public int getMaxRecords() {
         return maxRecords;
     }
 
     @Override
-    public long getMinTimestamp() {
-        return minTimestamp;
-    }
-
-    @Override
-    public long getMaxTimestamp() {
-        return maxTimestamp;
-    }
-
-    @Override
-    public boolean isIgnoreAbsentMarker() {
-        return ignoreAbsentMarker;
+    public boolean isIgnoreAbsentCategory() {
+        return ignoreAbsentCategory;
     }
 
     @Override
@@ -67,10 +60,9 @@ class TestPlotConfig implements PlotConfig {
 
     static class Builder {
         private String valueAttributeName = "value";
+        private String categoryAttributeName = "category";
         private int maxRecords = 24;
-        private long minTimestamp = 0;
-        private long maxTimestamp = Long.MAX_VALUE;
-        private boolean ignoreAbsentMarker = false;
+        private boolean ignoreAbsentCategory = false;
         private boolean ignoreAbsentValue = false;
         private boolean ignoreInvalidValue = false;
 
@@ -84,18 +76,8 @@ class TestPlotConfig implements PlotConfig {
             return this;
         }
 
-        public Builder withMinTimestamp(long minTimestamp) {
-            this.minTimestamp = minTimestamp;
-            return this;
-        }
-
-        public Builder withMaxTimestamp(long maxTimestamp) {
-            this.maxTimestamp = maxTimestamp;
-            return this;
-        }
-
-        public Builder withIgnoreAbsentMarker(boolean ignoreAbsentMarker) {
-            this.ignoreAbsentMarker = ignoreAbsentMarker;
+        public Builder withIgnoreAbsentCategory(boolean ignoreAbsentCategory) {
+            this.ignoreAbsentCategory = ignoreAbsentCategory;
             return this;
         }
 
@@ -110,8 +92,8 @@ class TestPlotConfig implements PlotConfig {
         }
 
         TestPlotConfig build() {
-            return new TestPlotConfig(valueAttributeName, maxRecords, minTimestamp,
-                    maxTimestamp, ignoreAbsentMarker, ignoreAbsentValue, ignoreInvalidValue);
+            return new TestPlotConfig(valueAttributeName, categoryAttributeName, maxRecords,
+                    ignoreAbsentCategory, ignoreAbsentValue, ignoreInvalidValue);
         }
     }
 }

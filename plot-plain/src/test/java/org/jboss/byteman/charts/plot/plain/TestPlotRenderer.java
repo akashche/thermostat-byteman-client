@@ -19,6 +19,7 @@ import org.w3c.dom.Document;
 import java.awt.*;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.List;
 
 import static org.jboss.byteman.charts.plot.PlotUtils.toColor;
@@ -31,11 +32,11 @@ import static org.jboss.byteman.charts.utils.StringUtils.EMPTY_STRING;
  */
 class TestPlotRenderer {
 
-    void renderToFile(List<PlotRecord> records, String filename) throws Exception {
+    void renderToFile(Collection<PlotRecord> records, String filename) throws Exception {
         DefaultCategoryDataset ds = new DefaultCategoryDataset();
         for (PlotRecord re : records) {
             Long label = re.getPeriodStart() + ((re.getPeriodEnd() - re.getPeriodStart())/2);
-            ds.addValue(re.getValue(), re.getMarker(), label);
+            ds.addValue(re.getValue(), re.getCategory(), label);
         }
         JFreeChart chart = ChartFactory.createStackedBarChart(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, ds, PlotOrientation.VERTICAL, false, true, false);
         CategoryPlot plot = (CategoryPlot) chart.getPlot();

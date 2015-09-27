@@ -8,13 +8,11 @@ public interface PlotConfig {
 
     String getValueAttributeName();
 
+    String getCategoryAttributeName();
+
     int getMaxRecords();
 
-    long getMinTimestamp();
-
-    long getMaxTimestamp();
-
-    boolean isIgnoreAbsentMarker();
+    boolean isIgnoreAbsentCategory();
 
     boolean isIgnoreAbsentValue();
 

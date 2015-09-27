@@ -34,6 +34,7 @@ import java.util.Iterator;
  */
 public interface Plotter<T extends PlotConfig> {
 
-    ArrayList<PlotRecord> createPlot(T config, Iterator<DataRecord> data, Collection<? extends ChartFilter> filters);
+    Collection<PlotRecord> createPlot(T config, long minTimestamp, long maxTimestamp,
+            Iterator<DataRecord> data, Collection<? extends ChartFilter> filters);
 
 }

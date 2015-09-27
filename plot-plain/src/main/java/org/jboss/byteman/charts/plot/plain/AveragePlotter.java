@@ -4,11 +4,13 @@ import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.filter.ChartFilteredIterator;
 import org.jboss.byteman.charts.plot.PlotConfig;
+import org.jboss.byteman.charts.plot.PlotException;
 import org.jboss.byteman.charts.plot.PlotRecord;
 import org.jboss.byteman.charts.plot.Plotter;
 
 import java.util.*;
 
+import static java.util.Collections.emptyList;
 import static org.jboss.byteman.charts.utils.collection.SingleUseIterable.singleUseIterable;
 
 /**
@@ -17,40 +19,41 @@ import static org.jboss.byteman.charts.utils.collection.SingleUseIterable.single
  */
 public class AveragePlotter implements Plotter<PlotConfig> {
     @Override
-    public ArrayList<PlotRecord> createPlot(PlotConfig config, Iterator<DataRecord> data, Collection<? extends ChartFilter> filters) {
+    public Collection<PlotRecord> createPlot(PlotConfig config, long minTimestamp, long maxTimestamp, 
+            Iterator<DataRecord> data, Collection<? extends ChartFilter> filters) {
+        if (null == config) throw new PlotException("Invalid null config specified");
+        if (null == data) throw new PlotException("Invalid null data specified");
+        if (null == filters) throw new PlotException("Invalid null filters specified");
+        if (maxTimestamp <= minTimestamp) return emptyList();
 
-        // todo: corner cases, proper rounding
-        long period = config.getMaxTimestamp() - config.getMinTimestamp();
-        long step = period/config.getMaxRecords();
-        Bucket[] buckets = new Bucket[config.getMaxRecords()];
+        long period = maxTimestamp - minTimestamp;
+        int maxRecords = Math.min((int) period, config.getMaxRecords());
+        long step = period/maxRecords;
+        Bucket[] buckets = new Bucket[maxRecords];
         for (int i = 0; i < buckets.length; i++) {
-            buckets[i] = new Bucket(config.getMinTimestamp() + i*step, config.getMinTimestamp() + (i+1)*step);
+            buckets[i] = new Bucket(minTimestamp + i*step, minTimestamp + (i+1)*step);
         }
 
         Iterator<DataRecord> filtered = new ChartFilteredIterator(data, filters);
         for (DataRecord re : singleUseIterable(filtered)) {
             // period filter
-            if (re.getTimestamp() < config.getMinTimestamp() || re.getTimestamp() >= config.getMaxTimestamp()) continue;
+            if (re.getTimestamp() < minTimestamp || re.getTimestamp() >= maxTimestamp) continue;
             // value filter
             Object valueObj = re.getData().get(config.getValueAttributeName());
             if (null == valueObj && config.isIgnoreAbsentValue()) continue;
             if (!(valueObj instanceof Number) && config.isIgnoreInvalidValue()) continue;
-            // marker filter
-            Object markerObj = re.getMarker();
-            if (null == markerObj && config.isIgnoreAbsentMarker()) continue;
-            // final marker and value
-            double value = extractValue(valueObj);
-            String marker = null != markerObj ? markerObj.toString() : "UNKNOWN";
+            if (null == re.getData().get(config.getCategoryAttributeName()) && config.isIgnoreAbsentCategory()) continue;
             // obtain bucket
-            long relTs = re.getTimestamp() - config.getMinTimestamp();
+            long relTs = re.getTimestamp() - minTimestamp;
             int bucketInd = (int)(relTs/step);
             Bucket bucket = buckets[bucketInd];
             // add record
-            bucket.append(marker, value);
+            bucket.append(config, re);
         }
 
         ArrayList<PlotRecord> res = new ArrayList<PlotRecord>();
         for (Bucket bu : buckets) {
+            res.add(new FakePlotRecord(bu));
             for (Bar ba : bu.bars.values()) {
                 res.add(ba);
             }
@@ -58,45 +61,36 @@ public class AveragePlotter implements Plotter<PlotConfig> {
         return res;
     }
 
-    double extractValue(Object valueObj) {
+    // todo: inheritance
+    static double extractValue(PlotConfig config, DataRecord rec) {
+        Object valueObj = rec.getData().get(config.getValueAttributeName());
         if (null == valueObj) return 0;
         if (!(valueObj instanceof Number)) return 1;
         Number valueNum = (Number) valueObj;
         return valueNum.doubleValue();
     }
 
-    private static class Bar implements PlotRecord {
+    static String extractCategory(PlotConfig config, DataRecord rec) {
+        Object catObj = rec.getData().get(config.getCategoryAttributeName());
+        if (null == catObj) return "UNKNOWN";
+        return catObj.toString();
+    }
+
+    private static class FakePlotRecord implements PlotRecord {
         final Bucket bucket;
-        final String marker;
-        double value;
-        int count;
 
-        private Bar(Bucket bucket, String marker, double value) {
+        private FakePlotRecord(Bucket bucket) {
             this.bucket = bucket;
-            this.marker = marker;
-            this.value = value;
-            this.count = 1;
-        }
-
-        void append(double value) {
-            this.value += value;
-            this.count += 1;
         }
 
         @Override
         public double getValue() {
-            // avg
-            return value/count;
+            return 0;
         }
 
         @Override
-        public int getCount() {
-            return count;
-        }
-
-        @Override
-        public String getMarker() {
-            return marker;
+        public String getCategory() {
+            return "";
         }
 
         @Override
@@ -110,14 +104,64 @@ public class AveragePlotter implements Plotter<PlotConfig> {
         }
 
         @Override
+        public List<DataRecord> getDataRecords() {
+            return emptyList();
+        }
+    }
+
+    private static class Bar implements PlotRecord {
+        final Bucket bucket;
+        final String category;
+        double value;
+        List<DataRecord> dataRecords = new ArrayList<DataRecord>();
+
+        private Bar(PlotConfig config, Bucket bucket, String category, DataRecord record) {
+            this.bucket = bucket;
+            this.category = category;
+            this.value = extractValue(config, record);
+            dataRecords.add(record);
+        }
+
+        void append(PlotConfig config, DataRecord record) {
+            this.value += extractValue(config, record);
+            dataRecords.add(record);
+        }
+
+        @Override
+        public double getValue() {
+            // avg
+            return value/dataRecords.size();
+        }
+
+        @Override
+        public String getCategory() {
+            return category;
+        }
+
+        @Override
+        public long getPeriodStart() {
+            return bucket.periodStart;
+        }
+
+        @Override
+        public long getPeriodEnd() {
+            return bucket.periodEnd;
+        }
+
+        @Override
+        public List<DataRecord> getDataRecords() {
+            return dataRecords;
+        }
+
+        @Override
         public String toString() {
             final StringBuilder sb = new StringBuilder();
             sb.append("Bar");
             sb.append("{periodStart=").append(bucket.periodStart);
             sb.append(", periodEnd='").append(bucket.periodEnd).append('\'');
-            sb.append(", marker='").append(marker).append('\'');
+            sb.append(", category='").append(category).append('\'');
             sb.append(", value=").append(value);
-            sb.append(", count=").append(count);
+            sb.append(", count=").append(dataRecords.size());
             sb.append("}\n");
             return sb.toString();
         }
@@ -131,16 +175,16 @@ public class AveragePlotter implements Plotter<PlotConfig> {
         Bucket(long periodStart, long periodEnd) {
             this.periodStart = periodStart;
             this.periodEnd = periodEnd;
-            this.bars.put("", new Bar(this, "", 0));
         }
 
-        void append(String marker, double value) {
-            Bar existing = bars.get(marker);
+        void append(PlotConfig config, DataRecord record) {
+            String category = extractCategory(config, record);
+            Bar existing = bars.get(category);
             if (null != existing) {
-                existing.append(value);
+                existing.append(config, record);
             } else {
-                Bar bar = new Bar(this, marker, value);
-                bars.put(marker, bar);
+                Bar bar = new Bar(config, this, category, record);
+                bars.put(category, bar);
             }
         }
     }

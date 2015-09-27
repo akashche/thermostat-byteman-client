@@ -182,7 +182,7 @@ class FiltersetPage extends BasePage {
         return parent;
     }
 
-    private ChartPanel createChart() {
+    private Component createChart() {
         // todo
 //        Map<String, ChartConfigEntry<?>> conf = new HashMap<String, ChartConfigEntry<?>>();
 //        conf.put("categoryAttributeName", new StringConfigEntry("categoryAttributeName", "reportId"));
@@ -191,7 +191,7 @@ class FiltersetPage extends BasePage {
 //                .applyConfig(conf)
 //                .createPlot(records.iterator(), filters);
 //        return new ChartPanel(chart);
-        return null;
+        return new JPanel();
     }
 
     private class ClosePageListener implements ActionListener {
