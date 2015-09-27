@@ -65,6 +65,13 @@
             <version>${version.batik}</version>
             <scope>test</scope>
         </dependency>
+        <!-- gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${version.gson}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     
 </project>

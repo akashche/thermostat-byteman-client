@@ -8,6 +8,8 @@ public interface PlotRecord {
 
     double getValue();
 
+    int getCount();
+
     String getMarker();
 
     long getPeriodStart();

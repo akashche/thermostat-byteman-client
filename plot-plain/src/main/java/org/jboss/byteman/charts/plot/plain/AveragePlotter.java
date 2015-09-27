@@ -90,6 +90,11 @@ public class AveragePlotter implements Plotter<PlotConfig> {
         }
 
         @Override
+        public int getCount() {
+            return count;
+        }
+
+        @Override
         public String getMarker() {
             return marker;
         }
@@ -103,6 +108,19 @@ public class AveragePlotter implements Plotter<PlotConfig> {
         public long getPeriodEnd() {
             return bucket.periodEnd;
         }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("Bar");
+            sb.append("{periodStart=").append(bucket.periodStart);
+            sb.append(", periodEnd='").append(bucket.periodEnd).append('\'');
+            sb.append(", marker='").append(marker).append('\'');
+            sb.append(", value=").append(value);
+            sb.append(", count=").append(count);
+            sb.append("}\n");
+            return sb.toString();
+        }
     }
 
     private static class Bucket {
@@ -113,6 +131,7 @@ public class AveragePlotter implements Plotter<PlotConfig> {
         Bucket(long periodStart, long periodEnd) {
             this.periodStart = periodStart;
             this.periodEnd = periodEnd;
+            this.bars.put("", new Bar(this, "", 0));
         }
 
         void append(String marker, double value) {

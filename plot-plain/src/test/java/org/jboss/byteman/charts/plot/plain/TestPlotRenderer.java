@@ -31,10 +31,11 @@ import static org.jboss.byteman.charts.utils.StringUtils.EMPTY_STRING;
  */
 class TestPlotRenderer {
 
-    void renderToFile(List<PlotRecord> records) throws Exception {
+    void renderToFile(List<PlotRecord> records, String filename) throws Exception {
         DefaultCategoryDataset ds = new DefaultCategoryDataset();
         for (PlotRecord re : records) {
-            ds.addValue(re.getValue(), re.getMarker(), re.getPeriodEnd() + "-" + re.getPeriodEnd());
+            Long label = re.getPeriodStart() + ((re.getPeriodEnd() - re.getPeriodStart())/2);
+            ds.addValue(re.getValue(), re.getMarker(), label);
         }
         JFreeChart chart = ChartFactory.createStackedBarChart(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, ds, PlotOrientation.VERTICAL, false, true, false);
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
@@ -47,13 +48,14 @@ class TestPlotRenderer {
 //        plot.getRangeAxis().setLabel(cf.rangeAxisLabel);
 //        colorAxis(plot.getRangeAxis());
 //        colorAxis(plot.getDomainAxis());
-        plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI * 0.12d));
+//        plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI * 0.12d));
 //        plot.getDomainAxis().setLowerMargin(cf.domainAxisLowerMargin);
 //        plot.getDomainAxis().setUpperMargin(cf.domainAxisUpperMargin);
 //        plot.getDomainAxis().setLabel(cf.domainAxisLabel);
         BarRenderer3D barrenderer = new StackedBarRenderer3D(16.0d, 12.0d);
-        barrenderer.setSeriesPaint(0, toColor("#BB669900"));
-        barrenderer.setSeriesPaint(1, toColor("#BBFF8800"));
+        barrenderer.setSeriesPaint(0, toColor("#00FFFFFF"));
+        barrenderer.setSeriesPaint(1, toColor("#BB669900"));
+        barrenderer.setSeriesPaint(2, toColor("#BBFF8800"));
         barrenderer.setWallPaint(toColor("#FFEEEEEE"));
 //        barrenderer.setBaseItemLabelsVisible(cf.baseItemLabelsVisible);
         barrenderer.setShadowVisible(false);
@@ -61,7 +63,7 @@ class TestPlotRenderer {
         plot.setRenderer(barrenderer);
         plot.setOutlineVisible(false);
 
-        chartToSvg(chart, 1024, 600, "test");
+        chartToSvg(chart, 1024, 600, filename);
     }
 
     private static void chartToSvg(JFreeChart chart, int width, int height, String filename) throws Exception {
