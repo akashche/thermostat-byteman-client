@@ -1,9 +1,8 @@
 package org.jboss.byteman.charts.ui.swing.util;
 
-import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.filter.ChartFilteredIterator;
-import org.jboss.byteman.charts.utils.StringUtils;
 import org.jboss.byteman.charts.utils.date.FastDateFormat;
 
 import javax.swing.table.AbstractTableModel;
@@ -17,22 +16,22 @@ import static org.jboss.byteman.charts.utils.collection.SingleUseIterable.single
  * Date: 8/28/15
  */
 public class ChartRecordTableModel extends AbstractTableModel {
-    private final ArrayList<ChartRecord> data = new ArrayList<ChartRecord>();
+    private final ArrayList<DataRecord> data = new ArrayList<DataRecord>();
     private final int columnCount;
     private final FastDateFormat dtf;
 
-    public ChartRecordTableModel(Iterator<ChartRecord> records, Collection<? extends ChartFilter> filters,
+    public ChartRecordTableModel(Iterator<DataRecord> records, Collection<? extends ChartFilter> filters,
             String dateFormat) {
         int maxCols = 0;
-        Iterator<ChartRecord> filtered = new ChartFilteredIterator(records, filters);
-        for (ChartRecord cr : singleUseIterable(filtered)) {
+        Iterator<DataRecord> filtered = new ChartFilteredIterator(records, filters);
+        for (DataRecord cr : singleUseIterable(filtered)) {
             int size = cr.getData().size();
             if (size > maxCols) {
                 maxCols = size;
             }
             data.add(cr);
         }
-        this.columnCount = maxCols + ChartRecord.STATIC_FIELDS_COUNT;
+        this.columnCount = maxCols + DataRecord.STATIC_FIELDS_COUNT;
         this.dtf = FastDateFormat.getInstance(dateFormat);
     }
 

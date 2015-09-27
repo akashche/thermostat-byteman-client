@@ -3,51 +3,40 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.jboss.byteman.charts</groupId>
         <artifactId>byteman-charts</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>ui-swing</artifactId>
+    <groupId>org.jboss.byteman.charts</groupId>
+    <artifactId>plot-swing</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
     <dependencies>
-        <!-- data iface -->
+        <!-- chart record access -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>data-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- ui iface -->
+        <!-- chart config access -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- plotter plain -->
+        <!-- chart filter access -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>plot-plain</artifactId>
+            <artifactId>filter-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- plotter aggregate -->
+        <!-- plot access -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>plot-aggregate</artifactId>
+            <artifactId>plot-iface</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <!-- utils -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- mig -->
-        <dependency>
-            <groupId>com.miglayout</groupId>
-            <artifactId>miglayout-swing</artifactId>
-            <version>${version.miglayout}</version>
         </dependency>
     </dependencies>
-    
+
 </project>

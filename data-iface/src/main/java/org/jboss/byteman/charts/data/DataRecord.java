@@ -21,9 +21,6 @@
 */
 package org.jboss.byteman.charts.data;
 
-import org.jboss.byteman.charts.utils.date.FastDateFormat;
-
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,10 +35,10 @@ import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
  * @author akashche
  * Date: 5/25/15
  */
-public class ChartRecord {
+public class DataRecord {
     public static final int STATIC_FIELDS_COUNT = 4;
 
-    private long ts;
+    private long timestamp;
     private String vmId;
     private String agentId;
     private String marker;
@@ -50,18 +47,18 @@ public class ChartRecord {
     /**
      * Private constructor for JSON tools
      */
-    private ChartRecord() {
+    private DataRecord() {
     }
 
     /**
      * Constructor
      *
-     * @param ts timestamp
+     * @param timestamp timestamp
      * @param marker marker string
      * @param data data related to this record
      */
-    public ChartRecord(long ts, String vmId, String agentId, String marker, LinkedHashMap<String, Object> data) {
-        this.ts = ts;
+    public DataRecord(long timestamp, String vmId, String agentId, String marker, LinkedHashMap<String, Object> data) {
+        this.timestamp = timestamp;
         this.vmId = defaultString(vmId);
         this.agentId = defaultString(agentId);
         this.marker = defaultString(marker);
@@ -71,13 +68,13 @@ public class ChartRecord {
     /**
      * Constructor with varargs support
      *
-     * @param ts timestamp
+     * @param timestamp timestamp
      * @param marker marker string
      * @param dataFields data related to this record in the form of
      *                   "key", "value", "key", "value" syntax
      */
-    public ChartRecord(long ts, String vmId, String agentId, String marker, Object... dataFields) {
-        this.ts = ts;
+    public DataRecord(long timestamp, String vmId, String agentId, String marker, Object... dataFields) {
+        this.timestamp = timestamp;
         this.vmId = defaultString(vmId);
         this.agentId = defaultString(agentId);
         this.marker = defaultString(marker);
@@ -87,10 +84,10 @@ public class ChartRecord {
     /**
      * Timestamp accessor
      *
-     * @return ts field
+     * @return timestamp field
      */
-    public long getTs() {
-        return ts;
+    public long getTimestamp() {
+        return timestamp;
     }
 
     /**
@@ -138,7 +135,7 @@ public class ChartRecord {
     public Object getValueAt(int columnIndex) {
         if (columnIndex < 0) throw new IllegalArgumentException("Invalid columnIndex: [" + columnIndex + "]");
         switch (columnIndex) {
-            case 0: return ts;
+            case 0: return timestamp;
             case 1: return vmId;
             case 2: return agentId;
             case 3: return marker;
@@ -160,7 +157,7 @@ public class ChartRecord {
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("ChartRecord");
-        sb.append("{ts=").append(ts);
+        sb.append("{timestamp=").append(timestamp);
         sb.append(", vmId='").append(vmId).append('\'');
         sb.append(", agentId='").append(agentId).append('\'');
         sb.append(", marker='").append(marker).append('\'');

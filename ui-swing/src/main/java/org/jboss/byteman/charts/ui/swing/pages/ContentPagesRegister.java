@@ -21,10 +21,16 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
+import org.jboss.byteman.charts.plot.Plotter;
+import org.jboss.byteman.charts.plot.aggregate.BucketedStackedCountPlotter;
+import org.jboss.byteman.charts.plot.plain.PlainStackedPlotter;
+import org.jboss.byteman.charts.ui.ConfigurableChart;
+
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.jboss.byteman.charts.ui.swing.pages.ContentPagesRegister.RegisteredChartEntry.chartEntry;
 import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
 
 /**
@@ -34,6 +40,10 @@ import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
 public class ContentPagesRegister {
 
     public static final ChartsAppContext APP_CONTEXT = new ChartsAppContextImpl();
+//    public static final List<RegisteredChartEntry<?>> PLOTS = Arrays.asList(
+//            chartEntry("Plain Stacked", "plain", PlainStackedPlotter.class),
+//            chartEntry("Bucketed Stacked", "aggregated", BucketedStackedCountPlotter.class)
+//    );
 
     // todo: make me private
     public static final List<ContentPage> PAGES = Arrays.<ContentPage>asList(
@@ -78,5 +88,33 @@ public class ContentPagesRegister {
             return pm;
         }
 
+    }
+
+    static class RegisteredChartEntry<T extends ConfigurableChart & Plotter> {
+        final String name;
+        final String category;
+        final Class<T> chartClass;
+
+        RegisteredChartEntry(String name, String category, Class<T> chartClass) {
+            this.name = name;
+            this.category = category;
+            this.chartClass = chartClass;
+        }
+
+        static <T extends ConfigurableChart & Plotter>
+        RegisteredChartEntry<T> chartEntry(String name, String category, Class<T> chartClass) {
+            return new RegisteredChartEntry<T>(name, category, chartClass);
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("RegisteredChartEntry");
+            sb.append("{name='").append(name).append('\'');
+            sb.append(", category='").append(category).append('\'');
+            sb.append(", chartClass=").append(chartClass);
+            sb.append('}');
+            return sb.toString();
+        }
     }
 }

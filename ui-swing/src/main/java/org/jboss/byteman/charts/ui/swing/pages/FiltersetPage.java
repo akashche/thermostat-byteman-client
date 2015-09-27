@@ -22,10 +22,10 @@
 package org.jboss.byteman.charts.ui.swing.pages;
 
 import net.miginfocom.swing.MigLayout;
-import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.filter.ChartFilterUtils;
-import org.jboss.byteman.charts.plot.aggregate.BucketedStackedCountPlotter;
+import org.jboss.byteman.charts.plot.plain.PlainStackedPlotter;
 import org.jboss.byteman.charts.ui.ChartConfigEntry;
 import org.jboss.byteman.charts.ui.StringConfigEntry;
 import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
@@ -63,7 +63,7 @@ class FiltersetPage extends BasePage {
     static final String ALL_RECORDS_LABEL = "All Records";
 
     private final String parentName;
-    private final Iterable<ChartRecord> records;
+    private final Iterable<DataRecord> records;
     private final Collection<? extends ChartFilter> filters;
     // not actually required due to ETD, still just in case
     private final AtomicBoolean chartViewActive = new AtomicBoolean(true);
@@ -74,7 +74,7 @@ class FiltersetPage extends BasePage {
     private JToggleButton chartButton;
     private JToggleButton filtersButton;
 
-    protected FiltersetPage(ChartsAppContext ctx, String name, String label, String parentName, Iterable<ChartRecord> records,
+    protected FiltersetPage(ChartsAppContext ctx, String name, String label, String parentName, Iterable<DataRecord> records,
                             Collection<? extends ChartFilter> filters) {
         super(ctx, name, label, "mimetype_log_16.png");
         this.parentName = parentName;
@@ -183,14 +183,15 @@ class FiltersetPage extends BasePage {
     }
 
     private ChartPanel createChart() {
-        // todo: temporary harcoded
-        Map<String, ChartConfigEntry<?>> conf = new HashMap<String, ChartConfigEntry<?>>();
-        conf.put("categoryAttributeName", new StringConfigEntry("categoryAttributeName", "reportId"));
-        conf.put("domainAxisLabel", new StringConfigEntry("domainAxisLabel", "[TODO] incomplete charts panel, should support filters"));
-        JFreeChart chart = new BucketedStackedCountPlotter()
-                .applyConfig(conf)
-                .build(records.iterator(), filters);
-        return new ChartPanel(chart);
+        // todo
+//        Map<String, ChartConfigEntry<?>> conf = new HashMap<String, ChartConfigEntry<?>>();
+//        conf.put("categoryAttributeName", new StringConfigEntry("categoryAttributeName", "reportId"));
+//        conf.put("domainAxisLabel", new StringConfigEntry("domainAxisLabel", "[TODO] incomplete charts panel, should support filters"));
+//        JFreeChart chart = new PlainStackedPlotter()
+//                .applyConfig(conf)
+//                .createPlot(records.iterator(), filters);
+//        return new ChartPanel(chart);
+        return null;
     }
 
     private class ClosePageListener implements ActionListener {

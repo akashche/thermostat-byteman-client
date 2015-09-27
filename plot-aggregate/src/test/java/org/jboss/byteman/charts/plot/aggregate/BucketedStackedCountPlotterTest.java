@@ -24,7 +24,7 @@ package org.jboss.byteman.charts.plot.aggregate;
 import com.google.gson.reflect.TypeToken;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.ui.ChartConfigEntry;
 import org.jboss.byteman.charts.ui.DateTimeConfigEntry;
@@ -52,7 +52,7 @@ import static org.jboss.byteman.charts.utils.StringUtils.UTF_8;
  */
 public class BucketedStackedCountPlotterTest {
 
-    private static final Type CHART_RECORD_LIST_TYPE = new TypeToken<ArrayList<ChartRecord>>(){}.getType();
+    private static final Type CHART_RECORD_LIST_TYPE = new TypeToken<ArrayList<DataRecord>>(){}.getType();
 
     @Test
     public void dummy() {
@@ -69,13 +69,13 @@ public class BucketedStackedCountPlotterTest {
 
 //    @Test
     public void test() throws Exception {
-        List<ChartRecord> records = readData();
-        Map<String, ChartConfigEntry<?>> conf = new HashMap<String, ChartConfigEntry<?>>();
-        conf.put("categoryAttributeName", new StringConfigEntry("categoryAttributeName", "reportId"));
-        JFreeChart chart = new BucketedStackedCountPlotter()
-                .applyConfig(conf)
-                .build(records.iterator(), asList(RenderTimeFilter.INSTANCE));
-        chartToSvg(chart, 1024, 480);
+//        List<DataRecord> records = readData();
+//        Map<String, ChartConfigEntry<?>> conf = new HashMap<String, ChartConfigEntry<?>>();
+//        conf.put("categoryAttributeName", new StringConfigEntry("categoryAttributeName", "reportId"));
+//        JFreeChart chart = new BucketedStackedCountPlotter()
+//                .applyConfig(conf)
+//                .createPlot(records.iterator(), asList(RenderTimeFilter.INSTANCE));
+//        chartToSvg(chart, 1024, 480);
     }
 
     private static void chartToSvg(JFreeChart chart, int width, int height) throws Exception {
@@ -94,7 +94,7 @@ public class BucketedStackedCountPlotterTest {
         }
     }
 
-    private static ArrayList<ChartRecord> readData() {
+    private static ArrayList<DataRecord> readData() {
         InputStream is = null;
         try {
             is = BucketedStackedCountPlotterTest.class.getResourceAsStream("reports_data.json");
@@ -105,7 +105,7 @@ public class BucketedStackedCountPlotterTest {
         }
     }
 
-    private static void writeData(List<ChartRecord> records) {
+    private static void writeData(List<DataRecord> records) {
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream("data.json"), UTF_8);
@@ -120,7 +120,7 @@ public class BucketedStackedCountPlotterTest {
         INSTANCE;
 
         @Override
-        public boolean apply(ChartRecord record) {
+        public boolean apply(DataRecord record) {
             return "reportRenderTime".equals(record.getMarker());
         }
 

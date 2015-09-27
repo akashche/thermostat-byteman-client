@@ -21,19 +21,19 @@
 */
 package org.jboss.byteman.charts.plot;
 
-import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
-import org.jfree.chart.JFreeChart;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * User: alexkasko
  * Date: 6/8/15
  */
-public interface Plotter {
+public interface Plotter<T extends PlotConfig> {
 
-    JFreeChart build(Iterator<ChartRecord> data, Collection<? extends ChartFilter> filters);
+    ArrayList<PlotRecord> createPlot(T config, Iterator<DataRecord> data, Collection<? extends ChartFilter> filters);
+
 }

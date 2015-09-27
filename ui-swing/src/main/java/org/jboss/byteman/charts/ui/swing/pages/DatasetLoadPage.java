@@ -24,7 +24,7 @@ package org.jboss.byteman.charts.ui.swing.pages;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.miginfocom.swing.MigLayout;
-import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.ui.*;
 import org.jboss.byteman.charts.utils.string.StrSubstitutor;
@@ -32,6 +32,7 @@ import org.jboss.byteman.charts.utils.string.StrSubstitutor;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,7 +57,7 @@ import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 class DatasetLoadPage extends BasePage {
 
     public static final Gson GSON = new Gson();
-    private static final Type CHART_RECORD_LIST_TYPE = new TypeToken<ArrayList<ChartRecord>>(){}.getType();
+    private static final Type CHART_RECORD_LIST_TYPE = new TypeToken<ArrayList<DataRecord>>(){}.getType();
 
     public static final String NAME = "data";
 
@@ -109,6 +110,13 @@ class DatasetLoadPage extends BasePage {
         JButton chooseButton = new JButton("...");
         chooseButton.addActionListener(new ChooseFileListener());
         jp.add(chooseButton, "width pref!, wrap");
+        // grid
+//        DefaultTableModel model = new DefaultTableModel(new Object[]{"foo"}, 0);
+//        for (ContentPagesRegister.RegisteredChartEntry<?> en : ContentPagesRegister.PLOTS) {
+//            model.addRow(new Object[]{en.toString()});
+//        }
+//        JTable jt = new JTable(model);
+//        jp.add(jt, "wrap");
         return jp;
     }
 
@@ -150,7 +158,7 @@ class DatasetLoadPage extends BasePage {
         return formatted + "_" + datasetNumber.incrementAndGet();
     }
 
-    private void fileLoaded(File file, List<ChartRecord> records, String dsname) {
+    private void fileLoaded(File file, List<DataRecord> records, String dsname) {
         PageManager pm = ctx.getPageManager();
         ContentPage page = new DatasetPage(ctx, dsname, file.getName(), file.length(), records.size());
         pm.addPage(page, NAME);
@@ -171,7 +179,7 @@ class DatasetLoadPage extends BasePage {
         pathField.setText("");
     }
 
-    private ArrayList<ChartRecord> readData(File file) {
+    private ArrayList<DataRecord> readData(File file) {
         InputStream is = null;
         try {
             is = new FileInputStream(file);
@@ -216,7 +224,7 @@ class DatasetLoadPage extends BasePage {
         }
     }
 
-    private class LoadFileWorker extends SwingWorker<Void, List<ChartRecord>> {
+    private class LoadFileWorker extends SwingWorker<Void, List<DataRecord>> {
 
         private final File file;
         private final String dsname;
@@ -229,13 +237,13 @@ class DatasetLoadPage extends BasePage {
         @Override
         @SuppressWarnings("unchecked") // publish call
         protected Void doInBackground() throws Exception {
-            List<ChartRecord> recs = readData(file);
+            List<DataRecord> recs = readData(file);
             publish(recs);
             return null;
         }
 
         @Override
-        protected void process(List<List<ChartRecord>> chunks) {
+        protected void process(List<List<DataRecord>> chunks) {
             if (1 == chunks.size()) {
                 fileLoaded(file, chunks.get(0), dsname);
             }
@@ -245,7 +253,7 @@ class DatasetLoadPage extends BasePage {
 
     static class StringTestFilter implements ChartFilter {
         @Override
-        public boolean apply(ChartRecord record) {
+        public boolean apply(DataRecord record) {
             return true;
         }
 
@@ -258,7 +266,7 @@ class DatasetLoadPage extends BasePage {
     static class ListTestFilter implements ChartFilter {
 
         @Override
-        public boolean apply(ChartRecord record) {
+        public boolean apply(DataRecord record) {
             return true;
         }
 
@@ -270,7 +278,7 @@ class DatasetLoadPage extends BasePage {
 
     static class DatetimeTestFilter implements ChartFilter {
         @Override
-        public boolean apply(ChartRecord record) {
+        public boolean apply(DataRecord record) {
             return true;
         }
 

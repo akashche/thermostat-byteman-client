@@ -21,43 +21,17 @@
 */
 package org.jboss.byteman.charts.plot;
 
-import org.jfree.data.category.DefaultCategoryDataset;
-
 /**
  * User: alexkasko
  * Date: 6/8/15
  */
-public class BoundedCategoryDataset {
-    private final DefaultCategoryDataset dataset;
-    private final double min;
-    private final double max;
+public class PlotException extends RuntimeException {
 
-    public BoundedCategoryDataset(DefaultCategoryDataset dataset, double min, double max) {
-        this.dataset = dataset;
-        this.min = min;
-        this.max = max;
+    public PlotException(String message) {
+        super(message);
     }
 
-    public DefaultCategoryDataset getDataset() {
-        return dataset;
-    }
-
-    public double getMin() {
-        return min;
-    }
-
-    public double getMax() {
-        return max;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("BoundedCategoryDataset");
-        sb.append("{dataset=").append(dataset);
-        sb.append(", min=").append(min);
-        sb.append(", max=").append(max);
-        sb.append('}');
-        return sb.toString();
+    public PlotException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

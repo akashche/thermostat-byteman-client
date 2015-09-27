@@ -38,6 +38,7 @@
         <module>plot-iface</module>
         <module>plot-plain</module>
         <module>plot-aggregate</module>
+        <module>plot-swing</module>
         <module>ui-iface</module>
         <module>ui-swing</module>
         <module>transport-iface</module>

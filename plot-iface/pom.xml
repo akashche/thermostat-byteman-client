@@ -20,17 +20,17 @@
             <artifactId>data-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- chart config access -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-iface</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- chart filter access -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filter-iface</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <!-- charts library -->
-        <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>${version.jfreechart}</version>
         </dependency>
     </dependencies>
     

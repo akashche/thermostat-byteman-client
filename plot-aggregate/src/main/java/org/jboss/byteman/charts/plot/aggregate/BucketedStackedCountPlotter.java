@@ -22,10 +22,11 @@
 package org.jboss.byteman.charts.plot.aggregate;
 
 import com.google.gson.Gson;
-import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.filter.ChartFilteredIterator;
-import org.jboss.byteman.charts.plot.BoundedCategoryDataset;
+import org.jboss.byteman.charts.plot.PlotConfig;
+import org.jboss.byteman.charts.plot.PlotRecord;
 import org.jboss.byteman.charts.plot.Plotter;
 import org.jboss.byteman.charts.ui.*;
 import org.jfree.chart.ChartFactory;
@@ -51,99 +52,100 @@ import static org.jboss.byteman.charts.utils.collection.SingleUseIterable.single
  * User: alexkasko
  * Date: 6/8/15
  */
-public class BucketedStackedCountPlotter implements Plotter, ConfigurableChart {
+public class BucketedStackedCountPlotter {
 
     public static final Gson GSON = new Gson();
 
     private Config cf;
 
-    @Override
-    public JFreeChart build(Iterator<ChartRecord> data, Collection<? extends ChartFilter> filters) {
-        BoundedCategoryDataset ds = createDataset(data, filters);
-        JFreeChart chart = ChartFactory.createStackedBarChart(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, ds.getDataset(), PlotOrientation.VERTICAL, false, true, false);
-        CategoryPlot plot = (CategoryPlot) chart.getPlot();
-        plot.setBackgroundPaint(toColor(cf.backgroundPaint));
-        plot.setBackgroundImageAlpha((float) cf.backgroundImageAlpha);
-        plot.setDomainGridlinesVisible(cf.domainGridlinesVisible);
-        plot.setRangeGridlinePaint(toColor(cf.rangeGridlinePaint));
-        plot.getRangeAxis().setRange(new Range(ds.getMin(), ds.getMax() * 1.1));
-        plot.getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        plot.getRangeAxis().setLabel(cf.rangeAxisLabel);
-        colorAxis(plot.getRangeAxis());
-        colorAxis(plot.getDomainAxis());
-        plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI * cf.domainAxisLabelAngle));
-        plot.getDomainAxis().setLowerMargin(cf.domainAxisLowerMargin);
-        plot.getDomainAxis().setUpperMargin(cf.domainAxisUpperMargin);
-        plot.getDomainAxis().setLabel(cf.domainAxisLabel);
-        BarRenderer3D barrenderer = new StackedBarRenderer3D(cf.rendered3dXOffset, cf.rendered3dYOffset);
-        // todo: list
-        barrenderer.setSeriesPaint(0, toColor(cf.seriesPaint0));
-        barrenderer.setSeriesPaint(1, toColor(cf.seriesPaint1));
-        barrenderer.setWallPaint(toColor(cf.wallPaint));
-        barrenderer.setBaseItemLabelsVisible(cf.baseItemLabelsVisible);
-        barrenderer.setShadowVisible(cf.shadowVisible);
-        barrenderer.setItemMargin(cf.itemMargin);
-        plot.setRenderer(barrenderer);
-        plot.setOutlineVisible(cf.outlineVisible);
-        return chart;
+//    @Override
+    public JFreeChart createPlot(Iterator<DataRecord> data, Collection<? extends ChartFilter> filters) {
+//        BoundedCategoryDataset ds = createDataset(data, filters);
+//        JFreeChart chart = ChartFactory.createStackedBarChart(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, ds.getDataset(), PlotOrientation.VERTICAL, false, true, false);
+//        CategoryPlot plot = (CategoryPlot) chart.getPlot();
+//        plot.setBackgroundPaint(toColor(cf.backgroundPaint));
+//        plot.setBackgroundImageAlpha((float) cf.backgroundImageAlpha);
+//        plot.setDomainGridlinesVisible(cf.domainGridlinesVisible);
+//        plot.setRangeGridlinePaint(toColor(cf.rangeGridlinePaint));
+//        plot.getRangeAxis().setRange(new Range(ds.getMin(), ds.getMax() * 1.1));
+//        plot.getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+//        plot.getRangeAxis().setLabel(cf.rangeAxisLabel);
+//        colorAxis(plot.getRangeAxis());
+//        colorAxis(plot.getDomainAxis());
+//        plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI * cf.domainAxisLabelAngle));
+//        plot.getDomainAxis().setLowerMargin(cf.domainAxisLowerMargin);
+//        plot.getDomainAxis().setUpperMargin(cf.domainAxisUpperMargin);
+//        plot.getDomainAxis().setLabel(cf.domainAxisLabel);
+//        BarRenderer3D barrenderer = new StackedBarRenderer3D(cf.rendered3dXOffset, cf.rendered3dYOffset);
+//        // todo: list
+//        barrenderer.setSeriesPaint(0, toColor(cf.seriesPaint0));
+//        barrenderer.setSeriesPaint(1, toColor(cf.seriesPaint1));
+//        barrenderer.setWallPaint(toColor(cf.wallPaint));
+//        barrenderer.setBaseItemLabelsVisible(cf.baseItemLabelsVisible);
+//        barrenderer.setShadowVisible(cf.shadowVisible);
+//        barrenderer.setItemMargin(cf.itemMargin);
+//        plot.setRenderer(barrenderer);
+//        plot.setOutlineVisible(cf.outlineVisible);
+//        return chart;
+        return null;
     }
 
-    private BoundedCategoryDataset createDataset(Iterator<ChartRecord> data, Collection<? extends ChartFilter> filters) {
-        Iterator<ChartRecord> filtered = new ChartFilteredIterator(data, filters);
-        Map<String, Map<Long, Bucket>> catmap = new LinkedHashMap<String, Map<Long, Bucket>>();
-        Map<Long, Counter> comap = new LinkedHashMap<Long, Counter>();
-        long minkey = Long.MAX_VALUE, maxkey = Long.MIN_VALUE;
-        for (ChartRecord cr : singleUseIterable(filtered)) {
-            Long val = ((Number) cr.getData().get(cf.valueAttributeName)).longValue();
-            if (null == val) continue;
-            long bucketkey = val - (val % cf.step);
-            if (bucketkey < minkey) minkey = bucketkey;
-            if (bucketkey > maxkey) maxkey = bucketkey;
-            Counter co = getCounterDefault(comap, bucketkey);
-            co.increment();
-            String cat = "" + cr.getData().get(cf.categoryAttributeName);
-            Map<Long, Bucket> bucketmap = getCatDefault(catmap, cat);
-            Bucket bu = getBucketDefault(bucketmap, bucketkey);
-            bu.increment();
-        }
-        DefaultCategoryDataset ds = new DefaultCategoryDataset();
-        for (Map.Entry<String, Map<Long, Bucket>> encat : catmap.entrySet()) {
-            String cat = encat.getKey();
-            Map<Long, Bucket> bucketmap = encat.getValue();
-            for (long i = minkey; i <= maxkey; i += cf.step) {
-                Bucket bu = getBucketDefault(bucketmap, i);
-                ds.addValue(bu.count, cat, bu.name());
-            }
-        }
-        int max = Integer.MIN_VALUE;
-        for (Counter co : comap.values()) {
-            if (co.count > max) max = co.count;
-        }
-        return new BoundedCategoryDataset(ds, 0, max);
-    }
+//    private BoundedCategoryDataset createDataset(Iterator<DataRecord> data, Collection<? extends ChartFilter> filters) {
+//        Iterator<DataRecord> filtered = new ChartFilteredIterator(data, filters);
+//        Map<String, Map<Long, Bucket>> catmap = new LinkedHashMap<String, Map<Long, Bucket>>();
+//        Map<Long, Counter> comap = new LinkedHashMap<Long, Counter>();
+//        long minkey = Long.MAX_VALUE, maxkey = Long.MIN_VALUE;
+//        for (DataRecord cr : singleUseIterable(filtered)) {
+//            Long val = ((Number) cr.getData().get(cf.valueAttributeName)).longValue();
+//            if (null == val) continue;
+//            long bucketkey = val - (val % cf.step);
+//            if (bucketkey < minkey) minkey = bucketkey;
+//            if (bucketkey > maxkey) maxkey = bucketkey;
+//            Counter co = getCounterDefault(comap, bucketkey);
+//            co.increment();
+//            String cat = "" + cr.getData().get(cf.categoryAttributeName);
+//            Map<Long, Bucket> bucketmap = getCatDefault(catmap, cat);
+//            Bucket bu = getBucketDefault(bucketmap, bucketkey);
+//            bu.increment();
+//        }
+//        DefaultCategoryDataset ds = new DefaultCategoryDataset();
+//        for (Map.Entry<String, Map<Long, Bucket>> encat : catmap.entrySet()) {
+//            String cat = encat.getKey();
+//            Map<Long, Bucket> bucketmap = encat.getValue();
+//            for (long i = minkey; i <= maxkey; i += cf.step) {
+//                Bucket bu = getBucketDefault(bucketmap, i);
+//                ds.addValue(bu.count, cat, bu.name());
+//            }
+//        }
+//        int max = Integer.MIN_VALUE;
+//        for (Counter co : comap.values()) {
+//            if (co.count > max) max = co.count;
+//        }
+//        return new BoundedCategoryDataset(ds, 0, max);
+//    }
 
     private void colorAxis(Axis ax) {
         ax.setAxisLinePaint(toColor(cf.axisLinePaint));
         ax.setTickMarkPaint(toColor(cf.tickMarkPaint));
         ax.setTickLabelPaint(toColor(cf.tickLabelPaint));
     }
-
-    @Override
-    public Collection<? extends ChartConfigEntry<?>> availableConfig() {
-        return cf.toEntries();
-    }
-
-    @Override
-    public BucketedStackedCountPlotter applyConfig(Map<String, ChartConfigEntry<?>> entries) {
-        Map<String, Object> map = new LinkedHashMap<String, Object>();
-        for(Map.Entry<String, ChartConfigEntry<?>> en : entries.entrySet()) {
-            map.put(en.getKey(), en.getValue().getValue());
-        }
-        // todo: fixme with proper reflection
-        String json = GSON.toJson(map);
-        this.cf = GSON.fromJson(json, Config.class);
-        return this;
-    }
+//
+//    @Override
+//    public Collection<? extends ChartConfigEntry<?>> availableConfig() {
+//        return cf.toEntries();
+//    }
+//
+//    @Override
+//    public BucketedStackedCountPlotter applyConfig(Map<String, ChartConfigEntry<?>> entries) {
+//        Map<String, Object> map = new LinkedHashMap<String, Object>();
+//        for(Map.Entry<String, ChartConfigEntry<?>> en : entries.entrySet()) {
+//            map.put(en.getKey(), en.getValue().getValue());
+//        }
+//        // todo: fixme with proper reflection
+//        String json = GSON.toJson(map);
+//        this.cf = GSON.fromJson(json, Config.class);
+//        return this;
+//    }
 
     private Map<Long, Bucket> getCatDefault(Map<String, Map<Long, Bucket>> catmap, String key) {
         Map<Long, Bucket> nullable = catmap.get(key);

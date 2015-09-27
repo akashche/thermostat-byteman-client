@@ -11,5 +11,60 @@
     </parent>
     <artifactId>plot-plain</artifactId>
 
+
+    <dependencies>
+        <!-- plotter interface -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>plot-iface</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- chart config access -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-iface</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- chart record access -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>data-iface</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- chart filter access -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>filter-iface</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- test -->
+        <!-- charts library -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>${version.jfreechart}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jcommon</artifactId>
+            <version>${version.jfreechart_common}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- svg generation -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-svggen</artifactId>
+            <version>${version.batik}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-dom</artifactId>
+            <version>${version.batik}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     
 </project>

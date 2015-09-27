@@ -21,7 +21,7 @@
 */
 package org.jboss.byteman.charts.filter;
 
-import org.jboss.byteman.charts.data.ChartRecord;
+import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.utils.collection.SingleMethodIterator;
 
 import java.util.Collection;
@@ -31,20 +31,20 @@ import java.util.Iterator;
  * User: alexkasko
  * Date: 6/8/15
  */
-public class ChartFilteredIterator extends SingleMethodIterator<ChartRecord> {
+public class ChartFilteredIterator extends SingleMethodIterator<DataRecord> {
 
-    private final Iterator<ChartRecord> source;
+    private final Iterator<DataRecord> source;
     private final Collection<? extends ChartFilter> filters;
 
-    public ChartFilteredIterator(Iterator<ChartRecord> source, Collection<? extends ChartFilter> filters) {
+    public ChartFilteredIterator(Iterator<DataRecord> source, Collection<? extends ChartFilter> filters) {
         this.source = source;
         this.filters = filters;
     }
 
     @Override
-    protected ChartRecord computeNext() {
+    protected DataRecord computeNext() {
         while (source.hasNext()) {
-            ChartRecord cr = source.next();
+            DataRecord cr = source.next();
             boolean passed = true;
             for (ChartFilter fi : filters) {
                 passed = fi.apply(cr);
