@@ -53,6 +53,7 @@ public class AveragePlotter implements Plotter<PlotConfig> {
 
         ArrayList<PlotRecord> res = new ArrayList<PlotRecord>();
         for (Bucket bu : buckets) {
+            // think: maybe move this into swing chart impl
             res.add(new FakePlotRecord(bu));
             for (Bar ba : bu.bars.values()) {
                 res.add(ba);

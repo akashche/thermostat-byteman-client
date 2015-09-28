@@ -58,6 +58,15 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
  */
 class FiltersetPage extends BasePage {
 
+// data filters:
+//    timestamp from
+//    timestamp to
+
+//    string category regex
+//    double value from
+//    double value to
+//    string attribute name:regex format
+
     private static final String GRID_VIEW_NAME = "grid";
     private static final String CHART_VIEW_NAME = "chart";
     static final String ALL_RECORDS_LABEL = "All Records";

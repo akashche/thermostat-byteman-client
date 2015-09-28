@@ -29,6 +29,7 @@ import java.awt.*;
  * User: alexkasko
  * Date: 6/8/15
  */
+@Deprecated // use ColorUtils
 public class PlotUtils {
 
     /**
@@ -37,6 +38,7 @@ public class PlotUtils {
      * @param rgba string in "#AARRGGBB" format
      * @return color instance
      */
+    @Deprecated
     public static Color toColor(String rgba) {
         String unprefixed = rgba.startsWith("#") ? rgba.substring(1) : rgba;
         if (!(6 == unprefixed.length() || 8 == unprefixed.length())) throw new UtilsException("Invalid color: [" + rgba + "]");

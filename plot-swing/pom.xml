@@ -37,6 +37,17 @@
             <artifactId>plot-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- charts library -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>${version.jfreechart}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jcommon</artifactId>
+            <version>${version.jfreechart_common}</version>
+        </dependency>
     </dependencies>
 
 </project>
