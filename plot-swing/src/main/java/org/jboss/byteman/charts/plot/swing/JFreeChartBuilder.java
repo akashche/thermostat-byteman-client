@@ -61,9 +61,9 @@ public class JFreeChartBuilder implements ConfigurableChart {
     private void extractPeriod(Collection<? extends ChartFilter> filters) {
         for (ChartFilter fi : filters) {
             ChartConfigEntry<?> cce = fi.configEntry();
-            if ("timestampPeriodStart".equals(cce.getName())) {
+            if ("timestampFrom".equals(cce.getName())) {
                 periodStart = ((Date) cce.getValue()).getTime();
-            } else if ("timestampPeriodEnd".equals(cce.getName())) {
+            } else if ("timestampTo".equals(cce.getName())) {
                 periodEnd = ((Date) cce.getValue()).getTime();
             }
         }

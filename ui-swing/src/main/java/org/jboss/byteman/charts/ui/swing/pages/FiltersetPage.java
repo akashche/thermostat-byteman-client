@@ -191,14 +191,6 @@ class FiltersetPage extends BasePage {
     }
 
     private Component createChart() {
-        // todo
-//        Map<String, ChartConfigEntry<?>> conf = new HashMap<String, ChartConfigEntry<?>>();
-//        conf.put("categoryAttributeName", new StringConfigEntry("categoryAttributeName", "reportId"));
-//        conf.put("domainAxisLabel", new StringConfigEntry("domainAxisLabel", "[TODO] incomplete charts panel, should support filters"));
-//        JFreeChart chart = new PlainStackedPlotter()
-//                .applyConfig(conf)
-//                .createPlot(records.iterator(), filters);
-//        return new ChartPanel(chart);
         return new JFreeChartBuilder(plotter, records, filters).createChartPanel();
 
     }
@@ -268,8 +260,12 @@ class FiltersetPage extends BasePage {
             menu.setLayout(new MigLayout("insets 0, gap 0"));
             menu.add(panel, "wrap");
             JPanel bp = new JPanel(new MigLayout("align right"));
-            bp.add(new JButton("Clear"));
-            bp.add(new JButton("Cancel"));
+            JButton clear = new JButton("Clear");
+            clear.setEnabled(false);
+            bp.add(clear);
+            JButton cancel = new JButton("Cancel");
+            cancel.addActionListener(new CancelFiltersListener(menu, button));
+            bp.add(cancel);
             JButton apply = new JButton("Apply");
             apply.addActionListener(new ApplyFiltersListener(menu, button));
             bp.add(apply);
@@ -295,11 +291,28 @@ class FiltersetPage extends BasePage {
         public void actionPerformed(ActionEvent e) {
             PageManager pm = ctx.getPageManager();
             String filtername = parentName + "_" + "tmp_filtered";
+            // todo: deep clone filters
             ContentPage filterpage = new FiltersetPage(ctx, filtername, "tmp_filtered", parentName, plotter, records, Arrays.asList(
                     new DatasetLoadPage.StringTestFilter(),
                     new DatasetLoadPage.ListTestFilter(),
                     new DatasetLoadPage.DatetimeTestFilter()));
             pm.addPageAsync(filterpage, parentName);
+            menu.setVisible(false);
+            button.setSelected(false);
+        }
+    }
+
+    private class CancelFiltersListener implements ActionListener {
+        private final JPopupMenu menu;
+        private final JToggleButton button;
+
+        private CancelFiltersListener(JPopupMenu menu, JToggleButton button) {
+            this.menu = menu;
+            this.button = button;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
             menu.setVisible(false);
             button.setSelected(false);
         }

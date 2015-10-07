@@ -25,8 +25,8 @@ public class JFreeChartBuilderTest {
                 new DataRecord(9000, "42", "42", "marker1", "value", 44, "category", "cat1")
         );
         Collection<NamedDateTestFilter> filters = Arrays.asList(
-                new NamedDateTestFilter("timestampPeriodStart", 0),
-                new NamedDateTestFilter("timestampPeriodEnd", 10000)
+                new NamedDateTestFilter("timestampFrom", 0),
+                new NamedDateTestFilter("timestampTo", 10000)
         );
         JFreeChartBuilder builder = new JFreeChartBuilder(new AveragePlotter(), data, filters);
 //        TestSwingUtils.showAndWait(builder.createChartPanel());

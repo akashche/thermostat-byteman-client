@@ -25,7 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.miginfocom.swing.MigLayout;
 import org.jboss.byteman.charts.data.DataRecord;
-import org.jboss.byteman.charts.filter.ChartFilter;
+import org.jboss.byteman.charts.filter.*;
 import org.jboss.byteman.charts.plot.Plotter;
 import org.jboss.byteman.charts.ui.*;
 import org.jboss.byteman.charts.ui.swing.util.ColumnFitTable;
@@ -45,7 +45,6 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createMatteBorder;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
@@ -100,27 +99,21 @@ class DatasetLoadPage extends BasePage {
         JPanel jp = new JPanel(new MigLayout(
                 "",
                 "[right][grow, fill][]",
-                "[center][center][top]"
+                "[center][center][top][top]"
         ));
         jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "Load chart data"));
         // first row
-        JLabel nameLabel = new JLabel("Dataset Name:");
-        boldify(nameLabel);
-        jp.add(nameLabel, "width ::160lp");
+        jp.add(boldify(new JLabel("Dataset Name:")), "width ::160lp");
         jp.add(nameField, "width 160lp::, span 2, wrap");
         // second row
-        JLabel chooserLabel = new JLabel("Data file:");
-        boldify(chooserLabel);
-        jp.add(chooserLabel, "width ::160lp");
+        jp.add(boldify(new JLabel("Data file:")), "width ::160lp");
         pathField.setEditable(false);
         jp.add(pathField, "width 160lp::");
         JButton chooseButton = new JButton("...");
         chooseButton.addActionListener(new ChooseFileListener());
         jp.add(chooseButton, "width pref!, wrap");
         // grid
-        JLabel plotsLabel = new JLabel("Chart:");
-        boldify(plotsLabel);
-        jp.add(plotsLabel, "width ::160lp");
+        jp.add(boldify(new JLabel("Chart:")), "width ::160lp");
         jp.add(createPlotsTable(), "height ::128lp, span 2, wrap");
         return jp;
     }
@@ -183,11 +176,9 @@ class DatasetLoadPage extends BasePage {
         ContentPage page = new DatasetPage(ctx, dsname, file.getName(), file.length(), records.size(), plotter);
         pm.addPage(page, NAME);
         String filtername = dsname + "_" + ALL_RECORDS_LABEL;
-        // todo: where to define filters?
-        ContentPage filterpage = new FiltersetPage(ctx, filtername, ALL_RECORDS_LABEL, dsname, plotter, records, Arrays.asList(
-                new StringTestFilter(),
-                new ListTestFilter(),
-                new DatetimeTestFilter()));
+        // todo: deep clone on filter
+        List<? extends ChartFilter> filters = createFilters(records);
+        ContentPage filterpage = new FiltersetPage(ctx, filtername, ALL_RECORDS_LABEL, dsname, plotter, records, filters);
         pm.addPage(filterpage, dsname);
 //        pm.switchPage(dsname);
         pm.switchPage(filtername);
@@ -210,6 +201,40 @@ class DatasetLoadPage extends BasePage {
         } finally {
             closeQuietly(is);
         }
+    }
+
+    private List<? extends ChartFilter> createFilters(List<DataRecord> records) {
+        List<ChartFilter> res = new ArrayList<ChartFilter>();
+        TimestampFromFilter tsFrom = new TimestampFromFilter("timestampFrom", new Date());
+        res.add(tsFrom);
+        TimestampFromFilter tsTo = new TimestampFromFilter("timestampTo", new Date());
+        res.add(tsTo);
+        res.add(new RegexFilter("marker"));
+        res.add(new RegexFilter("agentId"));
+        res.add(new RegexFilter("vmId"));
+        Set<String> existing = new HashSet<String>();
+        long timestampFrom = Long.MAX_VALUE;
+        long timestampTo = 0;
+        for (DataRecord re : records) {
+            long ts = re.getTimestamp();
+            if (ts < timestampFrom) timestampFrom = ts;
+            if (ts > timestampTo) timestampTo = ts;
+            // todo: default values tracking
+            for (Map.Entry<String, Object> en : re.getData().entrySet()) {
+                if (null != en.getValue() && !existing.contains(en.getKey())) {
+                    existing.add(en.getKey());
+                    if (en.getValue() instanceof Number) {
+                        res.add(new IntGreaterFieldFilter(en.getKey() + " [from]"));
+                        res.add(new IntLesserFieldFilter(en.getKey() + " [to]"));
+                    } else {
+                        res.add(new RegexFieldFilter(en.getKey()));
+                    }
+                }
+            }
+        }
+        tsFrom.getEntry().setValue(new Date(timestampFrom));
+        tsFrom.getEntry().setValue(new Date(timestampTo));
+        return res;
     }
 
     private class ChooseFileListener implements ActionListener {
