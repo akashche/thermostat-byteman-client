@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 import static org.jboss.byteman.charts.utils.ColorUtils.toColor;
@@ -46,7 +47,6 @@ public class JFreeChartBuilder implements ConfigurableChart {
     }
 
     public JPanel createChartPanel() {
-        zm.reset();
         return zm.createPanel();
     }
 
@@ -62,9 +62,9 @@ public class JFreeChartBuilder implements ConfigurableChart {
         for (ChartFilter fi : filters) {
             ChartConfigEntry<?> cce = fi.configEntry();
             if ("timestampPeriodStart".equals(cce.getName())) {
-                periodStart = (Long) cce.getValue();
+                periodStart = ((Date) cce.getValue()).getTime();
             } else if ("timestampPeriodEnd".equals(cce.getName())) {
-                periodEnd = (Long) cce.getValue();
+                periodEnd = ((Date) cce.getValue()).getTime();
             }
         }
     }
@@ -76,8 +76,13 @@ public class JFreeChartBuilder implements ConfigurableChart {
             Long label = re.getPeriodStart() + ((re.getPeriodEnd() - re.getPeriodStart())/2);
             ds.addValue(re.getValue(), re.getCategory(), label);
         }
-        // renderer
+        // chart
         BarRenderer3D br = new StackedBarRenderer3D(cf.rendered3dXOffset, cf.rendered3dYOffset);
+        ZoomablePlot plot = new ZoomablePlot(zm, ds, new CategoryAxis(), new NumberAxis(), br);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        JFreeChart chart = new JFreeChart("", JFreeChart.DEFAULT_TITLE_FONT, plot, false);
+        ChartFactory.getChartTheme().apply(chart);
+        // renderer
         br.setSeriesPaint(0, toColor(cf.seriesPaint0));
         br.setSeriesPaint(1, toColor(cf.seriesPaint1));
         br.setSeriesPaint(2, toColor(cf.seriesPaint2));
@@ -88,11 +93,6 @@ public class JFreeChartBuilder implements ConfigurableChart {
         br.setBaseItemLabelsVisible(cf.baseItemLabelsVisible);
         br.setShadowVisible(cf.shadowVisible);
         br.setItemMargin(cf.itemMargin);
-        // chart
-        ZoomablePlot plot = new ZoomablePlot(zm, ds, new CategoryAxis(), new NumberAxis(), br);
-        plot.setOrientation(PlotOrientation.VERTICAL);
-        JFreeChart chart = new JFreeChart("", JFreeChart.DEFAULT_TITLE_FONT, plot, false);
-        ChartFactory.getChartTheme().apply(chart);
         // plot
         plot.setBackgroundPaint(toColor(cf.backgroundPaint));
         plot.setBackgroundImageAlpha((float) cf.backgroundImageAlpha);
@@ -180,8 +180,9 @@ public class JFreeChartBuilder implements ConfigurableChart {
         }
 
         private ChartPanel buildChartPanel(float lower, float upper) {
-            long from = (long)(periodStart * lower);
-            long to = (long)(periodEnd * upper);
+            long delta = periodEnd - periodStart;
+            long from = (long) (periodStart + delta * lower);
+            long to = (long) (periodEnd - (delta * (1 - upper)));
             Collection<PlotRecord> records = plotter.createPlot(cf, from, to, data.iterator(), filters);
             JFreeChart chart = createChart(records);
             return new ZoomableChartPanel(chart);

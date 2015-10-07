@@ -48,6 +48,16 @@
             <artifactId>jcommon</artifactId>
             <version>${version.jfreechart_common}</version>
         </dependency>
+
+        <!-- test -->
+        <!-- plot impl access -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>plot-plain</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
