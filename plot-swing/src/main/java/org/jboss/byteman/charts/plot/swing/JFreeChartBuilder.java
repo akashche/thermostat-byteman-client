@@ -30,7 +30,7 @@ import static org.jboss.byteman.charts.utils.ColorUtils.toColor;
  * Date: 9/27/15
  */
 public class JFreeChartBuilder implements ConfigurableChart {
-    private final Plotter<PlotConfig> plotter;
+    private final Plotter plotter;
     private final Iterable<DataRecord> data;
     private Collection<? extends ChartFilter> filters;
     private long periodStart = 0;
@@ -39,7 +39,7 @@ public class JFreeChartBuilder implements ConfigurableChart {
     private final Config cf = new Config();
     private final Manager zm = new Manager();
 
-    public JFreeChartBuilder(Plotter<PlotConfig> plotter, Iterable<DataRecord> data, Collection<? extends ChartFilter> filters) {
+    public JFreeChartBuilder(Plotter plotter, Iterable<DataRecord> data, Collection<? extends ChartFilter> filters) {
         this.plotter = plotter;
         this.data = data;
         this.filters = filters;

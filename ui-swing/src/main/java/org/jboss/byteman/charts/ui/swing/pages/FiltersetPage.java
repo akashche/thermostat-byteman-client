@@ -25,7 +25,9 @@ import net.miginfocom.swing.MigLayout;
 import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.filter.ChartFilterUtils;
+import org.jboss.byteman.charts.plot.Plotter;
 import org.jboss.byteman.charts.plot.plain.PlainStackedPlotter;
+import org.jboss.byteman.charts.plot.swing.JFreeChartBuilder;
 import org.jboss.byteman.charts.ui.ChartConfigEntry;
 import org.jboss.byteman.charts.ui.StringConfigEntry;
 import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
@@ -72,6 +74,7 @@ class FiltersetPage extends BasePage {
     static final String ALL_RECORDS_LABEL = "All Records";
 
     private final String parentName;
+    private final Plotter plotter;
     private final Iterable<DataRecord> records;
     private final Collection<? extends ChartFilter> filters;
     // not actually required due to ETD, still just in case
@@ -83,12 +86,13 @@ class FiltersetPage extends BasePage {
     private JToggleButton chartButton;
     private JToggleButton filtersButton;
 
-    protected FiltersetPage(ChartsAppContext ctx, String name, String label, String parentName, Iterable<DataRecord> records,
-                            Collection<? extends ChartFilter> filters) {
+    protected FiltersetPage(ChartsAppContext ctx, String name, String label, String parentName,
+                            Plotter plotter, Iterable<DataRecord> records, Collection<? extends ChartFilter> filters) {
         super(ctx, name, label, "mimetype_log_16.png");
         this.parentName = parentName;
         this.records = records;
         this.filters = filters;
+        this.plotter = plotter;
     }
 
     @Override
@@ -179,12 +183,7 @@ class FiltersetPage extends BasePage {
                 "[top]"
         ));
         ChartRecordTableModel tm = new ChartRecordTableModel(records.iterator(), filters, "yyyy-MM-dd HH:mm:ss.SSS");
-        JTable table = new ColumnFitTable(tm, 256);
-        table.setShowVerticalLines(true);
-        table.setGridColor(parent.getBackground().darker());
-        table.setFillsViewportHeight(true);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.setAutoCreateRowSorter(true);
+        JTable table = new ColumnFitTable(tm);
         JScrollPane sp = new JScrollPane(table, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         sp.setBorder(createEmptyBorder());
         parent.add(sp, "grow");
@@ -200,7 +199,8 @@ class FiltersetPage extends BasePage {
 //                .applyConfig(conf)
 //                .createPlot(records.iterator(), filters);
 //        return new ChartPanel(chart);
-        return new JPanel();
+        return new JFreeChartBuilder(plotter, records, filters).createChartPanel();
+
     }
 
     private class ClosePageListener implements ActionListener {
@@ -295,7 +295,7 @@ class FiltersetPage extends BasePage {
         public void actionPerformed(ActionEvent e) {
             PageManager pm = ctx.getPageManager();
             String filtername = parentName + "_" + "tmp_filtered";
-            ContentPage filterpage = new FiltersetPage(ctx, filtername, "tmp_filtered", parentName, records, Arrays.asList(
+            ContentPage filterpage = new FiltersetPage(ctx, filtername, "tmp_filtered", parentName, plotter, records, Arrays.asList(
                     new DatasetLoadPage.StringTestFilter(),
                     new DatasetLoadPage.ListTestFilter(),
                     new DatasetLoadPage.DatetimeTestFilter()));

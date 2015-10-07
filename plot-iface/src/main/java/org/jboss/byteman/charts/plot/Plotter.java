@@ -32,9 +32,15 @@ import java.util.Iterator;
  * User: alexkasko
  * Date: 6/8/15
  */
-public interface Plotter<T extends PlotConfig> {
+public interface Plotter {
 
-    Collection<PlotRecord> createPlot(T config, long minTimestamp, long maxTimestamp,
+    String getName();
+
+    String getType();
+
+    String getDescription();
+
+    Collection<PlotRecord> createPlot(PlotConfig config, long minTimestamp, long maxTimestamp,
             Iterator<DataRecord> data, Collection<? extends ChartFilter> filters);
 
 }

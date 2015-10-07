@@ -14,9 +14,19 @@ import java.awt.*;
 public class ColumnFitTable extends JTable {
     private final int maxColWidth;
 
+    public ColumnFitTable(TableModel dm) {
+        this(dm, 256);
+    }
+
     public ColumnFitTable(TableModel dm, int maxColWidth) {
         super(dm);
         this.maxColWidth = maxColWidth;
+
+        setShowVerticalLines(true);
+        setGridColor(getBackground().darker());
+        setFillsViewportHeight(true);
+        setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        setAutoCreateRowSorter(true);
     }
 
     @Override

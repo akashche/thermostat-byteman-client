@@ -22,6 +22,7 @@
 package org.jboss.byteman.charts.ui.swing.pages;
 
 import net.miginfocom.swing.MigLayout;
+import org.jboss.byteman.charts.plot.Plotter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,13 +42,15 @@ class DatasetPage extends BasePage {
     private final String filename;
     private final long filesize;
     private final int recordsCount;
+    private final Plotter plotter;
 
-    public DatasetPage(ChartsAppContext ctx, String name, String filename, long filesize, int recordsCount) {
+    public DatasetPage(ChartsAppContext ctx, String name, String filename, long filesize, int recordsCount, Plotter plotter) {
         super(ctx, name, name, "filesystem_folder_blue_16.png");
         this.datasetName = name;
         this.filename = filename;
         this.filesize = filesize;
         this.recordsCount = recordsCount;
+        this.plotter = plotter;
     }
 
     @Override
@@ -86,6 +89,9 @@ class DatasetPage extends BasePage {
         // recordsCount
         jp.add(boldify(new JLabel("Records Count:")), "width ::160lp");
         jp.add(new JLabel(Long.toString(recordsCount)), "width 160lp::, span 2, wrap");
+        // chart type
+        jp.add(boldify(new JLabel("Chart:")), "width ::160lp");
+        jp.add(new JLabel(plotter.getName()), "width 160lp::, span 2, wrap");
 
         return jp;
     }

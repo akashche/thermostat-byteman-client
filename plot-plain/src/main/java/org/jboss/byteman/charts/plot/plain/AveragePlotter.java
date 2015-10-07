@@ -17,7 +17,22 @@ import static org.jboss.byteman.charts.utils.collection.SingleUseIterable.single
  * User: alexkasko
  * Date: 9/26/15
  */
-public class AveragePlotter implements Plotter<PlotConfig> {
+public class AveragePlotter implements Plotter {
+    @Override
+    public String getName() {
+        return "Average chart";
+    }
+
+    @Override
+    public String getType() {
+        return "PLAIN";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Shows average values";
+    }
+
     @Override
     public Collection<PlotRecord> createPlot(PlotConfig config, long minTimestamp, long maxTimestamp, 
             Iterator<DataRecord> data, Collection<? extends ChartFilter> filters) {

@@ -26,13 +26,15 @@ import com.google.gson.reflect.TypeToken;
 import net.miginfocom.swing.MigLayout;
 import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
+import org.jboss.byteman.charts.plot.Plotter;
 import org.jboss.byteman.charts.ui.*;
+import org.jboss.byteman.charts.ui.swing.util.ColumnFitTable;
+import org.jboss.byteman.charts.ui.swing.util.PlotterTableModel;
 import org.jboss.byteman.charts.utils.string.StrSubstitutor;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,6 +45,10 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static javax.swing.BorderFactory.createEmptyBorder;
+import static javax.swing.BorderFactory.createMatteBorder;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 import static org.jboss.byteman.charts.ui.swing.pages.FiltersetPage.ALL_RECORDS_LABEL;
 import static org.jboss.byteman.charts.utils.CollectionUtils.toMap;
 import static org.jboss.byteman.charts.utils.IOUtils.closeQuietly;
@@ -65,6 +71,7 @@ class DatasetLoadPage extends BasePage {
 
     private JTextField nameField = new JTextField();
     private JTextField pathField = new JTextField();
+    private JTable plotsTable = new JTable();
 
     DatasetLoadPage(ChartsAppContext ctx) {
         super(ctx, NAME, "Data Sets", "app_database_16.png");
@@ -82,8 +89,8 @@ class DatasetLoadPage extends BasePage {
         jp.add(createButtonsPanel(), "growx");
 
         // todo: removeme
-        String testpath = "/home/alex/projects/redhat/byteman-charts/plot-aggregate/src/test/resources/org/jboss/byteman/charts/plot/aggregate/reports_data.json";
-        new LoadFileWorker(new File(testpath), "test").execute();
+//        String testpath = "/home/alex/projects/redhat/byteman-charts/plot-aggregate/src/test/resources/org/jboss/byteman/charts/plot/aggregate/reports_data.json";
+//        new LoadFileWorker(new File(testpath), "test").execute();
         // end: removeme
 
         return jp;
@@ -93,7 +100,7 @@ class DatasetLoadPage extends BasePage {
         JPanel jp = new JPanel(new MigLayout(
                 "",
                 "[right][grow, fill][]",
-                "[]"
+                "[center][center][top]"
         ));
         jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "Load chart data"));
         // first row
@@ -111,12 +118,10 @@ class DatasetLoadPage extends BasePage {
         chooseButton.addActionListener(new ChooseFileListener());
         jp.add(chooseButton, "width pref!, wrap");
         // grid
-//        DefaultTableModel model = new DefaultTableModel(new Object[]{"foo"}, 0);
-//        for (ContentPagesRegister.RegisteredChartEntry<?> en : ContentPagesRegister.PLOTS) {
-//            model.addRow(new Object[]{en.toString()});
-//        }
-//        JTable jt = new JTable(model);
-//        jp.add(jt, "wrap");
+        JLabel plotsLabel = new JLabel("Chart:");
+        boldify(plotsLabel);
+        jp.add(plotsLabel, "width ::160lp");
+        jp.add(createPlotsTable(), "height ::128lp, span 2, wrap");
         return jp;
     }
 
@@ -149,6 +154,21 @@ class DatasetLoadPage extends BasePage {
         return fc;
     }
 
+    private Component createPlotsTable() {
+        JPanel jp = new JPanel(new MigLayout(
+                "fill, insets 0",
+                "[]",
+                "[top]"
+        ));
+        PlotterTableModel tm = new PlotterTableModel(ContentPagesRegister.PLOTS);
+        plotsTable = new ColumnFitTable(tm);
+        plotsTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        JScrollPane sp = new JScrollPane(plotsTable, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.setBorder(createMatteBorder(1, 1, 1, 1, plotsTable.getBackground().darker()));
+        jp.add(sp, "grow");
+        return jp;
+    }
+
     private String formatDatasetName(File fi) {
         SimpleDateFormat sdf = new SimpleDateFormat(ctx.getProp("byteman_charts.dataset_name_date_format"));
         String date = sdf.format(new Date(fi.lastModified()));
@@ -158,13 +178,13 @@ class DatasetLoadPage extends BasePage {
         return formatted + "_" + datasetNumber.incrementAndGet();
     }
 
-    private void fileLoaded(File file, List<DataRecord> records, String dsname) {
+    private void fileLoaded(File file, List<DataRecord> records, String dsname, Plotter plotter) {
         PageManager pm = ctx.getPageManager();
-        ContentPage page = new DatasetPage(ctx, dsname, file.getName(), file.length(), records.size());
+        ContentPage page = new DatasetPage(ctx, dsname, file.getName(), file.length(), records.size(), plotter);
         pm.addPage(page, NAME);
         String filtername = dsname + "_" + ALL_RECORDS_LABEL;
         // todo: where to define filters?
-        ContentPage filterpage = new FiltersetPage(ctx, filtername, ALL_RECORDS_LABEL, dsname, records, Arrays.asList(
+        ContentPage filterpage = new FiltersetPage(ctx, filtername, ALL_RECORDS_LABEL, dsname, plotter, records, Arrays.asList(
                 new StringTestFilter(),
                 new ListTestFilter(),
                 new DatetimeTestFilter()));
@@ -213,7 +233,8 @@ class DatasetLoadPage extends BasePage {
     private class LoadFileListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            new LoadFileWorker(new File(pathField.getText()), nameField.getText()).execute();
+            Plotter plotter = ContentPagesRegister.PLOTS.get(plotsTable.getSelectedRow());
+            new LoadFileWorker(new File(pathField.getText()), nameField.getText(), plotter).execute();
         }
     }
 
@@ -228,10 +249,12 @@ class DatasetLoadPage extends BasePage {
 
         private final File file;
         private final String dsname;
+        private final Plotter plotter;
 
-        private LoadFileWorker(File file, String dsname) {
+        private LoadFileWorker(File file, String dsname, Plotter plotter) {
             this.file = file;
             this.dsname = dsname;
+            this.plotter = plotter;
         }
 
         @Override
@@ -245,7 +268,7 @@ class DatasetLoadPage extends BasePage {
         @Override
         protected void process(List<List<DataRecord>> chunks) {
             if (1 == chunks.size()) {
-                fileLoaded(file, chunks.get(0), dsname);
+                fileLoaded(file, chunks.get(0), dsname, plotter);
             }
 
         }
