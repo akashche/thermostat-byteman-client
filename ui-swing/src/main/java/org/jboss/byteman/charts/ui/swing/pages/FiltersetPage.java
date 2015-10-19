@@ -37,16 +37,14 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static javax.swing.BorderFactory.*;
@@ -208,28 +206,6 @@ class FiltersetPage extends BasePage {
         public void actionPerformed(ActionEvent e) {
             if (!(e.getSource() instanceof JToggleButton)) return;
             JToggleButton tb = (JToggleButton) e.getSource();
-            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(tb);
-//            frame.getGlassPane().setBackground(new Color(192, 192, 192, 142));
-//            frame.getGlassPane().setVisible(true);
-//            filtersButton.setBackground(Color.RED);
-            ctx.getPageManager().showPageSplash(FiltersetPage.this.name);
-            Timer tm = new Timer(1000, new ToggleTimerListener(frame, tb));
-            tm.setRepeats(false);
-            tm.start();
-        }
-    }
-
-    private class ToggleTimerListener implements ActionListener {
-        private final JFrame frame;
-        private final JToggleButton tb;
-
-        private ToggleTimerListener(JFrame frame, JToggleButton tb) {
-            this.frame = frame;
-            this.tb = tb;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
             if (CHART_VIEW_NAME.equals(tb.getName())) {
                 chartButton.setSelected(true);
                 if (!chartViewActive.compareAndSet(false, true)) return;
@@ -241,9 +217,6 @@ class FiltersetPage extends BasePage {
                 chartButton.setSelected(false);
                 deck.show(cardbox, GRID_VIEW_NAME);
             }
-            ctx.getPageManager().hidePageSplash(FiltersetPage.this.name);
-//            frame.getGlassPane().setVisible(false);
-//            filtersButton.setBackground(Color.WHITE);
         }
     }
 
@@ -290,12 +263,10 @@ class FiltersetPage extends BasePage {
         @Override
         public void actionPerformed(ActionEvent e) {
             PageManager pm = ctx.getPageManager();
-            String filtername = parentName + "_" + "tmp_filtered";
+            String fname = "tmp_filtered" + System.currentTimeMillis();
+            String filtername = parentName + "_" + fname;
             // todo: deep clone filters
-            ContentPage filterpage = new FiltersetPage(ctx, filtername, "tmp_filtered", parentName, plotter, records, Arrays.asList(
-                    new DatasetLoadPage.StringTestFilter(),
-                    new DatasetLoadPage.ListTestFilter(),
-                    new DatasetLoadPage.DatetimeTestFilter()));
+            ContentPage filterpage = new FiltersetPage(ctx, filtername, fname, parentName, plotter, records, Collections.<ChartFilter>emptyList());
             pm.addPageAsync(filterpage, parentName);
             menu.setVisible(false);
             button.setSelected(false);

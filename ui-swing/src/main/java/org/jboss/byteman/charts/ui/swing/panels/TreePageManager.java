@@ -117,6 +117,7 @@ class TreePageManager implements PageManager {
         @Override
         protected void done() {
             sp.setContent(comp);
+            page.onInit();
             hidePageSplash(page.getName());
         }
     }
@@ -169,7 +170,9 @@ class TreePageManager implements PageManager {
         DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
         TreePath path = new TreePath(model.getPathToRoot(node));
         Rectangle rect = tree.getPathBounds(path);
-        tree.repaint(rect);
+        if (null != rect) {
+            tree.repaint(rect);
+        }
     }
 
     private void removeNode(String name) {

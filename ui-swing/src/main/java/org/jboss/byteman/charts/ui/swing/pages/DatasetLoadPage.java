@@ -48,7 +48,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static javax.swing.BorderFactory.createMatteBorder;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
-import static org.jboss.byteman.charts.ui.swing.pages.FiltersetPage.ALL_RECORDS_LABEL;
 import static org.jboss.byteman.charts.utils.CollectionUtils.toMap;
 import static org.jboss.byteman.charts.utils.IOUtils.closeQuietly;
 import static org.jboss.byteman.charts.utils.StringUtils.*;
@@ -60,9 +59,6 @@ import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
  * Date: 6/10/15
  */
 class DatasetLoadPage extends BasePage {
-
-    public static final Gson GSON = new Gson();
-    private static final Type CHART_RECORD_LIST_TYPE = new TypeToken<ArrayList<DataRecord>>(){}.getType();
 
     public static final String NAME = "data";
 
@@ -171,70 +167,9 @@ class DatasetLoadPage extends BasePage {
         return formatted + "_" + datasetNumber.incrementAndGet();
     }
 
-    private void fileLoaded(File file, List<DataRecord> records, String dsname, Plotter plotter) {
-        PageManager pm = ctx.getPageManager();
-        ContentPage page = new DatasetPage(ctx, dsname, file.getName(), file.length(), records.size(), plotter);
-        pm.addPage(page, NAME);
-        String filtername = dsname + "_" + ALL_RECORDS_LABEL;
-        // todo: deep clone on filter
-        List<? extends ChartFilter> filters = createFilters(records);
-        ContentPage filterpage = new FiltersetPage(ctx, filtername, ALL_RECORDS_LABEL, dsname, plotter, records, filters);
-        pm.addPage(filterpage, dsname);
-//        pm.switchPage(dsname);
-        pm.switchPage(filtername);
-        clearForm();
-    }
-
     private void clearForm() {
         nameField.setText("");
         pathField.setText("");
-    }
-
-    private ArrayList<DataRecord> readData(File file) {
-        InputStream is = null;
-        try {
-            is = new FileInputStream(file);
-            Reader reader = new InputStreamReader(is, UTF_8);
-            return GSON.fromJson(reader, CHART_RECORD_LIST_TYPE);
-        } catch (FileNotFoundException e) {
-            throw new UiSwingException("Data load error for file: [" + file.getAbsolutePath() + "]", e);
-        } finally {
-            closeQuietly(is);
-        }
-    }
-
-    private List<? extends ChartFilter> createFilters(List<DataRecord> records) {
-        List<ChartFilter> res = new ArrayList<ChartFilter>();
-        TimestampFromFilter tsFrom = new TimestampFromFilter("timestampFrom", new Date());
-        res.add(tsFrom);
-        TimestampFromFilter tsTo = new TimestampFromFilter("timestampTo", new Date());
-        res.add(tsTo);
-        res.add(new RegexFilter("marker"));
-        res.add(new RegexFilter("agentId"));
-        res.add(new RegexFilter("vmId"));
-        Set<String> existing = new HashSet<String>();
-        long timestampFrom = Long.MAX_VALUE;
-        long timestampTo = 0;
-        for (DataRecord re : records) {
-            long ts = re.getTimestamp();
-            if (ts < timestampFrom) timestampFrom = ts;
-            if (ts > timestampTo) timestampTo = ts;
-            // todo: default values tracking
-            for (Map.Entry<String, Object> en : re.getData().entrySet()) {
-                if (null != en.getValue() && !existing.contains(en.getKey())) {
-                    existing.add(en.getKey());
-                    if (en.getValue() instanceof Number) {
-                        res.add(new IntGreaterFieldFilter(en.getKey() + " [from]"));
-                        res.add(new IntLesserFieldFilter(en.getKey() + " [to]"));
-                    } else {
-                        res.add(new RegexFieldFilter(en.getKey()));
-                    }
-                }
-            }
-        }
-        tsFrom.getEntry().setValue(new Date(timestampFrom));
-        tsFrom.getEntry().setValue(new Date(timestampTo));
-        return res;
     }
 
     private class ChooseFileListener implements ActionListener {
@@ -259,7 +194,9 @@ class DatasetLoadPage extends BasePage {
         @Override
         public void actionPerformed(ActionEvent e) {
             Plotter plotter = ContentPagesRegister.PLOTS.get(plotsTable.getSelectedRow());
-            new LoadFileWorker(new File(pathField.getText()), nameField.getText(), plotter).execute();
+            ContentPage page = new DatasetPage(ctx, nameField.getText(), new File(pathField.getText()), plotter);
+            ctx.getPageManager().addPageAsync(page, NAME);
+            clearForm();
         }
     }
 
@@ -267,72 +204,6 @@ class DatasetLoadPage extends BasePage {
         @Override
         public void actionPerformed(ActionEvent e) {
             clearForm();
-        }
-    }
-
-    private class LoadFileWorker extends SwingWorker<Void, List<DataRecord>> {
-
-        private final File file;
-        private final String dsname;
-        private final Plotter plotter;
-
-        private LoadFileWorker(File file, String dsname, Plotter plotter) {
-            this.file = file;
-            this.dsname = dsname;
-            this.plotter = plotter;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked") // publish call
-        protected Void doInBackground() throws Exception {
-            List<DataRecord> recs = readData(file);
-            publish(recs);
-            return null;
-        }
-
-        @Override
-        protected void process(List<List<DataRecord>> chunks) {
-            if (1 == chunks.size()) {
-                fileLoaded(file, chunks.get(0), dsname, plotter);
-            }
-
-        }
-    }
-
-    static class StringTestFilter implements ChartFilter {
-        @Override
-        public boolean apply(DataRecord record) {
-            return true;
-        }
-
-        @Override
-        public ChartConfigEntry<?> configEntry() {
-            return new StringConfigEntry("Test string", "some default");
-        }
-    }
-
-    static class ListTestFilter implements ChartFilter {
-
-        @Override
-        public boolean apply(DataRecord record) {
-            return true;
-        }
-
-        @Override
-        public ChartConfigEntry<?> configEntry() {
-            return new ListConfigEntry("Test combobox", Arrays.asList("foo", "bar", "baz"));
-        }
-    }
-
-    static class DatetimeTestFilter implements ChartFilter {
-        @Override
-        public boolean apply(DataRecord record) {
-            return true;
-        }
-
-        @Override
-        public ChartConfigEntry<?> configEntry() {
-            return new DateTimeConfigEntry("Test date", new Date(), new Date(0), new Date());
         }
     }
 }

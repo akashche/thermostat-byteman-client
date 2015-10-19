@@ -44,5 +44,7 @@ public interface ContentPage {
 
     ChartsAppContext getAppContext();
 
+    void onInit();
+
     void onShow();
 }

@@ -21,12 +21,24 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import net.miginfocom.swing.MigLayout;
+import org.jboss.byteman.charts.data.DataRecord;
+import org.jboss.byteman.charts.filter.*;
 import org.jboss.byteman.charts.plot.Plotter;
+import org.jboss.byteman.charts.ui.UiSwingException;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.List;
 
+import static org.jboss.byteman.charts.ui.swing.pages.FiltersetPage.ALL_RECORDS_LABEL;
+import static org.jboss.byteman.charts.utils.IOUtils.closeQuietly;
+import static org.jboss.byteman.charts.utils.StringUtils.UTF_8;
 import static org.jboss.byteman.charts.utils.SwingUtils.boldify;
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
@@ -37,19 +49,20 @@ import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 // subnodes for each applied filter set
 class DatasetPage extends BasePage {
+    public static final Gson GSON = new Gson();
+    private static final Type CHART_RECORD_LIST_TYPE = new TypeToken<ArrayList<DataRecord>>(){}.getType();
 
     private final String datasetName;
-    private final String filename;
-    private final long filesize;
-    private final int recordsCount;
+    private final File file;
     private final Plotter plotter;
 
-    public DatasetPage(ChartsAppContext ctx, String name, String filename, long filesize, int recordsCount, Plotter plotter) {
+    private int recordsCount = 0;
+    ContentPage filterpage = null;
+
+    public DatasetPage(ChartsAppContext ctx, String name, File file, Plotter plotter) {
         super(ctx, name, name, "filesystem_folder_blue_16.png");
         this.datasetName = name;
-        this.filename = filename;
-        this.filesize = filesize;
-        this.recordsCount = recordsCount;
+        this.file = file;
         this.plotter = plotter;
     }
 
@@ -65,9 +78,18 @@ class DatasetPage extends BasePage {
                 "[]",
                 "[top]"
         ));
+        java.util.List<DataRecord> records = readData(file);
+        recordsCount = records.size();
+        String filtername = datasetName + "_" + ALL_RECORDS_LABEL;
+        List<? extends ChartFilter> filters = createFilters(records);
+        filterpage = new FiltersetPage(ctx, filtername, ALL_RECORDS_LABEL, datasetName, plotter, records, filters);
         parent.add(createDetailsPanel(), "growx");
         return parent;
+    }
 
+    @Override
+    public void onInit() {
+        ctx.getPageManager().addPageAsync(filterpage, datasetName);
     }
 
     private JPanel createDetailsPanel() {
@@ -82,10 +104,10 @@ class DatasetPage extends BasePage {
         jp.add(new JLabel(datasetName), "width 160lp::, span 2, wrap");
         // filename
         jp.add(boldify(new JLabel("File Name:")), "width ::160lp");
-        jp.add(new JLabel(filename), "width 160lp::, span 2, wrap");
+        jp.add(new JLabel(file.getAbsolutePath()), "width 160lp::, span 2, wrap");
         // filesize
         jp.add(boldify(new JLabel("File Size (bytes):")), "width ::160lp");
-        jp.add(new JLabel(Long.toString(filesize)), "width 160lp::, span 2, wrap");
+        jp.add(new JLabel(Long.toString(file.length())), "width 160lp::, span 2, wrap");
         // recordsCount
         jp.add(boldify(new JLabel("Records Count:")), "width ::160lp");
         jp.add(new JLabel(Long.toString(recordsCount)), "width 160lp::, span 2, wrap");
@@ -96,5 +118,51 @@ class DatasetPage extends BasePage {
         return jp;
     }
 
+    private ArrayList<DataRecord> readData(File file) {
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            Reader reader = new InputStreamReader(is, UTF_8);
+            return GSON.fromJson(reader, CHART_RECORD_LIST_TYPE);
+        } catch (FileNotFoundException e) {
+            throw new UiSwingException("Data load error for file: [" + file.getAbsolutePath() + "]", e);
+        } finally {
+            closeQuietly(is);
+        }
+    }
+
+    private List<? extends ChartFilter> createFilters(List<DataRecord> records) {
+        List<ChartFilter> res = new ArrayList<ChartFilter>();
+        TimestampFromFilter tsFrom = new TimestampFromFilter("timestampFrom", new Date());
+        res.add(tsFrom);
+        TimestampFromFilter tsTo = new TimestampFromFilter("timestampTo", new Date());
+        res.add(tsTo);
+        res.add(new RegexFilter("marker"));
+        res.add(new RegexFilter("agentId"));
+        res.add(new RegexFilter("vmId"));
+        Set<String> existing = new HashSet<String>();
+        long timestampFrom = Long.MAX_VALUE;
+        long timestampTo = 0;
+        for (DataRecord re : records) {
+            long ts = re.getTimestamp();
+            if (ts < timestampFrom) timestampFrom = ts;
+            if (ts > timestampTo) timestampTo = ts;
+            // todo: default values tracking
+            for (Map.Entry<String, Object> en : re.getData().entrySet()) {
+                if (null != en.getValue() && !existing.contains(en.getKey())) {
+                    existing.add(en.getKey());
+                    if (en.getValue() instanceof Number) {
+                        res.add(new IntGreaterFieldFilter(en.getKey() + " [from]"));
+                        res.add(new IntLesserFieldFilter(en.getKey() + " [to]"));
+                    } else {
+                        res.add(new RegexFieldFilter(en.getKey()));
+                    }
+                }
+            }
+        }
+        tsFrom.getEntry().setValue(new Date(timestampFrom));
+        tsFrom.getEntry().setValue(new Date(timestampTo));
+        return res;
+    }
 
 }

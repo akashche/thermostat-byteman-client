@@ -78,6 +78,11 @@ abstract class BasePage implements ContentPage {
     }
 
     @Override
+    public void onInit() {
+        // do nothing
+    }
+
+    @Override
     public void onShow() {
         // do nothing
     }
