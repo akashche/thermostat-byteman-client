@@ -22,10 +22,15 @@
 package org.jboss.byteman.charts.ui.swing.pages;
 
 import net.miginfocom.swing.MigLayout;
+import org.jboss.byteman.charts.ui.swing.util.ColumnFitTable;
+import org.jboss.byteman.charts.ui.swing.util.PlotterTableModel;
 
 import javax.swing.*;
 import java.awt.*;
 
+import static javax.swing.BorderFactory.createMatteBorder;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 /**
@@ -33,6 +38,8 @@ import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
  * Date: 6/15/15
  */
 class ChartTypesPage extends BasePage {
+
+    private JTable plotsTable = new JTable();
 
     ChartTypesPage(ChartsAppContext ctx) {
         super(ctx, "chart_types", "Chart Types", "app_Volume_Manager_16.png",
@@ -51,8 +58,24 @@ class ChartTypesPage extends BasePage {
                 "",
                 ""
         ));
-        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "[TODO] List of the supported charts"));
-        parent.add(top, "growx");
+        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "   List of the supported charts"));
+        parent.add(top, "growx, wrap");
+        parent.add(createPlotsTable());
         return parent;
+    }
+
+    private Component createPlotsTable() {
+        JPanel jp = new JPanel(new MigLayout(
+                "fill, insets 0",
+                "[]",
+                "[top]"
+        ));
+        PlotterTableModel tm = new PlotterTableModel(ContentPagesRegister.PLOTS);
+        plotsTable = new ColumnFitTable(tm);
+        plotsTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        JScrollPane sp = new JScrollPane(plotsTable, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.setBorder(createMatteBorder(1, 1, 1, 1, plotsTable.getBackground().darker()));
+        jp.add(sp, "grow");
+        return jp;
     }
 }

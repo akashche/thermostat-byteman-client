@@ -22,11 +22,8 @@
 package org.jboss.byteman.charts.ui.swing.pages;
 
 import org.jboss.byteman.charts.plot.Plotter;
-import org.jboss.byteman.charts.plot.aggregate.BucketedStackedCountPlotter;
 import org.jboss.byteman.charts.plot.plain.AveragePlotter;
-import org.jboss.byteman.charts.plot.plain.PlainStackedPlotter;
 import org.jboss.byteman.charts.plot.plain.SumPlotter;
-import org.jboss.byteman.charts.ui.ConfigurableChart;
 
 import java.util.*;
 import java.util.List;
@@ -51,6 +48,8 @@ public class ContentPagesRegister {
             new DatasetLoadPage(APP_CONTEXT),
             new ChartTypesPage(APP_CONTEXT),
                 new PlainChartsPage(APP_CONTEXT),
+                    new ChartConfigPage(APP_CONTEXT, PLOTS.get(0)),
+                    new ChartConfigPage(APP_CONTEXT, PLOTS.get(1)),
                 new AggregateChartsPage(APP_CONTEXT),
             new SettingsPage(APP_CONTEXT),
             new AboutPage(APP_CONTEXT)

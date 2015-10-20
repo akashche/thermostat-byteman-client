@@ -47,30 +47,29 @@ class TreePaneBuilder {
 
     private DefaultMutableTreeNode createNodes(List<ContentPage> pages) {
         if (null == pages || 0 == pages.size()) throw new IllegalArgumentException("Invalid empty pages list");
-        List<ContentPage> pool = new LinkedList<ContentPage>(pages);
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("", true);
         Set<String> poppedChildren = new HashSet<String>();
         for (ContentPage cp : pages) {
             if(poppedChildren.contains(cp.getName())) continue;
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(new PageNodeObject(cp), true);
-            for (String ch : cp.getChildren()) {
-                ContentPage child = popAddChild(node, pool, ch);
-                poppedChildren.add(child.getName());
-            }
-            root.add(node);
+            popAddWithChildren(root, cp, pages, poppedChildren);
         }
         return root;
     }
 
     // note: linear search won't harm here
-    private ContentPage popAddChild(DefaultMutableTreeNode parent, List<ContentPage> pages, String name) {
-        for(ContentPage cp : pages) {
-            if (name.equals(cp.getName())) {
-                parent.add(new DefaultMutableTreeNode(new PageNodeObject(cp), true));
-                return cp;
+    private void popAddWithChildren(DefaultMutableTreeNode granny, ContentPage parent,
+                                           List<ContentPage> pages, Set<String> poppedChildren) {
+        poppedChildren.add(parent.getName());
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(new PageNodeObject(parent), true);
+        for (String name : parent.getChildren()) {
+            for(ContentPage cp : pages) {
+                if(poppedChildren.contains(cp.getName())) continue;
+                if (name.equals(cp.getName())) {
+                    popAddWithChildren(node, cp, pages, poppedChildren);
+                }
             }
         }
-        return null;
+        granny.add(node);
     }
 
     private static class PageListener implements TreeSelectionListener {
