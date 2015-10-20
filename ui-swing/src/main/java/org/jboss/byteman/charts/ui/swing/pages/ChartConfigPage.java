@@ -1,10 +1,16 @@
 package org.jboss.byteman.charts.ui.swing.pages;
 
 import net.miginfocom.swing.MigLayout;
+import org.jboss.byteman.charts.data.DataRecord;
+import org.jboss.byteman.charts.filter.ChartFilter;
+import org.jboss.byteman.charts.filter.ChartFilterUtils;
 import org.jboss.byteman.charts.plot.Plotter;
+import org.jboss.byteman.charts.plot.swing.JFreeChartBuilder;
+import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collections;
 
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
@@ -32,8 +38,16 @@ class ChartConfigPage extends BasePage {
                 "",
                 ""
         ));
-        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "[TODO] Chart config form [" + plotter.getName() + "]"));
-        parent.add(top, "growx");
+        top.setBorder(createFormSectionBorder(top.getBackground().darker(), plotter.getName() + " configuration properties" ));
+        parent.add(top, "growx, wrap");
+        parent.add(createConfigPane());
         return parent;
     }
+
+    private Component createConfigPane() {
+        JFreeChartBuilder cb = new JFreeChartBuilder(plotter, Collections.<DataRecord>emptyList(), Collections.<ChartFilter>emptyList());
+        JPanel panel = ChartConfigPanel.builder().build(cb.availableConfig()).getPanel();
+        return new JScrollPane(panel);
+    }
+
 }

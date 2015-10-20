@@ -45,6 +45,7 @@ public abstract class ConfigEntryBase<T> implements ChartConfigEntry<T> {
         if (null == label) throw new ChartConfigException("specified label is null");
         if (null == defaultValue) throw new ChartConfigException("specified defaultValue is null");
         this.type = type;
+        this.name = label;
         this.label = label;
         this.defaultValue = defaultValue;
         this.value = defaultValue;

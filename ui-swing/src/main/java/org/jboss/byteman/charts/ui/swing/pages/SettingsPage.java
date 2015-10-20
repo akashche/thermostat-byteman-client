@@ -22,9 +22,15 @@
 package org.jboss.byteman.charts.ui.swing.pages;
 
 import net.miginfocom.swing.MigLayout;
+import org.jboss.byteman.charts.ui.ChartConfigEntry;
+import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
+import org.jboss.byteman.charts.ui.swing.settings.Settings;
+import org.jboss.byteman.charts.ui.swing.settings.SettingsManager;
+import org.jboss.byteman.charts.ui.swing.settings.SystemSettings;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collection;
 
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
@@ -33,6 +39,8 @@ import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
  * Date: 6/15/15
  */
 class SettingsPage extends BasePage {
+
+    private final Settings settings = new SettingsManager().loadSettings();
 
     SettingsPage(ChartsAppContext ctx) {
         super(ctx, "settings", "Settings", "action_configure_16.png");
@@ -50,8 +58,14 @@ class SettingsPage extends BasePage {
                 "",
                 ""
         ));
-        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "[TODO] System settings form"));
-        parent.add(top, "growx");
+        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "System settings"));
+        parent.add(top, "growx, wrap");
+        parent.add(createConfigPanel());
         return parent;
+    }
+
+    public Component createConfigPanel() {
+        JPanel panel = ChartConfigPanel.builder().build(settings.getSystem().availableConfig()).getPanel();
+        return new JScrollPane(panel);
     }
 }

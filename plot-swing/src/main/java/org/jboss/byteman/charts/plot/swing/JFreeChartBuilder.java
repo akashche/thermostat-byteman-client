@@ -125,6 +125,10 @@ public class JFreeChartBuilder implements ConfigurableChart {
         return this;
     }
 
+    public static Collection<? extends ChartConfigEntry<?>> defaultConfig() {
+        return new Config().toEntries();
+    }
+
     private void setFieldValue(String fieldName, Object fieldValue) {
         try {
             Field fi = Config.class.getDeclaredField(fieldName);

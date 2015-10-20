@@ -50,8 +50,9 @@ class AboutPage extends BasePage {
                 "",
                 ""
         ));
-        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "[TODO] General information text and links"));
-        parent.add(top, "growx");
+        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "About"));
+        parent.add(top, "growx, wrap");
+        parent.add(new JLabel("Thermostat-Byteman module, work in progress."));
         return parent;
     }
 }
