@@ -1,6 +1,7 @@
 package org.jboss.byteman.charts.ui.swing.panels;
 
 import org.jboss.byteman.charts.ui.UiSwingException;
+import org.jboss.byteman.charts.ui.swing.pages.ChartsAppContext;
 import org.jboss.byteman.charts.ui.swing.pages.ContentPage;
 import org.jboss.byteman.charts.ui.swing.pages.PageManager;
 import org.jboss.byteman.charts.ui.swing.util.SplashablePane;
@@ -14,25 +15,31 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.jboss.byteman.charts.utils.SwingUtils.sleepNonFlicker;
+
 /**
  * User: alexkasko
  * Date: 6/16/15
  */
 class TreePageManager implements PageManager {
 
+    private final ChartsAppContext ctx;
     private final Map<String, ContentPage> pageMap = new ConcurrentHashMap<String, ContentPage>();
     private final JTree tree;
     private final CardLayout deck;
     private final Container cardbox;
-    private final ConcurrentHashMap<String, SplashablePane> cards = new ConcurrentHashMap<String, SplashablePane>();
+    private final ConcurrentHashMap<String, SplashablePane> cards;
 
-    TreePageManager(java.util.List<ContentPage> pages, JTree tree, CardLayout deck, Container cardbox) {
+    TreePageManager(ChartsAppContext ctx, java.util.List<ContentPage> pages, JTree tree,
+                    CardLayout deck, Container cardbox, ConcurrentHashMap<String, SplashablePane> cards) {
+        this.ctx = ctx;
         for (ContentPage cp : pages) {
             pageMap.put(cp.getName(), cp);
         }
         this.tree = tree;
         this.deck = deck;
         this.cardbox = cardbox;
+        this.cards = cards;
     }
 
     @Override
@@ -46,6 +53,7 @@ class TreePageManager implements PageManager {
         tree.setSelectionPath(path);
         cp.onShow();
         deck.show(cardbox, pageName);
+        ctx.setStatus(cp.getLabel());
     }
 
     @Override
@@ -106,11 +114,7 @@ class TreePageManager implements PageManager {
         protected Void doInBackground() throws Exception {
             long start = System.currentTimeMillis();
             this.comp = page.createPane();
-            long end = System.currentTimeMillis();
-            long diff = end - start;
-            if (diff < 500) {
-                Thread.sleep(500 - diff);
-            }
+            sleepNonFlicker(start);
             return null;
         }
 

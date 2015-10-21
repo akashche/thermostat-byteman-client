@@ -2,7 +2,9 @@ package org.jboss.byteman.charts.ui.swing.panels;
 
 import org.jboss.byteman.charts.ui.UiSwingException;
 import org.jboss.byteman.charts.ui.swing.pages.ContentPage;
+import org.jboss.byteman.charts.ui.swing.pages.ContentPagesRegister;
 import org.jboss.byteman.charts.ui.swing.pages.PageManager;
+import org.jboss.byteman.charts.ui.swing.util.SplashablePane;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -26,9 +28,11 @@ import static javax.swing.tree.TreeSelectionModel.SINGLE_TREE_SELECTION;
  */
 class TreePaneBuilder {
 
-    public JScrollPane build(List<ContentPage> pages, Container cardbox, CardLayout deck) {
+    public JScrollPane build(List<ContentPage> pages, Container cardbox, CardLayout deck,
+                             ConcurrentHashMap<String, SplashablePane> cards) {
         JTree tree = new JTree();
-        PageManager pm = new TreePageManager(pages, tree, deck, cardbox);
+        // todo: context access
+        PageManager pm = new TreePageManager(ContentPagesRegister.APP_CONTEXT, pages, tree, deck, cardbox, cards);
         // ctx init shortcut, it smells here
         if (pages.size() > 0) pages.get(0).getAppContext().init(pm);
         tree.setModel(new DefaultTreeModel(createNodes(pages), false));

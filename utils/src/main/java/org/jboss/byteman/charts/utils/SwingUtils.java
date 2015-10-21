@@ -96,6 +96,18 @@ public class SwingUtils {
         );
     }
 
+    public static void sleepNonFlicker(long start) {
+        try {
+            long end = System.currentTimeMillis();
+            long diff = end - start;
+            if (diff < 500) {
+                Thread.sleep(500 - diff);
+            }
+        } catch (InterruptedException e) {
+            throw new UtilsException("Non-flicker sleep fail", e);
+        }
+    }
+
     private static class CloseListener extends WindowAdapter {
         @Override
         public void windowClosing(WindowEvent e) {

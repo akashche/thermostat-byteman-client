@@ -50,20 +50,24 @@ class AggregateChartsPage extends BasePage {
 
     @Override
     public Component createPane() {
-        JPanel parent = new JPanel(new MigLayout(
+        JPanel jp = new JPanel(new MigLayout(
                 "fill",
                 "[]",
                 "[top]"
         ));
-        JPanel top = new JPanel(new MigLayout(
+        jp.add(createTopPanel(), "growx, wrap");
+        return jp;
+    }
+
+    private Component createTopPanel() {
+        JPanel jp = new JPanel(new MigLayout(
                 "",
                 "",
                 ""
         ));
-        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "List of aggregate chart types"));
-        parent.add(top, "growx, wrap");
-        parent.add(createPlotsTable());
-        return parent;
+        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "List of aggregate chart types"));
+        jp.add(createPlotsTable());
+        return jp;
     }
 
     private Component createPlotsTable() {

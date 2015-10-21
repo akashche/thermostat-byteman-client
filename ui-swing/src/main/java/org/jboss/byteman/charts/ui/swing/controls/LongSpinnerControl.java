@@ -25,6 +25,10 @@ import org.jboss.byteman.charts.ui.IntConfigEntry;
 import org.jboss.byteman.charts.ui.LongConfigEntry;
 
 import javax.swing.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+
+import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
 
 /**
  * User: alexkasko
@@ -38,7 +42,23 @@ public class LongSpinnerControl extends ChartConfigSwingControl<LongConfigEntry>
 
     @Override
     public JComponent createComponent() {
-        return new JSpinner(new SpinnerNumberModel((long) entry.getDefaultValue(), entry.getMinValue(),
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel((long) entry.getDefaultValue(), entry.getMinValue(),
                 entry.getMaxValue(), entry.getStep()));
+        spinner.addFocusListener(new Listener(spinner));
+        return spinner;
+    }
+
+    private class Listener extends FocusAdapter {
+        private final JSpinner spinner;
+
+        private Listener(JSpinner spinner) {
+            this.spinner = spinner;
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            Number num = (Number) spinner.getValue();
+            entry.setValue(num.longValue());
+        }
     }
 }

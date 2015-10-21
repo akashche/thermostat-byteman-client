@@ -1,6 +1,7 @@
 package org.jboss.byteman.charts.ui.swing.panels;
 
 import org.jboss.byteman.charts.ui.swing.pages.ContentPage;
+import org.jboss.byteman.charts.ui.swing.util.SplashablePane;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -8,6 +9,7 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 
@@ -26,9 +28,10 @@ class SplitPaneBuilder {
         jp.setDividerLocation(0.30);
         jp.setDividerSize(5);
 
-        RightPaneBuilder.Result res = new RightPaneBuilder().build(pages);
+        ConcurrentHashMap<String, SplashablePane> splashCards = new ConcurrentHashMap<String, SplashablePane>();
+        RightPaneBuilder.Result res = new RightPaneBuilder().build(pages, splashCards);
         jp.setRightComponent(res.getCardbox());
-        jp.setLeftComponent(new TreePaneBuilder().build(pages, res.getCardbox(), res.getDeck()));
+        jp.setLeftComponent(new TreePaneBuilder().build(pages, res.getCardbox(), res.getDeck(), splashCards));
 
         return jp;
     }

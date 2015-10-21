@@ -29,6 +29,7 @@ import javax.swing.*;
  * User: alexkasko
  * Date: 6/3/15
  */
+// todo: fixme
 public class ComboBoxControl extends ChartConfigSwingControl<ListConfigEntry> {
 
     public ComboBoxControl(ListConfigEntry entry) {

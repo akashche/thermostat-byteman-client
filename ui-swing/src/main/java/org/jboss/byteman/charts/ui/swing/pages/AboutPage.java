@@ -26,6 +26,8 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.*;
 
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 
 /**
@@ -40,19 +42,30 @@ class AboutPage extends BasePage {
 
     @Override
     public Component createPane() {
-        JPanel parent = new JPanel(new MigLayout(
+        JPanel jp = new JPanel(new MigLayout(
                 "fill",
                 "[]",
                 "[top]"
         ));
-        JPanel top = new JPanel(new MigLayout(
+        jp.add(createTopPanel(), "growx");
+        return jp;
+    }
+
+    private Component createTopPanel() {
+        JPanel jp = new JPanel(new MigLayout(
                 "",
                 "",
                 ""
         ));
-        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "About"));
-        parent.add(top, "growx, wrap");
-        parent.add(new JLabel("Thermostat-Byteman module, work in progress."));
-        return parent;
+        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "About"));
+        jp.add(createTextPanel(), "grow");
+        return jp;
+    }
+
+    private Component createTextPanel() {
+        JLabel label = new JLabel("Thermostat-Byteman module, work in progress.");
+        JScrollPane sp = new JScrollPane(label, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.setBorder(BorderFactory.createEmptyBorder());
+        return sp;
     }
 }

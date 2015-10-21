@@ -24,7 +24,10 @@ package org.jboss.byteman.charts.ui.swing.pages;
 import org.jboss.byteman.charts.plot.Plotter;
 import org.jboss.byteman.charts.plot.plain.AveragePlotter;
 import org.jboss.byteman.charts.plot.plain.SumPlotter;
+import org.jboss.byteman.charts.ui.swing.settings.Settings;
+import org.jboss.byteman.charts.ui.swing.settings.SettingsManager;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,6 +45,7 @@ public class ContentPagesRegister {
             new AveragePlotter(),
             new SumPlotter()
     );
+    public static final JLabel STATUS = new JLabel();
 
     // todo: make me private
     public static final List<ContentPage> PAGES = Arrays.<ContentPage>asList(
@@ -60,9 +64,11 @@ public class ContentPagesRegister {
         // todo: properties load, thermostat api access
         private final Map<String, String> props = new ConcurrentHashMap<String, String>();
 
+        private final SettingsManager sm = new SettingsManager();
         private PageManager pm;
 
         private ChartsAppContextImpl() {
+            // todo: removeme
             props.put("byteman_charts.last_chosen_data_file", "/home/alex/projects/redhat/byteman-charts/plot-aggregate/src/test/resources/org/jboss/byteman/charts/plot/aggregate/");
             props.put("byteman_charts.dataset_name_format", "${filename}_${date}");
             props.put("byteman_charts.dataset_name_date_format", "yyyyMMdd_HHmmss");
@@ -86,6 +92,21 @@ public class ContentPagesRegister {
         @Override
         public PageManager getPageManager() {
             return pm;
+        }
+
+        @Override
+        public void setStatus(String text) {
+            STATUS.setText(text);
+        }
+
+        @Override
+        public Settings loadSettings() {
+            return sm.loadSettings();
+        }
+
+        @Override
+        public void saveSettings(Settings settings) {
+            sm.saveSettings(settings);
         }
     }
 }

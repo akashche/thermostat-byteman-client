@@ -20,7 +20,11 @@ public class RegexConfigEntry extends ConfigEntryBase<String> {
     @Override
     public void setValue(String value) {
         super.setValue(value);
-        pattern = Pattern.compile(value);
+        try {
+            pattern = Pattern.compile(value);
+        } catch (Exception e) {
+            // todo: visual validation
+        }
     }
 
     public Pattern getPattern() {

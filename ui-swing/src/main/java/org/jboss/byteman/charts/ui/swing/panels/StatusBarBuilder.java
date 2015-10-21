@@ -1,6 +1,7 @@
 package org.jboss.byteman.charts.ui.swing.panels;
 
 import net.miginfocom.swing.MigLayout;
+import org.jboss.byteman.charts.ui.swing.pages.ContentPagesRegister;
 
 import javax.swing.*;
 
@@ -13,10 +14,9 @@ import static javax.swing.BorderFactory.createMatteBorder;
 class StatusBarBuilder {
 
     public JPanel build() {
-        JPanel jp = new JPanel(new MigLayout("fill"));
+        JPanel jp = new JPanel(new MigLayout("fill, insets 10lp"));
         jp.setBorder(createMatteBorder(1, 0, 0, 0, jp.getBackground().darker()));
-        JLabel label = new JLabel("status will be here");
-        jp.add(label, "west, gapbottom 2, gapleft 5");
+        jp.add(ContentPagesRegister.STATUS, "west, gapleft 5lp");
         return jp;
     }
 }

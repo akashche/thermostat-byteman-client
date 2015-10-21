@@ -24,6 +24,9 @@ package org.jboss.byteman.charts.ui.swing.controls;
 import org.jboss.byteman.charts.ui.DateTimeConfigEntry;
 
 import javax.swing.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.util.Date;
 
 /**
  * User: alexkasko
@@ -42,6 +45,21 @@ public class DateTimeSpinnerControl extends ChartConfigSwingControl<DateTimeConf
         JSpinner sp = new JSpinner();
         sp.setModel(model);
         sp.setEditor(new JSpinner.DateEditor(sp, "yyyy-MM-dd HH:mm:ss"));
+        sp.addFocusListener(new Listener(sp));
         return sp;
+    }
+
+    private class Listener extends FocusAdapter {
+        private final JSpinner spinner;
+
+        private Listener(JSpinner spinner) {
+            this.spinner = spinner;
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            Date date = (Date) spinner.getValue();
+            entry.setValue(date);
+        }
     }
 }

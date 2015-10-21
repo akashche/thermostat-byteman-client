@@ -21,8 +21,15 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
+import com.google.gson.Gson;
+import org.jboss.byteman.charts.ui.swing.settings.Settings;
+import org.jboss.byteman.charts.ui.swing.settings.SettingsException;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+
+import static org.jboss.byteman.charts.utils.IOUtils.closeQuietly;
 
 /**
  * User: alexkasko
@@ -37,4 +44,10 @@ public interface ChartsAppContext {
     void init(PageManager pm);
 
     PageManager getPageManager();
+
+    void setStatus(String text);
+
+    public Settings loadSettings();
+
+    public void saveSettings(Settings settings);
 }
