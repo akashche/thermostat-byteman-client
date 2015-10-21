@@ -41,7 +41,7 @@ class DefaultLabelBuilder implements ChartConfigLabelBuilder {
     protected String textPrefix = "";
     protected String textPostfix = ":";
     protected boolean bold = true;
-    protected String layoutOptions = "width ::160lp";
+    protected String layoutOptions = "width ::180lp";
 
     public DefaultLabelBuilder() {
     }

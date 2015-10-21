@@ -18,7 +18,7 @@ public class BoolCheckboxControl extends ChartConfigSwingControl<BoolConfigEntry
 
     @Override
     public JComponent createComponent() {
-        JCheckBox cb = new JCheckBox("", entry.getDefaultValue());
+        JCheckBox cb = new JCheckBox("", entry.getValue());
         cb.addFocusListener(new Listener(cb));
         return cb;
     }

@@ -42,9 +42,10 @@ public class LongSpinnerControl extends ChartConfigSwingControl<LongConfigEntry>
 
     @Override
     public JComponent createComponent() {
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel((long) entry.getDefaultValue(), entry.getMinValue(),
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel((long) entry.getValue(), entry.getMinValue(),
                 entry.getMaxValue(), entry.getStep()));
-        spinner.addFocusListener(new Listener(spinner));
+        JSpinner.DefaultEditor ed = (JSpinner.DefaultEditor) spinner.getEditor();
+        ed.getTextField().addFocusListener(new Listener(spinner));
         return spinner;
     }
 

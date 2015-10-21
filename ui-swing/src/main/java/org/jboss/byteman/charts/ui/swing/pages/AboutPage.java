@@ -53,7 +53,7 @@ class AboutPage extends BasePage {
 
     private Component createTopPanel() {
         JPanel jp = new JPanel(new MigLayout(
-                "",
+                "fill",
                 "",
                 ""
         ));

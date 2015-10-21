@@ -50,20 +50,24 @@ class PlainChartsPage extends BasePage {
 
     @Override
     public Component createPane() {
-        JPanel parent = new JPanel(new MigLayout(
+        JPanel jp = new JPanel(new MigLayout(
                 "fill",
                 "[]",
                 "[top]"
         ));
-        JPanel top = new JPanel(new MigLayout(
-                "",
+        jp.add(createTopPanel(), "growx, wrap");
+        return jp;
+    }
+
+    private Component createTopPanel() {
+        JPanel jp = new JPanel(new MigLayout(
+                "fill",
                 "",
                 ""
         ));
-        top.setBorder(createFormSectionBorder(top.getBackground().darker(), "List of plain chart types"));
-        parent.add(top, "growx, wrap");
-        parent.add(createPlotsTable());
-        return parent;
+        jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "List of plain chart types"));
+        jp.add(createPlotsTable(), "height ::256lp, growx");
+        return jp;
     }
 
     private Component createPlotsTable() {

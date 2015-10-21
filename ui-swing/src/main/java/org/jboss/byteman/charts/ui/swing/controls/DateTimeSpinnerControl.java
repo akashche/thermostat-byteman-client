@@ -40,7 +40,7 @@ public class DateTimeSpinnerControl extends ChartConfigSwingControl<DateTimeConf
 
     @Override
     public JComponent createComponent() {
-        SpinnerDateModel model = new SpinnerDateModel(entry.getDefaultValue(), entry.getMinValue(),
+        SpinnerDateModel model = new SpinnerDateModel(entry.getValue(), entry.getMinValue(),
                 entry.getMaxValue(), 0);
         JSpinner sp = new JSpinner();
         sp.setModel(model);

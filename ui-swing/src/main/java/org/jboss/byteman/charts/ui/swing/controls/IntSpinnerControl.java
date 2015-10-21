@@ -39,9 +39,10 @@ public class IntSpinnerControl extends ChartConfigSwingControl<IntConfigEntry> {
 
     @Override
     public JComponent createComponent() {
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel((int) entry.getDefaultValue(), entry.getMinValue(),
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel((int) entry.getValue(), entry.getMinValue(),
                 entry.getMaxValue(), entry.getStep()));
-        spinner.addFocusListener(new Listener(spinner));
+        JSpinner.DefaultEditor ed = (JSpinner.DefaultEditor) spinner.getEditor();
+        ed.getTextField().addFocusListener(new Listener(spinner));
         return spinner;
     }
 

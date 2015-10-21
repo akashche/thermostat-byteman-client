@@ -45,7 +45,7 @@ public class TextFieldControl extends ChartConfigSwingControl<StringConfigEntry>
 
     @Override
     public JComponent createComponent() {
-        JTextField tf = new JTextField(defaultString(entry.getDefaultValue()));
+        JTextField tf = new JTextField(defaultString(entry.getValue()));
         tf.addFocusListener(new Listener(tf));
         return tf;
     }

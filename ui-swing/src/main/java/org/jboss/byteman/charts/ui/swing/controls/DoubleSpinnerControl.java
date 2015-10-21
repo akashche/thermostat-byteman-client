@@ -39,9 +39,10 @@ public class DoubleSpinnerControl extends ChartConfigSwingControl<DoubleConfigEn
 
     @Override
     public JComponent createComponent() {
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel((double) entry.getDefaultValue(), entry.getMinValue(),
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel((double) entry.getValue(), entry.getMinValue(),
                 entry.getMaxValue(), entry.getStep()));
-        spinner.addFocusListener(new Listener(spinner));
+        JSpinner.DefaultEditor ed = (JSpinner.DefaultEditor) spinner.getEditor();
+        ed.getTextField().addFocusListener(new Listener(spinner));
         return spinner;
     }
 

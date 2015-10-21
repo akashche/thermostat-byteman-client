@@ -61,12 +61,12 @@ class AggregateChartsPage extends BasePage {
 
     private Component createTopPanel() {
         JPanel jp = new JPanel(new MigLayout(
-                "",
+                "fill",
                 "",
                 ""
         ));
         jp.setBorder(createFormSectionBorder(jp.getBackground().darker(), "List of aggregate chart types"));
-        jp.add(createPlotsTable());
+        jp.add(createPlotsTable(), "height ::256lp, growx");
         return jp;
     }
 

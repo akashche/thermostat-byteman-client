@@ -14,6 +14,7 @@ public class ChartSettings implements ConfigurableChart {
     LinkedHashMap<String, BoolConfigEntry> boolEntries = new LinkedHashMap<String, BoolConfigEntry>();
     LinkedHashMap<String, StringConfigEntry> stringEntries = new LinkedHashMap<String, StringConfigEntry>();
     LinkedHashMap<String, RegexConfigEntry> regexEntries = new LinkedHashMap<String, RegexConfigEntry>();
+    ArrayList<String> order = new ArrayList<String>();
 
     public ChartSettings() {
     }
@@ -29,6 +30,7 @@ public class ChartSettings implements ConfigurableChart {
             } else if (en instanceof BoolConfigEntry) {
                 boolEntries.put(en.getName(), (BoolConfigEntry) en);
             }
+            order.add(en.getName());
         }
     }
 
@@ -36,15 +38,28 @@ public class ChartSettings implements ConfigurableChart {
     @Override
     public Collection<? extends ChartConfigEntry<?>> availableConfig() {
         List<ChartConfigEntry> res = new ArrayList<ChartConfigEntry>();
-        res.addAll(doubleEntries.values());
-        res.addAll(boolEntries.values());
-        res.addAll(stringEntries.values());
-        res.addAll(regexEntries.values());
+        for (String name : order) {
+            res.add(getByName(name));
+        }
         return (Collection) res;
     }
 
     @Override
     public ConfigurableChart applyConfig(Map<String, ChartConfigEntry<?>> entries) {
         return this;
+    }
+
+    private ChartConfigEntry getByName(String name) {
+        ChartConfigEntry en = stringEntries.get(name);
+        if (null != en) return en;
+        en = doubleEntries.get(name);
+        if (null != en) return en;
+        en = boolEntries.get(name);
+        if (null != en) return en;
+        en = stringEntries.get(name);
+        if (null != en) return en;
+        en = regexEntries.get(name);
+        if (null != en) return en;
+        throw new SettingsException("Invalid setting name: [" + name + "]");
     }
 }

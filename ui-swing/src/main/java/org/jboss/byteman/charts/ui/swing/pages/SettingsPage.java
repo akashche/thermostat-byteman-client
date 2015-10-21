@@ -22,17 +22,13 @@
 package org.jboss.byteman.charts.ui.swing.pages;
 
 import net.miginfocom.swing.MigLayout;
-import org.jboss.byteman.charts.ui.ChartConfigEntry;
 import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
 import org.jboss.byteman.charts.ui.swing.settings.Settings;
-import org.jboss.byteman.charts.ui.swing.settings.SettingsManager;
-import org.jboss.byteman.charts.ui.swing.settings.SystemSettings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
@@ -46,8 +42,8 @@ import static org.jboss.byteman.charts.utils.SwingUtils.sleepNonFlicker;
 class SettingsPage extends BasePage {
 
     Settings settings;
-    private JPanel settingsPanel = new JPanel();
-    private ChartConfigPanel configPanel;
+    private JPanel parentPanel = new JPanel();
+    private ChartConfigPanel config;
 
     SettingsPage(ChartsAppContext ctx) {
         super(ctx, "settings", "Settings", "action_configure_16.png");
@@ -82,14 +78,14 @@ class SettingsPage extends BasePage {
     }
 
     public Component createConfigPanel() {
-        settingsPanel = new JPanel(new MigLayout(
-                "fill",
+        parentPanel = new JPanel(new MigLayout(
+                "fill, insets n 0 0 0",
                 "",
                 ""
         ));
-        settingsPanel.add(new JPanel());
-        JScrollPane sp = new JScrollPane(settingsPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        sp.setBorder(BorderFactory.createEmptyBorder());
+        parentPanel.add(new JPanel());
+        JScrollPane sp = new JScrollPane(parentPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.getVerticalScrollBar().setUnitIncrement(16);
         return sp;
     }
 
@@ -133,16 +129,16 @@ class SettingsPage extends BasePage {
         protected Void doInBackground() throws Exception {
             long start = System.currentTimeMillis();
             settings = ctx.loadSettings();
-            configPanel = ChartConfigPanel.builder().build(settings.getSystem().availableConfig());
+            config = ChartConfigPanel.builder().build(settings.getSystem().availableConfig());
             sleepNonFlicker(start);
             return null;
         }
 
         @Override
         protected void done() {
-            JPanel panel = configPanel.getPanel();
-            settingsPanel.remove(0);
-            settingsPanel.add(panel, "growx");
+            JPanel panel = config.getPanel();
+            parentPanel.remove(0);
+            parentPanel.add(panel, "growx");
             ctx.setStatus("Settings loaded");
             ctx.getPageManager().hidePageSplash(SettingsPage.this.getName());
         }
@@ -157,7 +153,7 @@ class SettingsPage extends BasePage {
         @Override
         protected Void doInBackground() throws Exception {
             long start = System.currentTimeMillis();
-            settings.getSystem().applyConfig(configPanel.getComponents());
+            settings.getSystem().applyConfig(config.getComponents());
             ctx.saveSettings(settings);
             sleepNonFlicker(start);
             return null;
