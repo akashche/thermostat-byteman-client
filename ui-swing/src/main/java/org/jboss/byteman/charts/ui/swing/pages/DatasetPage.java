@@ -140,7 +140,7 @@ class DatasetPage extends BasePage {
         List<ChartFilter> res = new ArrayList<ChartFilter>();
         TimestampFromFilter tsFrom = new TimestampFromFilter("timestampFrom", new Date());
         res.add(tsFrom);
-        TimestampFromFilter tsTo = new TimestampFromFilter("timestampTo", new Date());
+        TimestampToFilter tsTo = new TimestampToFilter("timestampTo", new Date());
         res.add(tsTo);
         res.add(new RegexFilter("marker"));
         res.add(new RegexFilter("agentId"));
@@ -157,8 +157,8 @@ class DatasetPage extends BasePage {
                 if (null != en.getValue() && !existing.contains(en.getKey())) {
                     existing.add(en.getKey());
                     if (en.getValue() instanceof Number) {
-                        res.add(new IntGreaterFieldFilter(en.getKey() + " [from]"));
-                        res.add(new IntLesserFieldFilter(en.getKey() + " [to]"));
+                        res.add(new IntGreaterFieldFilter(en.getKey()));
+                        res.add(new IntLesserFieldFilter(en.getKey()));
                     } else {
                         res.add(new RegexFieldFilter(en.getKey()));
                     }
@@ -166,7 +166,7 @@ class DatasetPage extends BasePage {
             }
         }
         tsFrom.getEntry().setValue(new Date(timestampFrom));
-        tsFrom.getEntry().setValue(new Date(timestampTo));
+        tsTo.getEntry().setValue(new Date(timestampTo));
         return res;
     }
 

@@ -26,7 +26,7 @@ public class RegexConfigEntry extends ConfigEntryBase<String> {
     public void setValue(String value) {
         super.setValue(value);
         try {
-            pattern = Pattern.compile(value);
+            pattern = Pattern.compile(value, Pattern.DOTALL | Pattern.MULTILINE);
         } catch (Exception e) {
             // todo: visual validation
         }

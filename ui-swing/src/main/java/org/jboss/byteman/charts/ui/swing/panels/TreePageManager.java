@@ -112,10 +112,16 @@ class TreePageManager implements PageManager {
 
         @Override
         protected Void doInBackground() throws Exception {
-            long start = System.currentTimeMillis();
-            this.comp = page.createPane();
-            sleepNonFlicker(start);
-            return null;
+            try {
+                long start = System.currentTimeMillis();
+                this.comp = page.createPane();
+                sleepNonFlicker(start);
+                return null;
+            } catch (Exception e) {
+                // todo: report properly
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
         }
 
         @Override

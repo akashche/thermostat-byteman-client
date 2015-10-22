@@ -95,4 +95,12 @@ public class ChartSettings implements ConfigurableChart {
         ArrayList<String> or = new ArrayList<String>(order);
         return new ChartSettings(de, be, se, re, or);
     }
+
+    public Map<String, ChartConfigEntry<?>> configAsMap() {
+        Map<String, ChartConfigEntry<?>> res = new LinkedHashMap<String, ChartConfigEntry<?>>();
+        for (ChartConfigEntry<?>  en : availableConfig()) {
+            res.put(en.getName(), en);
+        }
+        return res;
+    }
 }

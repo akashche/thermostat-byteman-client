@@ -84,6 +84,8 @@ class FiltersetPage extends BasePage {
     private JToggleButton filtersButton;
     private JToggleButton configButton;
 
+    JFreeChartBuilder chartBuilder;
+
     protected FiltersetPage(ChartsAppContext ctx, ChartSettings chartSettings, String name, String label, String parentName,
                             Plotter plotter, Iterable<DataRecord> records, Collection<? extends ChartFilter> filters,
                             AtomicInteger nameCounter) {
@@ -134,7 +136,7 @@ class FiltersetPage extends BasePage {
 
         unzoomButton = createButton("action_reload_32.png");
         unzoomButton.addActionListener(new UnzoomListener());
-        unzoomButton.setEnabled(false);
+//        unzoomButton.setEnabled(false);
         jp.add(unzoomButton, "gap 20lp");
 
         filtersButton = createToggleButton("app_kappfinder_32.png");
@@ -197,7 +199,9 @@ class FiltersetPage extends BasePage {
     }
 
     private Component createChart() {
-        return new JFreeChartBuilder(plotter, records, filters).createChartPanel();
+        chartBuilder = new JFreeChartBuilder(plotter, records, filters);
+        chartBuilder.applyConfig(chartSettings.configAsMap());
+        return chartBuilder.createChartPanel();
 
     }
 
@@ -413,7 +417,7 @@ class FiltersetPage extends BasePage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            // todo
+            chartBuilder.unzoom();
         }
     }
 }

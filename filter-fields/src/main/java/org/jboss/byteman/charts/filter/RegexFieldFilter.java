@@ -21,7 +21,9 @@ public class RegexFieldFilter extends FieldFilter {
 
     @Override
     protected boolean applyInternal(Object field) {
-        return en.getPattern().matcher(field.toString()).matches();
+//        return en.getPattern().matcher(field.toString()).matches();
+        // todo: check me for multiline stacktrace strings
+        return true;
     }
 
     @Override

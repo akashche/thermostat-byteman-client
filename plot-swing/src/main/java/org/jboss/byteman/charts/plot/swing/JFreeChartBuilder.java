@@ -58,6 +58,10 @@ public class JFreeChartBuilder implements ConfigurableChart {
         return this;
     }
 
+    public synchronized void unzoom() {
+        zm.reset();
+    }
+
     // todo: think about making 'magic' filters explicit
     private void extractPeriod(Collection<? extends ChartFilter> filters) {
         for (ChartFilter fi : filters) {
@@ -134,7 +138,7 @@ public class JFreeChartBuilder implements ConfigurableChart {
         try {
             Field fi = Config.class.getDeclaredField(fieldName);
             fi.setAccessible(true);
-            fi.set(this, fieldValue);
+            fi.set(this.cf, fieldValue);
         } catch (NoSuchFieldException e) {
             throw new PlotException("Config apply error, name: [" + fieldName + "], value: ["  + fieldValue + "]", e);
         } catch (IllegalAccessException e) {
@@ -190,8 +194,8 @@ public class JFreeChartBuilder implements ConfigurableChart {
 
         private ChartPanel buildChartPanel(float lower, float upper) {
             long delta = periodEnd - periodStart;
-            long from = (long) (periodStart + delta * lower);
-            long to = (long) (periodEnd - (delta * (1 - upper)));
+            long from = periodStart + (long)(delta * lower);
+            long to = periodEnd - (long)(delta * (1 - upper));
             Collection<PlotRecord> records = plotter.createPlot(cf, from, to, data.iterator(), filters);
             JFreeChart chart = createChart(records);
             return new ZoomableChartPanel(chart);
@@ -207,7 +211,7 @@ public class JFreeChartBuilder implements ConfigurableChart {
         String valueAttributeName = "value";
         String categoryAttributeName = "category";
 
-        private int maxRecords = 24;
+        private double maxRecords = 24;
         private boolean ignoreAbsentCategory = true;
         private boolean ignoreAbsentValue = true;
         private boolean ignoreInvalidValue = true;
@@ -252,7 +256,7 @@ public class JFreeChartBuilder implements ConfigurableChart {
 
         @Override
         public int getMaxRecords() {
-            return maxRecords;
+            return (int) maxRecords;
         }
 
         @Override
