@@ -51,6 +51,15 @@ public abstract class ConfigEntryBase<T> implements ChartConfigEntry<T> {
         this.value = defaultValue;
     }
 
+    protected ConfigEntryBase(T value, T defaultValue, String type, String name, String label, String layoutOptions) {
+        this.value = value;
+        this.defaultValue = defaultValue;
+        this.type = type;
+        this.name = name;
+        this.label = label;
+        this.layoutOptions = layoutOptions;
+    }
+
     @Override
     public String getType() {
         return type;

@@ -41,6 +41,13 @@ public class LongConfigEntry extends ConfigEntryBase<Long> {
         this.step = step;
     }
 
+    private LongConfigEntry(Long value, Long defaultValue, String type, String name, String label, String layoutOptions, long minValue, long maxValue, int step) {
+        super(value, defaultValue, type, name, label, layoutOptions);
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.step = step;
+    }
+
     public long getMinValue() {
         return minValue;
     }
@@ -51,6 +58,12 @@ public class LongConfigEntry extends ConfigEntryBase<Long> {
 
     public int getStep() {
         return step;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T1 extends ChartConfigEntry<Long>> T1 copy() {
+        return (T1) new LongConfigEntry(value, defaultValue, type, name, label, layoutOptions, minValue, maxValue, step);
     }
 
     @Override

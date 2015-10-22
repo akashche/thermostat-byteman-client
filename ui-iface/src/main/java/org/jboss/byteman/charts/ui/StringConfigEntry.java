@@ -34,6 +34,16 @@ public class StringConfigEntry extends ConfigEntryBase<String> {
         super("org.jboss.byteman.charts.ui.swing.controls.TextFieldControl", label, defaultValue);
     }
 
+    private StringConfigEntry(String value, String defaultValue, String type, String name, String label, String layoutOptions) {
+        super(value, defaultValue, type, name, label, layoutOptions);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T1 extends ChartConfigEntry<String>> T1 copy() {
+        return (T1) new StringConfigEntry(value, defaultValue, type, name, label, layoutOptions);
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();

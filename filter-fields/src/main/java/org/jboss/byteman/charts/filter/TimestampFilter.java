@@ -16,6 +16,10 @@ abstract class TimestampFilter implements ChartFilter {
         en = new DateTimeConfigEntry(label, defaultValue, new java.util.Date(0), new Date());
     }
 
+    protected TimestampFilter(DateTimeConfigEntry en) {
+        this.en = en;
+    }
+
     @Override
     public ChartConfigEntry<?> configEntry() {
         return en;

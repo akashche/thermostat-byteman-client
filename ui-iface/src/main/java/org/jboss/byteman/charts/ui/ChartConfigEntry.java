@@ -42,4 +42,6 @@ public interface ChartConfigEntry<T> {
     T getValue();
 
     void setValue(T value);
+
+    <T1 extends ChartConfigEntry<T>> T1 copy();
 }

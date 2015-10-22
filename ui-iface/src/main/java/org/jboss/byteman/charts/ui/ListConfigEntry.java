@@ -59,4 +59,9 @@ public class ListConfigEntry extends ConfigEntryBase<String> {
     }
 
 
+    @Override
+    public <T1 extends ChartConfigEntry<String>> T1 copy() {
+        // todo
+        return null;
+    }
 }

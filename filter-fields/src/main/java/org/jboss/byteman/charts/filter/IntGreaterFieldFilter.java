@@ -11,8 +11,12 @@ public class IntGreaterFieldFilter extends FieldFilter {
     private final IntConfigEntry en;
 
     public IntGreaterFieldFilter(String fieldName) {
+        this(fieldName, new IntConfigEntry(fieldName, 0, 0, Integer.MAX_VALUE, 1));
+    }
+
+    private IntGreaterFieldFilter(String fieldName, IntConfigEntry en) {
         super(fieldName);
-        en = new IntConfigEntry(fieldName, 0, 0, Integer.MAX_VALUE, 1);
+        this.en = en;
     }
 
     @Override
@@ -26,4 +30,12 @@ public class IntGreaterFieldFilter extends FieldFilter {
     public ChartConfigEntry<?> configEntry() {
         return en;
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends ChartFilter> T copy() {
+        IntConfigEntry cp = en.copy();
+        return (T) new IntGreaterFieldFilter(fieldName, cp);
+    }
+
 }

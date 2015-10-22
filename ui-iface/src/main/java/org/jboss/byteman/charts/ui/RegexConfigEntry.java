@@ -17,6 +17,11 @@ public class RegexConfigEntry extends ConfigEntryBase<String> {
         pattern = Pattern.compile(defaultValue);
     }
 
+    private RegexConfigEntry(String value, String defaultValue, String type, String name, String label, String layoutOptions, Pattern pattern) {
+        super(value, defaultValue, type, name, label, layoutOptions);
+        this.pattern = pattern;
+    }
+
     @Override
     public void setValue(String value) {
         super.setValue(value);
@@ -25,6 +30,12 @@ public class RegexConfigEntry extends ConfigEntryBase<String> {
         } catch (Exception e) {
             // todo: visual validation
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T1 extends ChartConfigEntry<String>> T1 copy() {
+        return (T1) new RegexConfigEntry(value, defaultValue, type, name, label, layoutOptions, pattern);
     }
 
     public Pattern getPattern() {

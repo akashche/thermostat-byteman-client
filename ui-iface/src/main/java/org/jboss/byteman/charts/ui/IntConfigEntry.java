@@ -41,6 +41,13 @@ public class IntConfigEntry extends ConfigEntryBase<Integer> {
         this.step = step;
     }
 
+    private IntConfigEntry(Integer value, Integer defaultValue, String type, String name, String label, String layoutOptions, int minValue, int maxValue, int step) {
+        super(value, defaultValue, type, name, label, layoutOptions);
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.step = step;
+    }
+
     public int getMinValue() {
         return minValue;
     }
@@ -51,6 +58,12 @@ public class IntConfigEntry extends ConfigEntryBase<Integer> {
 
     public int getStep() {
         return step;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T1 extends ChartConfigEntry<Integer>> T1 copy() {
+        return (T1) new IntConfigEntry(value, defaultValue, type, name, label, layoutOptions, minValue, maxValue, step);
     }
 
     @Override

@@ -11,8 +11,12 @@ public class RegexFieldFilter extends FieldFilter {
     private final RegexConfigEntry en;
 
     public RegexFieldFilter(String fieldName) {
+        this(fieldName, new RegexConfigEntry(fieldName, "^.*$"));
+    }
+
+    public RegexFieldFilter(String fieldName, RegexConfigEntry en) {
         super(fieldName);
-        en = new RegexConfigEntry(fieldName, "^.*$");
+        this.en = en;
     }
 
     @Override
@@ -24,4 +28,12 @@ public class RegexFieldFilter extends FieldFilter {
     public ChartConfigEntry<?> configEntry() {
         return en;
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends ChartFilter> T copy() {
+        RegexConfigEntry cp = en.copy();
+        return (T) new RegexFieldFilter(fieldName, cp);
+    }
+
 }

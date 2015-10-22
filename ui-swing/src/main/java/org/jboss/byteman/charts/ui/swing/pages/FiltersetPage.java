@@ -26,20 +26,13 @@ import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.filter.ChartFilterUtils;
 import org.jboss.byteman.charts.plot.Plotter;
-import org.jboss.byteman.charts.plot.plain.PlainStackedPlotter;
 import org.jboss.byteman.charts.plot.swing.JFreeChartBuilder;
-import org.jboss.byteman.charts.ui.ChartConfigEntry;
-import org.jboss.byteman.charts.ui.StringConfigEntry;
 import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
 import org.jboss.byteman.charts.ui.swing.settings.ChartSettings;
-import org.jboss.byteman.charts.ui.swing.settings.Settings;
 import org.jboss.byteman.charts.ui.swing.util.ChartRecordTableModel;
 import org.jboss.byteman.charts.ui.swing.util.ColumnFitTable;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import java.awt.*;
@@ -48,6 +41,7 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static javax.swing.BorderFactory.*;
 import static javax.swing.BorderFactory.createMatteBorder;
@@ -73,36 +67,37 @@ class FiltersetPage extends BasePage {
     private static final String CHART_VIEW_NAME = "chart";
     static final String ALL_RECORDS_LABEL = "All Records";
 
+    private final ChartSettings chartSettings;
     private final String parentName;
     private final Plotter plotter;
     private final Iterable<DataRecord> records;
     private final Collection<? extends ChartFilter> filters;
     // not actually required due to ETD, still just in case
     private final AtomicBoolean chartViewActive = new AtomicBoolean(true);
-
-    private ChartSettings chartSettings;
+    private final AtomicInteger nameCounter;
 
     private JPanel cardbox;
     private CardLayout deck;
     private JToggleButton gridButton;
     private JToggleButton chartButton;
-    private JButton unzoom;
+    private JButton unzoomButton;
     private JToggleButton filtersButton;
     private JToggleButton configButton;
 
-    protected FiltersetPage(ChartsAppContext ctx, String name, String label, String parentName,
-                            Plotter plotter, Iterable<DataRecord> records, Collection<? extends ChartFilter> filters) {
+    protected FiltersetPage(ChartsAppContext ctx, ChartSettings chartSettings, String name, String label, String parentName,
+                            Plotter plotter, Iterable<DataRecord> records, Collection<? extends ChartFilter> filters,
+                            AtomicInteger nameCounter) {
         super(ctx, name, label, "mimetype_log_16.png");
+        this.chartSettings = chartSettings;
         this.parentName = parentName;
         this.records = records;
         this.filters = filters;
         this.plotter = plotter;
+        this.nameCounter = nameCounter;
     }
 
     @Override
     public Component createPane() {
-        // todo: check
-        chartSettings = ctx.loadSettings().getCharts().get(plotter.getName());
         JPanel jp = new JPanel(new MigLayout(
                 "fill, insets 0, gapy 0",
                 "[fill]",
@@ -137,10 +132,10 @@ class FiltersetPage extends BasePage {
         chartButton.addActionListener(new ToggleListener());
         jp.add(chartButton);
 
-        unzoom = createButton("action_reload_32.png");
-        unzoom.addActionListener(new UnzoomListener());
-        unzoom.setEnabled(false);
-        jp.add(unzoom, "gap 20lp");
+        unzoomButton = createButton("action_reload_32.png");
+        unzoomButton.addActionListener(new UnzoomListener());
+        unzoomButton.setEnabled(false);
+        jp.add(unzoomButton, "gap 20lp");
 
         filtersButton = createToggleButton("app_kappfinder_32.png");
         filtersButton.addActionListener(new ShowFiltersListener());
@@ -204,6 +199,15 @@ class FiltersetPage extends BasePage {
     private Component createChart() {
         return new JFreeChartBuilder(plotter, records, filters).createChartPanel();
 
+    }
+
+    private Collection<? extends ChartFilter> deepCopyFilters() {
+        Collection<ChartFilter> res = new ArrayList<ChartFilter>();
+        for (ChartFilter fi : filters) {
+            ChartFilter cp = fi.copy();
+            res.add(cp);
+        }
+        return res;
     }
 
     private class ClosePageListener implements ActionListener {
@@ -276,10 +280,10 @@ class FiltersetPage extends BasePage {
         @Override
         public void actionPerformed(ActionEvent e) {
             PageManager pm = ctx.getPageManager();
-            String fname = "tmp_filtered" + System.currentTimeMillis();
+            String fname = "filtered_" + nameCounter.incrementAndGet();
             String filtername = parentName + "_" + fname;
-            // todo: deep clone filters
-            ContentPage filterpage = new FiltersetPage(ctx, filtername, fname, parentName, plotter, records, Collections.<ChartFilter>emptyList());
+            ContentPage filterpage = new FiltersetPage(ctx, chartSettings.deepCopy(), filtername,
+                    fname, parentName, plotter, records, deepCopyFilters(), nameCounter);
             pm.addPageAsync(filterpage, parentName);
             menu.setVisible(false);
             button.setSelected(false);

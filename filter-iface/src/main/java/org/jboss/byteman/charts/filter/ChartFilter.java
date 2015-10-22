@@ -46,4 +46,6 @@ public interface ChartFilter {
      * @return config entry object
      */
     ChartConfigEntry<?> configEntry();
+
+    <T extends ChartFilter> T copy();
 }

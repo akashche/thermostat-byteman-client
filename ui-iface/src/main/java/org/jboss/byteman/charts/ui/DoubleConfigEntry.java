@@ -41,6 +41,13 @@ public class DoubleConfigEntry extends ConfigEntryBase<Double> {
         this.step = step;
     }
 
+    private DoubleConfigEntry(Double value, Double defaultValue, String type, String name, String label, String layoutOptions, double minValue, double maxValue, double step) {
+        super(value, defaultValue, type, name, label, layoutOptions);
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.step = step;
+    }
+
     public double getMinValue() {
         return minValue;
     }
@@ -51,6 +58,12 @@ public class DoubleConfigEntry extends ConfigEntryBase<Double> {
 
     public double getStep() {
         return step;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T1 extends ChartConfigEntry<Double>> T1 copy() {
+        return (T1) new DoubleConfigEntry(value, defaultValue, type, name, label, layoutOptions, minValue, maxValue, step);
     }
 
     @Override

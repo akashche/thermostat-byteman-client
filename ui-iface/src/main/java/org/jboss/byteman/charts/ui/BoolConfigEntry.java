@@ -34,6 +34,16 @@ public class BoolConfigEntry extends ConfigEntryBase<Boolean> {
         super("org.jboss.byteman.charts.ui.swing.controls.BoolCheckboxControl", label, defaultValue);
     }
 
+    private BoolConfigEntry(Boolean value, Boolean defaultValue, String type, String name, String label, String layoutOptions) {
+        super(value, defaultValue, type, name, label, layoutOptions);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T1 extends ChartConfigEntry<Boolean>> T1 copy() {
+        return (T1) new BoolConfigEntry(value, defaultValue, type, name, label, layoutOptions);
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();

@@ -41,12 +41,24 @@ public class DateTimeConfigEntry extends ConfigEntryBase<Date> {
         this.maxValue = maxValue;
     }
 
+    private DateTimeConfigEntry(Date value, Date defaultValue, String type, String name, String label, String layoutOptions, Date minValue, Date maxValue) {
+        super(value, defaultValue, type, name, label, layoutOptions);
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+    }
+
     public Date getMinValue() {
         return null != minValue ? minValue : new Date(0);
     }
 
     public Date getMaxValue() {
         return null != maxValue ? maxValue : new Date();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T1 extends ChartConfigEntry<Date>> T1 copy() {
+        return (T1) new DateTimeConfigEntry(value, defaultValue, type, name, label, layoutOptions, minValue, maxValue);
     }
 
     @Override

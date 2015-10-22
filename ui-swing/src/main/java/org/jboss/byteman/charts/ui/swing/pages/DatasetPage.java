@@ -28,6 +28,7 @@ import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.*;
 import org.jboss.byteman.charts.plot.Plotter;
 import org.jboss.byteman.charts.ui.UiSwingException;
+import org.jboss.byteman.charts.ui.swing.settings.ChartSettings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,6 +36,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.jboss.byteman.charts.ui.swing.pages.FiltersetPage.ALL_RECORDS_LABEL;
 import static org.jboss.byteman.charts.utils.IOUtils.closeQuietly;
@@ -82,8 +84,11 @@ class DatasetPage extends BasePage {
         recordsCount = records.size();
         String filtername = datasetName + "_" + ALL_RECORDS_LABEL;
         List<? extends ChartFilter> filters = createFilters(records);
-        filterpage = new FiltersetPage(ctx, filtername, ALL_RECORDS_LABEL, datasetName, plotter, records, filters);
+        ChartSettings chartSettings = ctx.loadSettings().getCharts().get(plotter.getName());
+        filterpage = new FiltersetPage(ctx, chartSettings.deepCopy(), filtername, ALL_RECORDS_LABEL,
+                datasetName, plotter, records, filters, new AtomicInteger(0));
         parent.add(createDetailsPanel(), "growx");
+
         return parent;
     }
 

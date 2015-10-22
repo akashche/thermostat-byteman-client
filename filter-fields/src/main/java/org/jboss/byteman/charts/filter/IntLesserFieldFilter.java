@@ -11,8 +11,12 @@ public class IntLesserFieldFilter extends FieldFilter {
     private final IntConfigEntry en;
 
     public IntLesserFieldFilter(String fieldName) {
+        this(fieldName, new IntConfigEntry(fieldName, Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 1));
+    }
+
+    private IntLesserFieldFilter(String fieldName, IntConfigEntry en) {
         super(fieldName);
-        en = new IntConfigEntry(fieldName, Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 1);
+        this.en = en;
     }
 
     @Override
@@ -25,6 +29,13 @@ public class IntLesserFieldFilter extends FieldFilter {
     @Override
     public ChartConfigEntry<?> configEntry() {
         return en;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends ChartFilter> T copy() {
+        IntConfigEntry cp = en.copy();
+        return (T) new IntLesserFieldFilter(fieldName, cp);
     }
 }
 

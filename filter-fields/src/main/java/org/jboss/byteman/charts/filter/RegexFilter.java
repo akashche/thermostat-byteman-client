@@ -12,7 +12,11 @@ public class RegexFilter implements ChartFilter {
     protected final RegexConfigEntry en;
 
     public RegexFilter(String name) {
-        en = new RegexConfigEntry(name, "^.*$");
+        this(new RegexConfigEntry(name, "^.*$"));
+    }
+
+    private RegexFilter(RegexConfigEntry en) {
+        this.en = en;
     }
 
     @Override
@@ -24,5 +28,12 @@ public class RegexFilter implements ChartFilter {
     @Override
     public ChartConfigEntry<?> configEntry() {
         return en;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends ChartFilter> T copy() {
+        RegexConfigEntry cp = en.copy();
+        return (T) new RegexFilter(cp);
     }
 }
