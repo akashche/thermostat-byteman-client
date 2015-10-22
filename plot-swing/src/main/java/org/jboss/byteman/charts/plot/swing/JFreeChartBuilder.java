@@ -1,5 +1,6 @@
 package org.jboss.byteman.charts.plot.swing;
 
+import net.miginfocom.swing.MigLayout;
 import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
 import org.jboss.byteman.charts.plot.*;
@@ -148,7 +149,11 @@ public class JFreeChartBuilder implements ConfigurableChart {
     }
 
     private class Manager implements ZoomManager {
-        private final JPanel panel = new JPanel();
+        private final JPanel panel = new JPanel(new MigLayout(
+                "fill, insets 0",
+                "[fill]",
+                "[fill]"
+        ));
         private float prevLower = 0f;
         private float prevUpper = 1f;
 
@@ -288,21 +293,21 @@ public class JFreeChartBuilder implements ConfigurableChart {
                     new BoolConfigEntry("shadowVisible", shadowVisible),
                     new DoubleConfigEntry("itemMargin", itemMargin, 0, 100, 0.1),
                     new BoolConfigEntry("outlineVisible", outlineVisible),
-                    new StringConfigEntry("backgroundPaint", backgroundPaint),
-                    new DoubleConfigEntry("backgroundImageAlpha", backgroundImageAlpha, 0, 1, 0.1),
-                    new StringConfigEntry("rangeGridlinePaint", rangeGridlinePaint),
+//                    new StringConfigEntry("backgroundPaint", backgroundPaint),
+                    new DoubleConfigEntry("backgroundImageAlpha", backgroundImageAlpha, 0, 1, 0.1)
+//                    new StringConfigEntry("rangeGridlinePaint", rangeGridlinePaint),
 
                     //todo: color chooser
-                    new StringConfigEntry("seriesPaint1", seriesPaint1),
-                    new StringConfigEntry("seriesPaint2", seriesPaint2),
-                    new StringConfigEntry("seriesPaint3", seriesPaint3),
-                    new StringConfigEntry("seriesPaint4", seriesPaint4),
-                    new StringConfigEntry("seriesPaint5", seriesPaint5),
-
-                    new StringConfigEntry("wallPaint", wallPaint),
-                    new StringConfigEntry("axisLinePaint", axisLinePaint),
-                    new StringConfigEntry("tickMarkPaint", tickMarkPaint),
-                    new StringConfigEntry("tickLabelPaint", tickLabelPaint)
+//                    new StringConfigEntry("seriesPaint1", seriesPaint1),
+//                    new StringConfigEntry("seriesPaint2", seriesPaint2),
+//                    new StringConfigEntry("seriesPaint3", seriesPaint3),
+//                    new StringConfigEntry("seriesPaint4", seriesPaint4),
+//                    new StringConfigEntry("seriesPaint5", seriesPaint5),
+//
+//                    new StringConfigEntry("wallPaint", wallPaint),
+//                    new StringConfigEntry("axisLinePaint", axisLinePaint),
+//                    new StringConfigEntry("tickMarkPaint", tickMarkPaint),
+//                    new StringConfigEntry("tickLabelPaint", tickLabelPaint)
             );
         }
     }

@@ -31,6 +31,8 @@ import org.jboss.byteman.charts.plot.swing.JFreeChartBuilder;
 import org.jboss.byteman.charts.ui.ChartConfigEntry;
 import org.jboss.byteman.charts.ui.StringConfigEntry;
 import org.jboss.byteman.charts.ui.swing.config.ChartConfigPanel;
+import org.jboss.byteman.charts.ui.swing.settings.ChartSettings;
+import org.jboss.byteman.charts.ui.swing.settings.Settings;
 import org.jboss.byteman.charts.ui.swing.util.ChartRecordTableModel;
 import org.jboss.byteman.charts.ui.swing.util.ColumnFitTable;
 import org.jfree.chart.ChartPanel;
@@ -78,11 +80,15 @@ class FiltersetPage extends BasePage {
     // not actually required due to ETD, still just in case
     private final AtomicBoolean chartViewActive = new AtomicBoolean(true);
 
+    private ChartSettings chartSettings;
+
     private JPanel cardbox;
     private CardLayout deck;
     private JToggleButton gridButton;
     private JToggleButton chartButton;
+    private JButton unzoom;
     private JToggleButton filtersButton;
+    private JToggleButton configButton;
 
     protected FiltersetPage(ChartsAppContext ctx, String name, String label, String parentName,
                             Plotter plotter, Iterable<DataRecord> records, Collection<? extends ChartFilter> filters) {
@@ -95,9 +101,11 @@ class FiltersetPage extends BasePage {
 
     @Override
     public Component createPane() {
+        // todo: check
+        chartSettings = ctx.loadSettings().getCharts().get(plotter.getName());
         JPanel jp = new JPanel(new MigLayout(
                 "fill, insets 0, gapy 0",
-                "[]",
+                "[fill]",
                 "[top][fill]"
         ));
         jp.add(createToolbar(), "width 100%, height pref!, wrap");
@@ -113,7 +121,7 @@ class FiltersetPage extends BasePage {
     private JPanel createToolbar() {
         JPanel jp = new JPanel(new MigLayout(
                 "insets 0, gapx 0",
-                "[][] [][] [][] push []",
+                "[][] [] [][] [][] push []",
                 "[]"
         ));
         jp.setBorder(createMatteBorder(0, 0, 1, 0, jp.getBackground().darker()));
@@ -129,12 +137,17 @@ class FiltersetPage extends BasePage {
         chartButton.addActionListener(new ToggleListener());
         jp.add(chartButton);
 
+        unzoom = createButton("action_reload_32.png");
+        unzoom.addActionListener(new UnzoomListener());
+        unzoom.setEnabled(false);
+        jp.add(unzoom, "gap 20lp");
+
         filtersButton = createToggleButton("app_kappfinder_32.png");
         filtersButton.addActionListener(new ShowFiltersListener());
         jp.add(filtersButton, "gap 20lp");
-        JButton config = createButton("app_utilities_32.png");
-        config.setEnabled(false);
-        jp.add(config);
+        configButton = createToggleButton("app_utilities_32.png");
+        configButton.addActionListener(new ShowConfigListener());
+        jp.add(configButton);
 
         JButton export = createButton("action_db_update_32.png");
         export.setEnabled(false);
@@ -303,6 +316,100 @@ class FiltersetPage extends BasePage {
         @Override
         public void popupMenuCanceled(PopupMenuEvent e) {
             filtersButton.setSelected(false);
+        }
+    }
+
+    private class ShowConfigListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JToggleButton button = (JToggleButton) e.getSource();
+            JPanel panel = ChartConfigPanel.builder().build(chartSettings.availableConfig()).getPanel();
+            panel.setBackground(new Color(0, 0, 0, 0));
+            panel.setOpaque(false);
+            // menu won't work with comboboxes http://stackoverflow.com/a/11246209/314015
+            JPopupMenu menu = new JPopupMenu();
+            menu.setLayout(new MigLayout("insets 0, gap 0"));
+            menu.add(panel, "wrap");
+            JPanel bp = new JPanel(new MigLayout("align right"));
+            JButton clear = new JButton("Clear");
+            clear.setEnabled(false);
+            bp.add(clear);
+            JButton cancel = new JButton("Cancel");
+            cancel.addActionListener(new CancelConfigListener(menu, button));
+            bp.add(cancel);
+            JButton apply = new JButton("Apply");
+            apply.addActionListener(new ApplyConfigListener(menu, button));
+            bp.add(apply);
+//            bp.setBorder(createEmptyBorder(5, 0, 0, 0));
+            bp.setBackground(new Color(0, 0, 0, 0));
+            bp.setOpaque(false);
+            menu.add(bp, "grow x");
+            menu.addPopupMenuListener(new CloseConfigListener());
+            menu.show(configButton, 0, configButton.getHeight() - 5);
+        }
+    }
+
+    private class ApplyConfigListener implements ActionListener {
+        private final JPopupMenu menu;
+        private final JToggleButton button;
+
+        private ApplyConfigListener(JPopupMenu menu, JToggleButton button) {
+            this.menu = menu;
+            this.button = button;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+//            PageManager pm = ctx.getPageManager();
+//            String fname = "tmp_filtered" + System.currentTimeMillis();
+//            String filtername = parentName + "_" + fname;
+//            // todo: deep clone filters
+//            ContentPage filterpage = new FiltersetPage(ctx, filtername, fname, parentName, plotter, records, Collections.<ChartFilter>emptyList());
+//            pm.addPageAsync(filterpage, parentName);
+//            menu.setVisible(false);
+//            button.setSelected(false);
+        }
+    }
+
+    private class CancelConfigListener implements ActionListener {
+        private final JPopupMenu menu;
+        private final JToggleButton button;
+
+        private CancelConfigListener(JPopupMenu menu, JToggleButton button) {
+            this.menu = menu;
+            this.button = button;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            menu.setVisible(false);
+            button.setSelected(false);
+        }
+    }
+
+    private class CloseConfigListener implements PopupMenuListener {
+
+        @Override
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+        }
+
+        @Override
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+
+        }
+
+        @Override
+        public void popupMenuCanceled(PopupMenuEvent e) {
+            configButton.setSelected(false);
+        }
+    }
+
+    private class UnzoomListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // todo
         }
     }
 }

@@ -48,6 +48,12 @@
             <artifactId>jcommon</artifactId>
             <version>${version.jfreechart_common}</version>
         </dependency>
+        <!-- mig -->
+        <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout-swing</artifactId>
+            <version>${version.miglayout}</version>
+        </dependency>
 
         <!-- test -->
         <!-- plot impl access -->
