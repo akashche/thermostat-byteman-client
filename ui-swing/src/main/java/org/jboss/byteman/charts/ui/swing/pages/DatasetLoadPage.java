@@ -188,11 +188,10 @@ class DatasetLoadPage extends BasePage {
     private class LoadFileListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // todo: restore me
-//            Plotter plotter = ContentPagesRegister.PLOTS.get(plotsTable.getSelectedRow());
-            Plotter plotter = ContentPagesRegister.PLOTS.get(0);
-//            ContentPage page = new DatasetPage(ctx, nameField.getText(), new File(pathField.getText()), plotter);
-            ContentPage page = new DatasetPage(ctx, "reports_data_20150926_190707_2", new File("/home/alex/projects/redhat/byteman-charts/plot-aggregate/src/test/resources/org/jboss/byteman/charts/plot/aggregate/reports_data.json"), plotter);
+            Plotter plotter = ContentPagesRegister.PLOTS.get(plotsTable.getSelectedRow());
+//            Plotter plotter = ContentPagesRegister.PLOTS.get(0);
+            ContentPage page = new DatasetPage(ctx, nameField.getText(), new File(pathField.getText()), plotter);
+//            ContentPage page = new DatasetPage(ctx, "reports_data_20150926_190707_2", new File("/home/alex/projects/redhat/byteman-charts/plot-aggregate/src/test/resources/org/jboss/byteman/charts/plot/aggregate/reports_data.json"), plotter);
             ctx.getPageManager().addPageAsync(page, NAME);
             clearForm();
         }

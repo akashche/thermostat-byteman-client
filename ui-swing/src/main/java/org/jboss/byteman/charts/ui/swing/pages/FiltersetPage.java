@@ -67,11 +67,13 @@ class FiltersetPage extends BasePage {
     private static final String CHART_VIEW_NAME = "chart";
     static final String ALL_RECORDS_LABEL = "All Records";
 
-    private final ChartSettings chartSettings;
+    private final ChartSettings chartSettingsOrig;
+    private ChartSettings chartSettings;
     private final String parentName;
     private final Plotter plotter;
     private final Iterable<DataRecord> records;
-    private final Collection<? extends ChartFilter> filters;
+    private final Collection<? extends ChartFilter> filtersOrig;
+    private Collection<? extends ChartFilter> filters;
     // not actually required due to ETD, still just in case
     private final AtomicBoolean chartViewActive = new AtomicBoolean(true);
     private final AtomicInteger nameCounter;
@@ -90,9 +92,11 @@ class FiltersetPage extends BasePage {
                             Plotter plotter, Iterable<DataRecord> records, Collection<? extends ChartFilter> filters,
                             AtomicInteger nameCounter) {
         super(ctx, name, label, "mimetype_log_16.png");
+        this.chartSettingsOrig = chartSettings.deepCopy();
         this.chartSettings = chartSettings;
         this.parentName = parentName;
         this.records = records;
+        this.filtersOrig = deepCopyFilters(filters);
         this.filters = filters;
         this.plotter = plotter;
         this.nameCounter = nameCounter;
@@ -205,7 +209,7 @@ class FiltersetPage extends BasePage {
 
     }
 
-    private Collection<? extends ChartFilter> deepCopyFilters() {
+    private static Collection<? extends ChartFilter> deepCopyFilters(Collection<? extends ChartFilter> filters) {
         Collection<ChartFilter> res = new ArrayList<ChartFilter>();
         for (ChartFilter fi : filters) {
             ChartFilter cp = fi.copy();
@@ -287,8 +291,9 @@ class FiltersetPage extends BasePage {
             String fname = "filtered_" + nameCounter.incrementAndGet();
             String filtername = parentName + "_" + fname;
             ContentPage filterpage = new FiltersetPage(ctx, chartSettings.deepCopy(), filtername,
-                    fname, parentName, plotter, records, deepCopyFilters(), nameCounter);
+                    fname, parentName, plotter, records, deepCopyFilters(filters), nameCounter);
             pm.addPageAsync(filterpage, parentName);
+            filters = deepCopyFilters(filtersOrig);
             menu.setVisible(false);
             button.setSelected(false);
         }
@@ -369,14 +374,15 @@ class FiltersetPage extends BasePage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-//            PageManager pm = ctx.getPageManager();
-//            String fname = "tmp_filtered" + System.currentTimeMillis();
-//            String filtername = parentName + "_" + fname;
-//            // todo: deep clone filters
-//            ContentPage filterpage = new FiltersetPage(ctx, filtername, fname, parentName, plotter, records, Collections.<ChartFilter>emptyList());
-//            pm.addPageAsync(filterpage, parentName);
-//            menu.setVisible(false);
-//            button.setSelected(false);
+            PageManager pm = ctx.getPageManager();
+            String fname = "filtered_" + nameCounter.incrementAndGet();
+            String filtername = parentName + "_" + fname;
+            ContentPage filterpage = new FiltersetPage(ctx, chartSettings.deepCopy(), filtername,
+                    fname, parentName, plotter, records, deepCopyFilters(filters), nameCounter);
+            chartSettings = chartSettingsOrig.deepCopy();
+            pm.addPageAsync(filterpage, parentName);
+            menu.setVisible(false);
+            button.setSelected(false);
         }
     }
 

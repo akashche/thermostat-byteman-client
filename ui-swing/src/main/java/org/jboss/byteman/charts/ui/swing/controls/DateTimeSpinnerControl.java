@@ -44,8 +44,9 @@ public class DateTimeSpinnerControl extends ChartConfigSwingControl<DateTimeConf
                 entry.getMaxValue(), 0);
         JSpinner sp = new JSpinner();
         sp.setModel(model);
-        sp.setEditor(new JSpinner.DateEditor(sp, "yyyy-MM-dd HH:mm:ss"));
-        sp.addFocusListener(new Listener(sp));
+        JSpinner.DateEditor ed = new JSpinner.DateEditor(sp, "yyyy-MM-dd HH:mm:ss");
+        sp.setEditor(ed);
+        ed.getTextField().addFocusListener(new Listener(sp));
         return sp;
     }
 
