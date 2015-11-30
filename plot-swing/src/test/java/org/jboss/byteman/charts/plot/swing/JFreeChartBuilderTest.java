@@ -1,10 +1,11 @@
-package org.jboss.byteman.charts.plot.swing;
+package com.redhat.thermostat.byteman.plot.swing;
 
-import org.jboss.byteman.charts.data.DataRecord;
-import org.jboss.byteman.charts.filter.ChartFilter;
-import org.jboss.byteman.charts.plot.impl.AveragePlotter;
-import org.jboss.byteman.charts.ui.ChartConfigEntry;
-import org.jboss.byteman.charts.ui.ConfigEntryBase;
+import com.redhat.thermostat.byteman.data.DataRecord;
+import com.redhat.thermostat.byteman.filter.ChartFilter;
+import com.redhat.thermostat.byteman.plot.impl.AveragePlotter;
+import com.redhat.thermostat.byteman.config.ChartConfigEntry;
+import com.redhat.thermostat.byteman.config.ConfigEntryBase;
+import com.redhat.thermostat.byteman.plot.swing.JFreeChartBuilder;
 import org.junit.Test;
 
 import java.util.Arrays;

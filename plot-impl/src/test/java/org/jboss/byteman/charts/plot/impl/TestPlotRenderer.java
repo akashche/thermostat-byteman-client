@@ -1,17 +1,15 @@
-package org.jboss.byteman.charts.plot.impl;
+package com.redhat.thermostat.byteman.plot.impl;
 
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.jboss.byteman.charts.plot.PlotRecord;
+import com.redhat.thermostat.byteman.plot.PlotRecord;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer3D;
 import org.jfree.chart.renderer.category.StackedBarRenderer3D;
-import org.jfree.data.Range;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -20,11 +18,10 @@ import java.awt.*;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Collection;
-import java.util.List;
 
-import static org.jboss.byteman.charts.plot.PlotUtils.toColor;
-import static org.jboss.byteman.charts.utils.IOUtils.closeQuietly;
-import static org.jboss.byteman.charts.utils.string.StringUtils.EMPTY_STRING;
+import static com.redhat.thermostat.byteman.utils.ColorUtils.toColor;
+import static com.redhat.thermostat.byteman.utils.IOUtils.closeQuietly;
+import static com.redhat.thermostat.byteman.utils.string.StringUtils.EMPTY_STRING;
 
 /**
  * User: alexkasko

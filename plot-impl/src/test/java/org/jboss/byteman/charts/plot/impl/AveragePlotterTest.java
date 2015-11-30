@@ -1,10 +1,11 @@
-package org.jboss.byteman.charts.plot.impl;
+package com.redhat.thermostat.byteman.plot.impl;
 
+import com.redhat.thermostat.byteman.plot.impl.AveragePlotter;
 import junit.framework.Assert;
-import org.jboss.byteman.charts.data.DataRecord;
-import org.jboss.byteman.charts.filter.ChartFilter;
-import org.jboss.byteman.charts.plot.PlotConfig;
-import org.jboss.byteman.charts.plot.PlotRecord;
+import com.redhat.thermostat.byteman.data.DataRecord;
+import com.redhat.thermostat.byteman.filter.ChartFilter;
+import com.redhat.thermostat.byteman.plot.PlotConfig;
+import com.redhat.thermostat.byteman.plot.PlotRecord;
 import org.junit.Test;
 
 import java.util.Arrays;

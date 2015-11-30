@@ -1,6 +1,6 @@
-package org.jboss.byteman.charts.plot.impl;
+package com.redhat.thermostat.byteman.plot.impl;
 
-import org.jboss.byteman.charts.plot.PlotConfig;
+import com.redhat.thermostat.byteman.plot.PlotConfig;
 
 /**
  * User: alexkasko

@@ -19,12 +19,12 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.byteman.charts.plot.swing;
+package com.redhat.thermostat.byteman.plot.swing;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static org.jboss.byteman.charts.utils.SwingUtils.createCloseListener;
+import static com.redhat.thermostat.byteman.utils.SwingUtils.createCloseListener;
 
 /**
  * User: alexkasko
