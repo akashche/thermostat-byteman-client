@@ -1,6 +1,6 @@
 package com.redhat.thermostat.byteman.ui.swing.panels;
 
-import com.redhat.thermostat.byteman.config.UiSwingException;
+import com.redhat.thermostat.byteman.ui.swing.UiSwingException;
 import com.redhat.thermostat.byteman.ui.swing.pages.ChartsAppContext;
 import com.redhat.thermostat.byteman.ui.swing.pages.ContentPage;
 import com.redhat.thermostat.byteman.ui.swing.pages.PageManager;

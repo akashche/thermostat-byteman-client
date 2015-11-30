@@ -28,7 +28,7 @@ import com.redhat.thermostat.byteman.filter.impl.*;
 import net.miginfocom.swing.MigLayout;
 import com.redhat.thermostat.byteman.data.DataRecord;
 import com.redhat.thermostat.byteman.plot.Plotter;
-import com.redhat.thermostat.byteman.config.UiSwingException;
+import com.redhat.thermostat.byteman.ui.swing.UiSwingException;
 import com.redhat.thermostat.byteman.ui.swing.settings.ChartSettings;
 
 import javax.swing.*;
