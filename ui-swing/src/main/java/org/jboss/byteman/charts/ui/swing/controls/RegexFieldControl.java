@@ -3,8 +3,6 @@ package org.jboss.byteman.charts.ui.swing.controls;
 import org.jboss.byteman.charts.ui.RegexConfigEntry;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;

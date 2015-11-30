@@ -31,13 +31,13 @@
     <name>Byteman Charts Parent Project</name>
 
     <modules>
+        <module>config-iface</module>
         <module>data-iface</module>
         <module>filter-iface</module>
-        <module>filter-fields</module>
+        <module>filter-impl</module>
         <module>plot-iface</module>
         <module>plot-impl</module>
         <module>plot-swing</module>
-        <module>ui-iface</module>
         <module>ui-swing</module>
         <module>utils</module>
     </modules>

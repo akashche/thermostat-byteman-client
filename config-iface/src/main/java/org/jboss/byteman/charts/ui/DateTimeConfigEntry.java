@@ -21,7 +21,6 @@
 */
 package org.jboss.byteman.charts.ui;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**

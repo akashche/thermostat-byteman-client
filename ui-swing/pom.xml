@@ -21,7 +21,7 @@
         <!-- ui iface -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-iface</artifactId>
+            <artifactId>config-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- filter iface -->
@@ -33,7 +33,7 @@
         <!-- filter impl -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>filter-fields</artifactId>
+            <artifactId>filter-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- plotter plain -->

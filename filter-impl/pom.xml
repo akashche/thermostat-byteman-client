@@ -9,13 +9,13 @@
         <artifactId>byteman-charts</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>ui-iface</artifactId>
+    <artifactId>filter-impl</artifactId>
 
     <dependencies>
-        <!-- utils -->
+        <!-- chart filter access -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>utils</artifactId>
+            <artifactId>filter-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

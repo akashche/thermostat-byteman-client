@@ -31,8 +31,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Date;
 
-import static org.jboss.byteman.charts.ui.swing.TestSwingUtils.showAndWait;
-import static org.jboss.byteman.charts.utils.SwingUtils.createCloseListener;
 import static org.jboss.byteman.charts.utils.SwingUtils.enableLafIfAvailable;
 
 /**

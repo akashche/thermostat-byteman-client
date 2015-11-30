@@ -23,7 +23,7 @@
         <!-- chart config access -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-iface</artifactId>
+            <artifactId>config-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- chart filter access -->
