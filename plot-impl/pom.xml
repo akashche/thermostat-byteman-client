@@ -43,11 +43,13 @@
 
     <parent>
         <groupId>com.redhat.thermostat.byteman</groupId>
-        <artifactId>byteman-client</artifactId>
+        <artifactId>thermostat-byteman-client</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <groupId>com.redhat.thermostat.byteman</groupId>
     <artifactId>plot-impl</artifactId>
+    <packaging>jar</packaging>
+    <name>Byteman Client Plotter Implementation Library</name>
 
     <dependencies>
         <!-- plotter interface -->
