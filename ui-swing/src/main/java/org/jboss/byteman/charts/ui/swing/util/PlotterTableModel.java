@@ -5,7 +5,7 @@ import org.jboss.byteman.charts.plot.Plotter;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
-import static org.jboss.byteman.charts.utils.StringUtils.EMPTY_STRING;
+import static org.jboss.byteman.charts.utils.string.StringUtils.EMPTY_STRING;
 
 /**
  * User: alexkasko

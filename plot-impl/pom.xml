@@ -3,20 +3,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.jboss.byteman.charts</groupId>
         <artifactId>byteman-charts</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <groupId>org.jboss.byteman.charts</groupId>
-    <artifactId>plot-swing</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>plot-impl</artifactId>
 
     <dependencies>
-        <!-- chart record access -->
+        <!-- plotter interface -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>data-iface</artifactId>
+            <artifactId>plot-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- chart config access -->
@@ -25,45 +25,54 @@
             <artifactId>ui-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- chart record access -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>data-iface</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!-- chart filter access -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>filter-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- plot access -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>plot-iface</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
+        <!-- test -->
         <!-- charts library -->
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
             <version>${version.jfreechart}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jcommon</artifactId>
             <version>${version.jfreechart_common}</version>
-        </dependency>
-        <!-- mig -->
-        <dependency>
-            <groupId>com.miglayout</groupId>
-            <artifactId>miglayout-swing</artifactId>
-            <version>${version.miglayout}</version>
-        </dependency>
-
-        <!-- test -->
-        <!-- plot impl access -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>plot-impl</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <!-- svg generation -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-svggen</artifactId>
+            <version>${version.batik}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-dom</artifactId>
+            <version>${version.batik}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${version.gson}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
+    
 </project>

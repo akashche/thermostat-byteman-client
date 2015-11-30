@@ -31,7 +31,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
+import static org.jboss.byteman.charts.utils.string.StringUtils.defaultString;
 
 /**
  * User: alexkasko

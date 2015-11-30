@@ -23,33 +23,39 @@ package org.jboss.byteman.charts.utils.collection;
 
 import org.jboss.byteman.charts.utils.UtilsException;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
- * @author alexkasko
- *         Date: 7/7/14
+ * Collection utilities
+ *
+ * @author akashche
+ *         Date: 5/25/15
  */
 public class CollectionUtils {
 
-    public static void consumeQuietly(Iterator<?> iter) {
-        if (null == iter) return;
-        try {
-            while (iter.hasNext()) iter.next();
-        } catch (Exception e) {
-            // be quiet
-        }
+    /**
+     * Created an instance of strin->object map from "key", "value", "key", "value" array
+     *
+     * @param elems keys and values varargs
+     * @return map instance
+     */
+    public static LinkedHashMap<String, Object> toMap(Object... elems) {
+        return arrayToMap(elems);
     }
 
-    public static Map<String, Object> toMap(Object[] arr){
-        Map<String, Object> map = new LinkedHashMap<String, Object>();
-        if (0 != arr.length % 2) throw new UtilsException("Invalid odd parameters count");
-        for (int i = 0; i < arr.length; i += 2) {
-            Object objKey = arr[i];
+    /**
+     * Created an instance of strin->object map from "key", "value", "key", "value" array
+     *
+     * @param dataArray keys and values array
+     * @return map instance
+     */
+    public static LinkedHashMap<String, Object> arrayToMap(Object[] dataArray) {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+        if (0 != dataArray.length % 2) throw new UtilsException("Invalid odd elements count");
+        for (int i = 0; i < dataArray.length; i += 2) {
+            Object objKey = dataArray[i];
             if (!(objKey instanceof String)) throw new UtilsException("Invalid key: [" + objKey + "]");
-            map.put((String) objKey, arr[i+1]);
+            map.put((String) objKey, dataArray[i + 1]);
         }
         return map;
     }

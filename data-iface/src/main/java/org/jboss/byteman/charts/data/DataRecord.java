@@ -25,9 +25,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.jboss.byteman.charts.utils.CollectionUtils.arrayToMap;
-import static org.jboss.byteman.charts.utils.StringUtils.EMPTY_STRING;
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
+import static org.jboss.byteman.charts.utils.collection.CollectionUtils.arrayToMap;
+import static org.jboss.byteman.charts.utils.string.StringUtils.EMPTY_STRING;
+import static org.jboss.byteman.charts.utils.string.StringUtils.defaultString;
 
 /**
  * Data structure for records collected in application and used to display the chart

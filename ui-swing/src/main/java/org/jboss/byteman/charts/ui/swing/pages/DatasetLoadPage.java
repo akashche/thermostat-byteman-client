@@ -21,13 +21,8 @@
 */
 package org.jboss.byteman.charts.ui.swing.pages;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import net.miginfocom.swing.MigLayout;
-import org.jboss.byteman.charts.data.DataRecord;
-import org.jboss.byteman.charts.filter.*;
 import org.jboss.byteman.charts.plot.Plotter;
-import org.jboss.byteman.charts.ui.*;
 import org.jboss.byteman.charts.ui.swing.util.ColumnFitTable;
 import org.jboss.byteman.charts.ui.swing.util.PlotterTableModel;
 import org.jboss.byteman.charts.utils.string.StrSubstitutor;
@@ -39,18 +34,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static javax.swing.BorderFactory.createMatteBorder;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
-import static org.jboss.byteman.charts.utils.CollectionUtils.toMap;
-import static org.jboss.byteman.charts.utils.IOUtils.closeQuietly;
-import static org.jboss.byteman.charts.utils.StringUtils.*;
+import static org.jboss.byteman.charts.utils.collection.CollectionUtils.toMap;
+import static org.jboss.byteman.charts.utils.string.StringUtils.*;
 import static org.jboss.byteman.charts.utils.SwingUtils.boldify;
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 

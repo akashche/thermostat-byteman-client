@@ -2,7 +2,7 @@ package org.jboss.byteman.charts.plot.swing;
 
 import org.jboss.byteman.charts.data.DataRecord;
 import org.jboss.byteman.charts.filter.ChartFilter;
-import org.jboss.byteman.charts.plot.plain.AveragePlotter;
+import org.jboss.byteman.charts.plot.impl.AveragePlotter;
 import org.jboss.byteman.charts.ui.ChartConfigEntry;
 import org.jboss.byteman.charts.ui.ConfigEntryBase;
 import org.junit.Test;
@@ -48,12 +48,22 @@ public class JFreeChartBuilderTest {
         public ChartConfigEntry<?> configEntry() {
             return entry;
         }
+
+        @Override
+        public <T extends ChartFilter> T copy() {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
     }
 
     private static class NamedDateTestConfigEntry extends ConfigEntryBase<Date> {
         NamedDateTestConfigEntry(String name, long timestamp) {
             this.name = name;
             this.value = new Date(timestamp);
+        }
+
+        @Override
+        public <T1 extends ChartConfigEntry<Date>> T1 copy() {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
         }
     }
 }

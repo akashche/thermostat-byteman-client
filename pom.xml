@@ -32,21 +32,14 @@
 
     <modules>
         <module>data-iface</module>
-        <module>data-helper</module>
         <module>filter-iface</module>
         <module>filter-fields</module>
         <module>plot-iface</module>
-        <module>plot-plain</module>
-        <module>plot-aggregate</module>
+        <module>plot-impl</module>
         <module>plot-swing</module>
         <module>ui-iface</module>
         <module>ui-swing</module>
-        <module>transport-iface</module>
-        <module>transport-json</module>
-        <module>transport-thermostat</module>
         <module>utils</module>
-        <module>dist-standalone</module>
-        <module>dist-osgi</module>
     </modules>
 
     <properties>

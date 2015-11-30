@@ -9,7 +9,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
+import static org.jboss.byteman.charts.utils.string.StringUtils.defaultString;
 
 /**
  * User: alexkasko

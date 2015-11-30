@@ -21,8 +21,8 @@
 */
 package org.jboss.byteman.charts.ui;
 
-import static org.jboss.byteman.charts.utils.StringUtils.EMPTY_STRING;
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
+import static org.jboss.byteman.charts.utils.string.StringUtils.EMPTY_STRING;
+import static org.jboss.byteman.charts.utils.string.StringUtils.defaultString;
 
 /**
  * User: alexkasko

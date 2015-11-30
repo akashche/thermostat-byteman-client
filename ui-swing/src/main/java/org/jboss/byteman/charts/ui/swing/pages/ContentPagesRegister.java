@@ -22,8 +22,8 @@
 package org.jboss.byteman.charts.ui.swing.pages;
 
 import org.jboss.byteman.charts.plot.Plotter;
-import org.jboss.byteman.charts.plot.plain.AveragePlotter;
-import org.jboss.byteman.charts.plot.plain.SumPlotter;
+import org.jboss.byteman.charts.plot.impl.AveragePlotter;
+import org.jboss.byteman.charts.plot.impl.SumPlotter;
 import org.jboss.byteman.charts.ui.swing.settings.Settings;
 import org.jboss.byteman.charts.ui.swing.settings.SettingsManager;
 
@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.jboss.byteman.charts.utils.StringUtils.defaultString;
+import static org.jboss.byteman.charts.utils.string.StringUtils.defaultString;
 
 /**
  * User: alexkasko
@@ -69,7 +69,7 @@ public class ContentPagesRegister {
 
         private ChartsAppContextImpl() {
             // todo: removeme
-            props.put("byteman_charts.last_chosen_data_file", "/home/alex/projects/redhat/byteman-charts/plot-aggregate/src/test/resources/org/jboss/byteman/charts/plot/aggregate/");
+            props.put("byteman_charts.last_chosen_data_file", "/home/alex/projects/redhat/byteman-charts/plot-impl/src/test/resources/");
             props.put("byteman_charts.dataset_name_format", "${filename}_${date}");
             props.put("byteman_charts.dataset_name_date_format", "yyyyMMdd_HHmmss");
         }

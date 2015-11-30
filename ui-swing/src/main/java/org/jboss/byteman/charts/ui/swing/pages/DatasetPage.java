@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.jboss.byteman.charts.ui.swing.pages.FiltersetPage.ALL_RECORDS_LABEL;
 import static org.jboss.byteman.charts.utils.IOUtils.closeQuietly;
-import static org.jboss.byteman.charts.utils.StringUtils.UTF_8;
+import static org.jboss.byteman.charts.utils.string.StringUtils.UTF_8;
 import static org.jboss.byteman.charts.utils.SwingUtils.boldify;
 import static org.jboss.byteman.charts.utils.SwingUtils.createFormSectionBorder;
 

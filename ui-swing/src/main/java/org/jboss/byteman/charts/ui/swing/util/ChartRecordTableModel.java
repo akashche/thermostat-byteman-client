@@ -8,7 +8,7 @@ import org.jboss.byteman.charts.utils.date.FastDateFormat;
 import javax.swing.table.AbstractTableModel;
 import java.util.*;
 
-import static org.jboss.byteman.charts.utils.StringUtils.EMPTY_STRING;
+import static org.jboss.byteman.charts.utils.string.StringUtils.EMPTY_STRING;
 import static org.jboss.byteman.charts.utils.collection.SingleUseIterable.singleUseIterable;
 
 /**
