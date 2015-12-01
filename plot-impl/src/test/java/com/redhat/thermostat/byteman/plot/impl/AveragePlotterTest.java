@@ -1,6 +1,5 @@
 package com.redhat.thermostat.byteman.plot.impl;
 
-import com.redhat.thermostat.byteman.plot.impl.AveragePlotter;
 import junit.framework.Assert;
 import com.redhat.thermostat.byteman.data.DataRecord;
 import com.redhat.thermostat.byteman.filter.ChartFilter;

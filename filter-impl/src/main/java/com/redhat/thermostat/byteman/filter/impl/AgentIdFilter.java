@@ -33,59 +33,67 @@
  * library, but you are not obligated to do so.  If you do not wish
  * to do so, delete this exception statement from your version.
  */
-package com.redhat.thermostat.byteman.plot;
+package com.redhat.thermostat.byteman.filter.impl;
 
 import com.redhat.thermostat.byteman.data.DataRecord;
-
-import java.util.List;
+import com.redhat.thermostat.byteman.config.ChartConfigEntry;
+import com.redhat.thermostat.byteman.config.RegexConfigEntry;
+import com.redhat.thermostat.byteman.filter.ChartFilter;
 
 /**
- * Interface for the aggregated record that will be used
- * for the chart rendering
+ * Data record field filter implementation that uses
+ * regular expression matching against "agentId" fixed
+ * field of the data record
  *
  * @author akashche
- * Date: 9/26/15
+ * Date: 10/7/15
  */
-public interface PlotRecord {
+public class AgentIdFilter implements ChartFilter {
+    protected final RegexConfigEntry en;
 
     /**
-     * Returns X-axis value
+     * Constructor
      *
-     * @return X-axis value
+     * @param name name of the config entry that corresponds to
+     *             this filter
      */
-    double getValue();
+    public AgentIdFilter(String name) {
+        this(new RegexConfigEntry(name, "^.*$"));
+    }
 
     /**
-     * Returns Y-axis value
+     * Constructor
      *
-     * @return Y-axis value
+     * @param en configuration entry to use for managing state of this filter
      */
-    String getCategory();
+    private AgentIdFilter(RegexConfigEntry en) {
+        this.en = en;
+    }
 
     /**
-     * Returns a start of the timestamp period
-     * this record belongs to
-     *
-     * @return start of the timestamp period
-     *         this record belongs to
+     * @inheritDoc
      */
-    long getPeriodStart();
+    @Override
+    public boolean apply(DataRecord record) {
+        if (null == record.getAgentId()) return false;
+        return en.getPattern().matcher(record.getAgentId()).matches();
+    }
 
     /**
-     * Returns an end of the timestamp period
-     * this record belongs to
-     *
-     * @return start of the timestamp period
-     *         this record belongs to
+     * @inheritDoc
      */
-    long getPeriodEnd();
+    @Override
+    public ChartConfigEntry<?> configEntry() {
+        return en;
+    }
 
     /**
-     * Returns the list of raw data records that were
-     * aggregated into this plot record
-     *
-     * @return list of raw data records that were
-     *         aggregated into this plot record
+     * @inheritDoc
      */
-    List<DataRecord> getDataRecords();
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends ChartFilter> T copy() {
+        RegexConfigEntry cp = en.copy();
+        return (T) new AgentIdFilter(cp);
+    }
 }

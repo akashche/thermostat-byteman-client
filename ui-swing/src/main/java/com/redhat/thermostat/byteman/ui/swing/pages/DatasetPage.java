@@ -143,9 +143,9 @@ class DatasetPage extends BasePage {
         res.add(tsFrom);
         TimestampToFilter tsTo = new TimestampToFilter("timestampTo", new Date());
         res.add(tsTo);
-        res.add(new RegexFilter("marker"));
-        res.add(new RegexFilter("agentId"));
-        res.add(new RegexFilter("vmId"));
+        res.add(new AgentIdFilter("marker"));
+        res.add(new AgentIdFilter("agentId"));
+        res.add(new AgentIdFilter("vmId"));
         Set<String> existing = new HashSet<String>();
         long timestampFrom = Long.MAX_VALUE;
         long timestampTo = 0;
