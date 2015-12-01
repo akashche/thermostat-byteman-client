@@ -21,7 +21,7 @@
 */
 package com.redhat.thermostat.byteman.ui.swing.controls;
 
-import com.redhat.thermostat.byteman.config.*;
+import com.redhat.thermostat.byteman.chart.*;
 import com.redhat.thermostat.byteman.ui.swing.config.ChartConfigPanel;
 import org.junit.Before;
 import org.junit.Test;

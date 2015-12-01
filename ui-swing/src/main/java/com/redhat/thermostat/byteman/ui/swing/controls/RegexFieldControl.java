@@ -1,6 +1,6 @@
 package com.redhat.thermostat.byteman.ui.swing.controls;
 
-import com.redhat.thermostat.byteman.config.RegexConfigEntry;
+import com.redhat.thermostat.byteman.chart.RegexConfigEntry;
 
 import javax.swing.*;
 

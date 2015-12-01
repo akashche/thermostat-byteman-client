@@ -59,7 +59,7 @@
         <!-- ui iface -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>config-iface</artifactId>
+            <artifactId>chart-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- filter iface -->
@@ -80,10 +80,10 @@
             <artifactId>plot-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- plotter swing -->
+        <!-- chart swing -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>plot-swing</artifactId>
+            <artifactId>chart-swing</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- utils -->

@@ -1,8 +1,8 @@
 package com.redhat.thermostat.byteman.ui.swing.settings;
 
-import com.redhat.thermostat.byteman.config.ChartConfigEntry;
-import com.redhat.thermostat.byteman.config.ConfigurableChart;
-import com.redhat.thermostat.byteman.config.StringConfigEntry;
+import com.redhat.thermostat.byteman.chart.ChartConfigEntry;
+import com.redhat.thermostat.byteman.chart.ConfigurableChart;
+import com.redhat.thermostat.byteman.chart.StringConfigEntry;
 
 import java.util.Arrays;
 import java.util.Collection;

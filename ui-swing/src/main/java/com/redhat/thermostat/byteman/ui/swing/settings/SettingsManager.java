@@ -3,7 +3,7 @@ package com.redhat.thermostat.byteman.ui.swing.settings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.redhat.thermostat.byteman.plot.Plotter;
-import com.redhat.thermostat.byteman.plot.swing.JFreeChartBuilder;
+import com.redhat.thermostat.byteman.chart.swing.SwingBarChart;
 import com.redhat.thermostat.byteman.ui.swing.pages.ContentPagesRegister;
 
 import java.io.*;
@@ -56,7 +56,7 @@ public class SettingsManager {
 //        if (!res) throw new SettingsException("Error creating dirs for file: [" + SETTINGS_FILE.getAbsolutePath() + "]");
         LinkedHashMap<String, ChartSettings> charts = new LinkedHashMap<String, ChartSettings>();
         for (Plotter pl : ContentPagesRegister.PLOTS) {
-            charts.put(pl.getName(), new ChartSettings(JFreeChartBuilder.defaultConfig()));
+            charts.put(pl.getName(), new ChartSettings(SwingBarChart.defaultConfig()));
         }
         Settings settings = new Settings(new SystemSettings(), charts);
         saveSettings(settings);

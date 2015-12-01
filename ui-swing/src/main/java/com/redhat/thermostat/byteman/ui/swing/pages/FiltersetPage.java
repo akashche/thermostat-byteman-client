@@ -21,12 +21,12 @@
 */
 package com.redhat.thermostat.byteman.ui.swing.pages;
 
+import com.redhat.thermostat.byteman.chart.swing.SwingBarChart;
 import net.miginfocom.swing.MigLayout;
 import com.redhat.thermostat.byteman.data.DataRecord;
 import com.redhat.thermostat.byteman.filter.ChartFilter;
 import com.redhat.thermostat.byteman.filter.ChartFilterUtils;
 import com.redhat.thermostat.byteman.plot.Plotter;
-import com.redhat.thermostat.byteman.plot.swing.JFreeChartBuilder;
 import com.redhat.thermostat.byteman.ui.swing.config.ChartConfigPanel;
 import com.redhat.thermostat.byteman.ui.swing.settings.ChartSettings;
 import com.redhat.thermostat.byteman.ui.swing.util.ChartRecordTableModel;
@@ -86,7 +86,7 @@ class FiltersetPage extends BasePage {
     private JToggleButton filtersButton;
     private JToggleButton configButton;
 
-    JFreeChartBuilder chartBuilder;
+    SwingBarChart chartBuilder;
 
     protected FiltersetPage(ChartsAppContext ctx, ChartSettings chartSettings, String name, String label, String parentName,
                             Plotter plotter, Iterable<DataRecord> records, Collection<? extends ChartFilter> filters,
@@ -203,7 +203,7 @@ class FiltersetPage extends BasePage {
     }
 
     private Component createChart() {
-        chartBuilder = new JFreeChartBuilder(plotter, records, filters);
+        chartBuilder = new SwingBarChart(plotter, records, filters);
         chartBuilder.applyConfig(chartSettings.configAsMap());
         return chartBuilder.createChartPanel();
 

@@ -21,7 +21,7 @@
 */
 package com.redhat.thermostat.byteman.ui.swing.controls;
 
-import com.redhat.thermostat.byteman.config.DoubleConfigEntry;
+import com.redhat.thermostat.byteman.chart.DoubleConfigEntry;
 
 import javax.swing.*;
 import java.awt.event.FocusAdapter;

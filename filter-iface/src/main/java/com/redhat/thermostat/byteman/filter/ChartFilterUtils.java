@@ -35,7 +35,7 @@
  */
 package com.redhat.thermostat.byteman.filter;
 
-import com.redhat.thermostat.byteman.config.ChartConfigEntry;
+import com.redhat.thermostat.byteman.chart.ChartConfigEntry;
 
 import java.util.ArrayList;
 import java.util.Collection;

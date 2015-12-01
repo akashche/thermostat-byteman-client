@@ -22,7 +22,7 @@
 package com.redhat.thermostat.byteman.ui.swing.config;
 
 import net.miginfocom.swing.MigLayout;
-import com.redhat.thermostat.byteman.config.ChartConfigEntry;
+import com.redhat.thermostat.byteman.chart.ChartConfigEntry;
 import com.redhat.thermostat.byteman.ui.swing.UiSwingException;
 import com.redhat.thermostat.byteman.ui.swing.controls.ChartConfigSwingControl;
 

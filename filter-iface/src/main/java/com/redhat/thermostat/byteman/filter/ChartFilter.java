@@ -36,7 +36,7 @@
 package com.redhat.thermostat.byteman.filter;
 
 import com.redhat.thermostat.byteman.data.DataRecord;
-import com.redhat.thermostat.byteman.config.ChartConfigEntry;
+import com.redhat.thermostat.byteman.chart.ChartConfigEntry;
 
 /**
  * Interface for filtering predicate for ChartRecords.

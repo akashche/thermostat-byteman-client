@@ -61,7 +61,7 @@
         <!-- chart config access -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>config-iface</artifactId>
+            <artifactId>chart-iface</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- chart record access -->

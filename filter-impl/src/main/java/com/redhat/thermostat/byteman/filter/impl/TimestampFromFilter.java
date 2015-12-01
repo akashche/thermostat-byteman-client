@@ -36,7 +36,7 @@
 package com.redhat.thermostat.byteman.filter.impl;
 
 import com.redhat.thermostat.byteman.data.DataRecord;
-import com.redhat.thermostat.byteman.config.DateTimeConfigEntry;
+import com.redhat.thermostat.byteman.chart.DateTimeConfigEntry;
 import com.redhat.thermostat.byteman.filter.ChartFilter;
 
 import java.util.Date;

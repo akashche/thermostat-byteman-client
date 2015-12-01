@@ -1,6 +1,6 @@
 package com.redhat.thermostat.byteman.ui.swing.settings;
 
-import com.redhat.thermostat.byteman.config.*;
+import com.redhat.thermostat.byteman.chart.*;
 
 import java.util.*;
 

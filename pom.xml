@@ -47,13 +47,13 @@
     <name>Byteman Client Parent Project</name>
 
     <modules>
-        <module>config-iface</module>
+        <module>chart-iface</module>
+        <module>chart-swing</module>
         <module>data-iface</module>
         <module>filter-iface</module>
         <module>filter-impl</module>
         <module>plot-iface</module>
         <module>plot-impl</module>
-        <module>plot-swing</module>
         <module>ui-swing</module>
         <module>utils</module>
     </modules>

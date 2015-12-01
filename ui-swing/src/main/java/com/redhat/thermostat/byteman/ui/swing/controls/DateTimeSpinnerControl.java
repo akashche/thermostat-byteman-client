@@ -21,7 +21,7 @@
 */
 package com.redhat.thermostat.byteman.ui.swing.controls;
 
-import com.redhat.thermostat.byteman.config.DateTimeConfigEntry;
+import com.redhat.thermostat.byteman.chart.DateTimeConfigEntry;
 
 import javax.swing.*;
 import java.awt.event.FocusAdapter;
