@@ -1,27 +1,42 @@
 /*
-* JBoss, Home of Professional Open Source
-* Copyright 2015 Red Hat and individual contributors
-* by the @authors tag. See the copyright.txt in the distribution for a
-* full listing of individual contributors.
-*
-* This is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Lesser General Public License as
-* published by the Free Software Foundation; either version 2.1 of
-* the License, or (at your option) any later version.
-*
-* This software is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-* Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this software; if not, write to the Free
-* Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-* 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/
+ * Copyright 2012-2015 Red Hat, Inc.
+ *
+ * This file is part of Thermostat.
+ *
+ * Thermostat is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; either version 2, or (at your
+ * option) any later version.
+ *
+ * Thermostat is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Thermostat; see the file COPYING.  If not see
+ * <http://www.gnu.org/licenses/>.
+ *
+ * Linking this code with other modules is making a combined work
+ * based on this code.  Thus, the terms and conditions of the GNU
+ * General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this code give
+ * you permission to link this code with independent modules to
+ * produce an executable, regardless of the license terms of these
+ * independent modules, and to copy and distribute the resulting
+ * executable under terms of your choice, provided that you also
+ * meet, for each linked independent module, the terms and conditions
+ * of the license of that module.  An independent module is a module
+ * which is not derived from or based on this code.  If you modify
+ * this code, you may extend this exception to your version of the
+ * library, but you are not obligated to do so.  If you do not wish
+ * to do so, delete this exception statement from your version.
+ */
 package com.redhat.thermostat.byteman.ui.swing.pages;
 
 import com.redhat.thermostat.byteman.chart.swing.SwingBarChart;
+import com.redhat.thermostat.byteman.ui.swing.util.DataRecordTableModel;
 import net.miginfocom.swing.MigLayout;
 import com.redhat.thermostat.byteman.data.DataRecord;
 import com.redhat.thermostat.byteman.filter.ChartFilter;
@@ -29,7 +44,6 @@ import com.redhat.thermostat.byteman.filter.ChartFilterUtils;
 import com.redhat.thermostat.byteman.plot.Plotter;
 import com.redhat.thermostat.byteman.ui.swing.config.ChartConfigPanel;
 import com.redhat.thermostat.byteman.ui.swing.settings.ChartSettings;
-import com.redhat.thermostat.byteman.ui.swing.util.ChartRecordTableModel;
 import com.redhat.thermostat.byteman.ui.swing.util.ColumnFitTable;
 
 import javax.swing.*;
@@ -49,7 +63,7 @@ import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 
 /**
- * User: alexkasko
+ * @author akashche
  * Date: 6/23/15
  */
 class FiltersetPage extends BasePage {
@@ -194,7 +208,7 @@ class FiltersetPage extends BasePage {
                 "[]",
                 "[top]"
         ));
-        ChartRecordTableModel tm = new ChartRecordTableModel(records.iterator(), filters, "yyyy-MM-dd HH:mm:ss.SSS");
+        DataRecordTableModel tm = new DataRecordTableModel(records.iterator(), filters, "yyyy-MM-dd HH:mm:ss.SSS");
         JTable table = new ColumnFitTable(tm);
         JScrollPane sp = new JScrollPane(table, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         sp.setBorder(createEmptyBorder());
@@ -292,7 +306,7 @@ class FiltersetPage extends BasePage {
             String filtername = parentName + "_" + fname;
             ContentPage filterpage = new FiltersetPage(ctx, chartSettings.deepCopy(), filtername,
                     fname, parentName, plotter, records, deepCopyFilters(filters), nameCounter);
-            pm.addPageAsync(filterpage, parentName);
+            pm.addPage(filterpage, parentName);
             filters = deepCopyFilters(filtersOrig);
             menu.setVisible(false);
             button.setSelected(false);
@@ -380,7 +394,7 @@ class FiltersetPage extends BasePage {
             ContentPage filterpage = new FiltersetPage(ctx, chartSettings.deepCopy(), filtername,
                     fname, parentName, plotter, records, deepCopyFilters(filters), nameCounter);
             chartSettings = chartSettingsOrig.deepCopy();
-            pm.addPageAsync(filterpage, parentName);
+            pm.addPage(filterpage, parentName);
             menu.setVisible(false);
             button.setSelected(false);
         }

@@ -59,7 +59,7 @@ import static com.redhat.thermostat.byteman.utils.IOUtils.closeQuietly;
 import static com.redhat.thermostat.byteman.utils.string.StringUtils.EMPTY_STRING;
 
 /**
- * User: alexkasko
+ * @author akashche
  * Date: 9/27/15
  */
 class TestPlotRenderer {

@@ -41,7 +41,7 @@ import java.awt.*;
 import static com.redhat.thermostat.byteman.utils.SwingUtils.createCloseListener;
 
 /**
- * User: alexkasko
+ * @author akashche
  * Date: 6/11/15
  */
 public class TestSwingUtils {

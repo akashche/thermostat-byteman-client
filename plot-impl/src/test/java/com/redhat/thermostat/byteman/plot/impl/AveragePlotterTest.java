@@ -48,7 +48,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * User: alexkasko
+ * @author akashche
  * Date: 9/27/15
  */
 public class AveragePlotterTest {

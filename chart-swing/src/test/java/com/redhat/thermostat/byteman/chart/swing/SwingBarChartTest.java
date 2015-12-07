@@ -47,7 +47,7 @@ import java.util.Collection;
 import java.util.Date;
 
 /**
- * User: alexkasko
+ * @author akashche
  * Date: 9/28/15
  */
 public class SwingBarChartTest {

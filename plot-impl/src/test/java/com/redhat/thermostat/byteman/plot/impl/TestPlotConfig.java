@@ -38,7 +38,7 @@ package com.redhat.thermostat.byteman.plot.impl;
 import com.redhat.thermostat.byteman.plot.PlotConfig;
 
 /**
- * User: alexkasko
+ * @author akashche
  * Date: 9/27/15
  */
 class TestPlotConfig implements PlotConfig {

@@ -45,7 +45,7 @@ import java.util.Map;
  * @author akashche
  * Date: 6/8/15
  */
-public interface ConfigurableChart {
+public interface Configurable {
 
     /**
      * Accessor for the list of configuration entries that are supported
@@ -61,5 +61,5 @@ public interface ConfigurableChart {
      * @param entries "name->entry" mapping of the configuration entries
      * @return this chart instance
      */
-    ConfigurableChart applyConfig(Map<String, ChartConfigEntry<?>> entries);
+    Configurable applyConfig(Map<String, ChartConfigEntry<?>> entries);
 }

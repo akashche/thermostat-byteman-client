@@ -70,7 +70,7 @@ import static com.redhat.thermostat.byteman.utils.ColorUtils.toColor;
  * @author akashche
  * Date: 9/27/15
  */
-public class SwingBarChart implements ConfigurableChart {
+public class SwingBarChart implements Configurable {
     private final Plotter plotter;
     private final Iterable<DataRecord> data;
     private Collection<? extends ChartFilter> filters;
@@ -135,7 +135,7 @@ public class SwingBarChart implements ConfigurableChart {
      * @inheritDoc
      */
     @Override
-    public ConfigurableChart applyConfig(Map<String, ChartConfigEntry<?>> entries) {
+    public Configurable applyConfig(Map<String, ChartConfigEntry<?>> entries) {
         for (Map.Entry<String, ChartConfigEntry<?>> en : entries.entrySet()) {
             setFieldValue(en.getKey(), en.getValue().getValue());
         }

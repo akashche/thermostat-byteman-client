@@ -1,3 +1,38 @@
+/*
+ * Copyright 2012-2015 Red Hat, Inc.
+ *
+ * This file is part of Thermostat.
+ *
+ * Thermostat is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published
+ * by the Free Software Foundation; either version 2, or (at your
+ * option) any later version.
+ *
+ * Thermostat is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Thermostat; see the file COPYING.  If not see
+ * <http://www.gnu.org/licenses/>.
+ *
+ * Linking this code with other modules is making a combined work
+ * based on this code.  Thus, the terms and conditions of the GNU
+ * General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this code give
+ * you permission to link this code with independent modules to
+ * produce an executable, regardless of the license terms of these
+ * independent modules, and to copy and distribute the resulting
+ * executable under terms of your choice, provided that you also
+ * meet, for each linked independent module, the terms and conditions
+ * of the license of that module.  An independent module is a module
+ * which is not derived from or based on this code.  If you modify
+ * this code, you may extend this exception to your version of the
+ * library, but you are not obligated to do so.  If you do not wish
+ * to do so, delete this exception statement from your version.
+ */
 package com.redhat.thermostat.byteman.ui.swing.util;
 
 import com.redhat.thermostat.byteman.data.DataRecord;
@@ -12,16 +47,25 @@ import static com.redhat.thermostat.byteman.utils.string.StringUtils.EMPTY_STRIN
 import static com.redhat.thermostat.byteman.utils.collection.SingleUseIterable.singleUseIterable;
 
 /**
- * User: alexkasko
+ * Table model for data records with arbitrary fields
+ *
+ * @author akashche
  * Date: 8/28/15
  */
-public class ChartRecordTableModel extends AbstractTableModel {
+public class DataRecordTableModel extends AbstractTableModel {
     private final ArrayList<DataRecord> data = new ArrayList<DataRecord>();
     private final int columnCount;
     private final FastDateFormat dtf;
 
-    public ChartRecordTableModel(Iterator<DataRecord> records, Collection<? extends ChartFilter> filters,
-            String dateFormat) {
+    /**
+     * Constructor
+     *
+     * @param records data records iterator
+     * @param filters set of filters that should be applied before the table display
+     * @param dateFormat format string for date fields
+     */
+    public DataRecordTableModel(Iterator<DataRecord> records, Collection<? extends ChartFilter> filters,
+                                String dateFormat) {
         int maxCols = 0;
         Iterator<DataRecord> filtered = new ChartFilteredIterator(records, filters);
         for (DataRecord cr : singleUseIterable(filtered)) {
@@ -35,16 +79,25 @@ public class ChartRecordTableModel extends AbstractTableModel {
         this.dtf = FastDateFormat.getInstance(dateFormat);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public int getRowCount() {
         return data.size();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public int getColumnCount() {
         return columnCount;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @SuppressWarnings("unchecked") // map entry
     public Object getValueAt(int rowIndex, int columnIndex) {
@@ -60,6 +113,9 @@ public class ChartRecordTableModel extends AbstractTableModel {
         return res;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public String getColumnName(int column) {
         switch (column) {
@@ -71,6 +127,9 @@ public class ChartRecordTableModel extends AbstractTableModel {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
