@@ -60,6 +60,6 @@ public class PanelsTest {
         JPanel panel = new MainPaneBuilder().build(ContentPagesRegister.PAGES);
 
         // note: uncomment me for manual testing
-        showAndWait(panel);
+//        showAndWait(panel);
     }
 }
